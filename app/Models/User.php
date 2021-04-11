@@ -8,11 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
+use App\Models\Company;
 use App\Models\Expense;
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
-    use HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -47,6 +47,26 @@ class User extends Authenticatable
     ];
 
     public function expenses(){
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Expense::class, 'user_id');
+    }
+
+    public function company(){
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function createdInvoices(){
+        return $this->hasMany(Invoice::class, 'created_by');
+    }
+
+    public function clientInvoices(){
+        return $this->hasMany(Invoice::class, 'client_id');
+    }
+
+    public function createdIncomes(){
+        return $this->hasMany(Income::class, 'created_by');
+    }
+
+    public function clientIncomes(){
+        return $this->hasMany(Income::class, 'client_id');
     }
 }
