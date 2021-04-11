@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ApiAuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +15,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('register', [ApiAuthController::class, 'register']);
+Route::post('login', [ApiAuthController::class, 'login']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('logout', [ApiAuthController::class, 'logout']);
+    Route::resource('posts', ExpenseController::class);
 });
