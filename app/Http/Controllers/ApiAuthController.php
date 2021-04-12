@@ -28,7 +28,6 @@ class ApiAuthController extends Controller
             'role' => $request->role,
             'company_id' => $request->company_id
         ];
-        // dd($data);
         $user = User::create($data);
        
         $token = $user->createToken('Registration Auth Token')->accessToken;

@@ -17,8 +17,9 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->foreignId('company_id')->references('id')->on('companies')->cascadeOnDelete();
             $table->string('name');
+            $table->string('phone',20)->nullable(true);
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable(true);
             $table->string('password');
             $table->string('role');
             $table->boolean('is_active')->default(true);
