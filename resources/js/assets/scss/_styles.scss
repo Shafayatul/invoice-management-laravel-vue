@@ -1,0 +1,17 @@
+html {
+  overflow-y: hidden;
+}
+.v-main {
+  height: 100vh;
+  overflow-y: auto;
+}
+.theme--light {
+  .v-main {
+    @include scrollbar($width: 6px);
+  }
+}
+.theme--dark {
+  .v-main {
+    @include scrollbar($width: 6px, $background: rgba(white, 0.1));
+  }
+}

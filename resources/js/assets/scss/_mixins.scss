@@ -1,0 +1,58 @@
+@mixin font($size) {
+  font-size: $size;
+}
+
+@mixin center {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+@mixin inset($size: 0) {
+  top: $size;
+  left: $size;
+  right: $size;
+  bottom: $size;
+}
+
+@mixin scrollbar($width: false, $height: false, $hover: #0065c3, $background: rgba(black, 0.3)) {
+  @if $width {
+    &::-webkit-scrollbar {
+      width: $width;
+    }
+  }
+  @if $height {
+    &::-webkit-scrollbar {
+      height: $height;
+    }
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $background;
+    &:hover {
+      background-color: $hover;
+    }
+  }
+}
+
+@mixin on($name) {
+  @media (min-width: map-get(
+    $breakpoints-up , $name
+   )) {
+    @content;
+  }
+}
+@mixin up($name) {
+  @media (min-width: map-get(
+    $breakpoints-up , $name
+   )) {
+    @content;
+  }
+}
+@mixin down($name) {
+  @media (max-width: map-get(
+    $breakpoints-down , $name
+   )) {
+    @content;
+  }
+}
