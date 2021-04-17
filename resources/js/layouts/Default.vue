@@ -132,28 +132,28 @@ export default {
           icon: "mdi-home",
         },
         {
+          path: "/company",
+          name: "Company",
+          icon: "mdi-account-group",
+          // childrens: [
+          //   {
+          //     path: "",
+          //     name: "Users",
+          //     icon: "mdi-account-group",
+          //   },
+          // ],
+        },
+        {
           path: "/users",
           name: "Users",
           icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Users",
-              icon: "mdi-account-group",
-            },
-          ],
-        },
-        {
-          path: "/invoice",
-          name: "Invoicing",
-          icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Invoicing Child",
-              icon: "mdi-account-group",
-            },
-          ],
+          // childrens: [
+          //   {
+          //     path: "",
+          //     name: "Invoicing Child",
+          //     icon: "mdi-account-group",
+          //   },
+          // ],
         },
  
         {

@@ -10,34 +10,53 @@ import DefaultLayout from '@/layouts/Default.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-  mode: 'history',
-  base: '/',
-  routes: [
-    {
-      path: '/',
-      component: DefaultLayout,
-      meta: { requiresAuth: true },
-      children: [
+    mode: "history",
+    base: "/",
+    routes: [
         {
-          path: '',
-          name: 'Home',
-          component: Home
+            path: "/",
+            component: DefaultLayout,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: "",
+                    name: "Home",
+                    component: Home
+                },
+                {
+                    path: "company",
+                    name: "Company",
+                    component: view("Company")
+                },
+                {
+                    path: "users",
+                    name: "Users",
+                    component: view("Users")
+                },
+                {
+                    path: "income",
+                    name: "Income",
+                    component: view("Income")
+                },
+                {
+                    path: "expense",
+                    name: "Expense",
+                    component: view("Expense")
+                },
+                {
+                    path: "expense-details",
+                    name: "ExpenseDetails",
+                    component: view("ExpenseDetails")
+                }
+            ]
         },
         {
-          path: 'users',
-          name: 'Users',
-          component: view('Users')
-        },
-
-      ]
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: view('Login')
-    }
-  ]
-})
+            path: "/login",
+            name: "Login",
+            component: view("Login")
+        }
+    ]
+});
 
 // router.beforeEach(async (to, _, next) => {
 //   let isAuth = store.getters['AUTH/$isAuth'];
