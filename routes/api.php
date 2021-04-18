@@ -25,8 +25,10 @@ Route::group(['prefix' => 'v1'],function () {
     })->name('api.unauthorized');
     Route::post('register', [ApiAuthController::class, 'register'])->name('api.register');
     Route::post('login', [ApiAuthController::class, 'login'])->name('api.login');
-
+    
     Route::middleware('auth:api')->group(function () {
+        
+        Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
         Route::get('logout', [ApiAuthController::class, 'logout'])->name('api.logout');
         Route::resource('posts', ExpenseController::class);
 

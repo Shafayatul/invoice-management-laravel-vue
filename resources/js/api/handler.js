@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { qs, toSuccess, toError, toFormData } from '../helpers';
 
 // Creating a axios instance
-let api = axios.create({ baseURL: '/api' })
+let api = axios.create({ baseURL: '/api/v1/' })
 
 // Request handler
 export const h = async (callback, ...data) => {

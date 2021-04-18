@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
-
 use Carbon\Carbon;
 
 class UserController extends Controller {
@@ -29,7 +29,17 @@ class UserController extends Controller {
     }
      
     public function show(Request $request) {
-        $user = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->find($request->user_id);
+
+        $user = $this->getUser($request->user_id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user->toArray()
+        ], 200);
+    }
+
+    protected function getUser($user_id){
+        $user = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->find($user_id);
         
         if (!$user) {
             return response()->json([
@@ -37,11 +47,8 @@ class UserController extends Controller {
                 'message' => 'User not found '
             ], 404);
         }
- 
-        return response()->json([
-            'success' => true,
-            'data' => $user->toArray()
-        ], 200);
+
+        return $user;
     }
 
     public function store(Request $request) {
@@ -82,7 +89,7 @@ class UserController extends Controller {
             'name'       => 'required|string',
             'phone'        => 'required|string',
             'email'       => 'required|unique:users,email,'.$request->user_id,
-            'password'     => 'required|confirmed',
+            'password'     => 'bail|confirmed|min:8|max:6',
             'role'     => 'required|string|max:10',
             'user_id'       => 'required|exists:users,id',
             'company_id'       => 'required|exists:companies,id',
@@ -132,5 +139,14 @@ class UserController extends Controller {
                 'message' => 'User can not be deleted'
             ], 500);
         }
+    }
+
+    public function loginUserInfo(Request $request){
+        $user = $this->getUser(Auth::id());
+        
+        return response()->json([
+            'success' => true,
+            'data' => $user->toArray()
+        ], 200);
     }
 }
