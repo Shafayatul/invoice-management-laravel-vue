@@ -1,6 +1,6 @@
 <template>
   <div class="ml-3">
-    <v-dialog v-model="cmDialog" width="60%">
+    <v-dialog v-model="cmDialog" width="40%">
       <v-card>
         <v-card-text>
           <v-card-title> Create User </v-card-title>

@@ -40,7 +40,7 @@
 
     <div class="text-center mt-4">
       <v-btn
-      block
+        block
         type="submit"
         class="shadow"
         color="primary"

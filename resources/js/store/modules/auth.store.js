@@ -20,13 +20,14 @@ const actions = {
   login: async ({ commit }, payload) => {
     let res = await API.auth.login(payload)
     if (!res.error) {
-      const expires = payload.remember_me
-        ? diff.day(res.expiresAt) : null;
+      // const expires = payload.remember_me
+      //   ? diff.day(res.expiresAt) : null;
+      // const expires = 7
       cookies.set(
-        { key: 'isAuth', value: true, expires },
-        { key: 'accessToken', value: res.token, expires },
-        { key: 'userId', value: res.user.id, expires },
-      )
+          { key: "isAuth", value: true, expires: 7 },
+          { key: "accessToken", value: res.token, expires: 7 }
+          // { key: 'userId', value: res.user.id, expires },
+      );
       commit('SET', {
         isAuth: true,
         accessToken: res.token,

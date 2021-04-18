@@ -2,13 +2,20 @@
   <v-card class="mt-2">
     <v-card-title>Create Expense</v-card-title>
     <v-card-text>
-      <v-card 
-        class="mb-2"
+      <v-card
+        class="mb-2 pa-2 pt-6"
         v-for="(expense, index) in expenses"
         :key="index"
         outlined
       >
         <!-- <v-card-title>Create Expense</v-card-title> -->
+        <v-btn
+          class="fab-btn-right ma-1"
+          @click="expenses.splice(index, 1)"
+          icon
+        >
+          <v-icon color="red">mdi-close</v-icon>
+        </v-btn>
         <v-card-text>
           <v-form
             lazy-validation
@@ -17,14 +24,28 @@
             @submit.prevent="onSubmit"
           >
             <v-row>
-              <v-col cols="12" sm="6" md="3">
+              <!-- <v-col cols="12" sm="6" md="3">
+                <v-select
+                  v-model="expense.expense_id"
+                  label="Expense"
+                  v-bind="fieldOptions"
+                />
+              </v-col> -->
+              <v-col cols="12" sm="6" md="2">
+                <v-select
+                  v-model="expense.category_id"
+                  label="Category"
+                  v-bind="fieldOptions"
+                />
+              </v-col>
+              <v-col cols="12" sm="6" md="2">
                 <v-text-field
                   v-model="expense.type"
                   label="Type"
                   v-bind="fieldOptions"
                 />
               </v-col>
-              <v-col cols="12" sm="6" md="3">
+              <v-col cols="12" sm="6" md="2">
                 <v-menu
                   :ref="'menu-' + index"
                   v-model="expense.menu"
@@ -71,24 +92,19 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="3">
-                <div class="d-flex">
-                  <v-file-input
-                    v-model="expenses.billFile"
-                    v-bind="fieldOptions"
-                    label="Bills file"
-                  ></v-file-input>
-                  <v-btn @click="expenses.splice(index, 1)" class="ma-1" icon>
-                    <v-icon color="red">mdi-delete</v-icon>
-                  </v-btn>
-                </div>
+                <v-file-input
+                  v-model="expenses.billFile"
+                  v-bind="fieldOptions"
+                  label="Bills file"
+                ></v-file-input>
               </v-col>
             </v-row>
           </v-form>
         </v-card-text>
       </v-card>
     </v-card-text>
-    <v-card-actions class="mb-1">
-      <v-btn class="ml-2"  @click="onAddMoreExpense" color="primary">
+    <v-card-actions  class="mb-1 justify-end">
+      <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
         <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
       >
     </v-card-actions>
@@ -101,10 +117,12 @@ const newExpenseItem = ()=> ({
                 type: "",
                 amount: "",
                 billFile: "",
+                category_id:'',
                 role: "",
                 date: new Date().toISOString().substr(0, 10),
                 menu:false
             })
+                // expense_id:'',
 export default {
     name: "ExpensesForm",
     mixins: [formFieldMixin],
@@ -124,12 +142,7 @@ export default {
             menu: false,
         };
     },
-    methods:{
-      onAddMoreExpense(){
-        this.expenses.push(newExpenseItem())
-      }
-    },
-    watch: {
+      watch: {
         data: {
             deep: true,
             immediate: true,
@@ -141,6 +154,24 @@ export default {
                 };
             }
         }
-    }
+    },
+    created(){
+      
+    },
+    methods:{
+      onAddMoreExpense(){
+        this.expenses.push(newExpenseItem())
+      }
+    },
+  
 };
 </script>
+
+<style >
+.fab-btn-right{
+   position: absolute;
+   top: 0;
+   right: 0;
+}
+
+</style>

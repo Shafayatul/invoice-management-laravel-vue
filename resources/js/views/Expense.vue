@@ -19,7 +19,7 @@
         </v-toolbar>
         <v-card-text>
           <!-- <v-card-title> Create Expense </v-card-title> -->
-          <ExpenseForm :isUpdate="update.dialog" :data="update.data" />
+          <ExpenseForm v-if="cmDialog" :isUpdate="update.dialog" :data="update.data" />
         </v-card-text>
         <!-- <v-card-actions>
           <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>

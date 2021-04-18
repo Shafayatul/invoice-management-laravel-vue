@@ -94,7 +94,7 @@
       class="default-layout__main grey"
       :class="$theme.dark ? 'darken-4' : 'lighten-3'"
     >
-      <router-wrapper>
+      <router-wrapper class="mr-3">
         <router-view class="" />
       </router-wrapper>
     </v-main>
@@ -135,100 +135,48 @@ export default {
           path: "/company",
           name: "Company",
           icon: "mdi-account-group",
-          // childrens: [
-          //   {
-          //     path: "",
-          //     name: "Users",
-          //     icon: "mdi-account-group",
-          //   },
-          // ],
         },
         {
           path: "/users",
           name: "Users",
           icon: "mdi-account-group",
-          // childrens: [
-          //   {
-          //     path: "",
-          //     name: "Invoicing Child",
-          //     icon: "mdi-account-group",
-          //   },
-          // ],
         },
  
         {
-          path: "/invoice",
+          path: "/income",
+          name: "Income",
+          icon: "mdi-account-group",
+       
+        },
+        {
+          path: "/expense",
           name: "Expenses",
           icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Expenses Child",
-              icon: "mdi-account-group",
-            },
-          ],
+        
         },
+        // {
+        //   path: "/expenses-details",
+        //   name: "Expenses Details",
+        //   icon: "mdi-account-group",
+        
+        // },
         {
-          path: "/invoice",
-          name: "Cash Flow",
+          path: "/",
+          name: "Invoices",
           icon: "mdi-account-group",
           childrens: [
             {
-              path: "",
-              name: "Cash Flow Child",
+              path: "invoice-details",
+              name: "Invoice Details",
               icon: "mdi-account-group",
             },
-          ],
-        },
-        {
-          path: "/invoice",
-          name: "Employees",
-          icon: "mdi-account-group",
-          childrens: [
             {
-              path: "",
-              name: "Invoicing Child",
-              icon: "mdi-account-group",
-            },
-          ],
-        },
-        {
-          path: "/invoice",
-          name: "Reports",
-          icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Invoicing Child",
-              icon: "mdi-account-group",
-            },
-          ],
-        },
-        {
-          path: "/invoice",
-          name: "Taxes",
-          icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Invoicing Child",
-              icon: "mdi-account-group",
-            },
-          ],
-        },
-         {
-          path: "/invoice",
-          name: "Accounting",
-          icon: "mdi-account-group",
-          childrens: [
-            {
-              path: "",
-              name: "Accounting Child",
+              path: "invoice-history",
+              name: "Invoice History",
               icon: "mdi-account-group",
             },
           ],
         }
-        
       ],
     };
   },

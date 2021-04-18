@@ -19,7 +19,7 @@ const router = new VueRouter({
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: "",
+                    path: "/",
                     name: "Home",
                     component: Home
                 },
@@ -44,10 +44,15 @@ const router = new VueRouter({
                     component: view("Expense")
                 },
                 {
-                    path: "expense-details",
-                    name: "ExpenseDetails",
-                    component: view("ExpenseDetails")
+                    path: "invoice-details",
+                    name: "InvoiceDetails",
+                    component: view("Invoice")
                 }
+                // {
+                //     path: "expense-details",
+                //     name: "ExpenseDetails",
+                //     component: view("ExpenseDetails")
+                // }
             ]
         },
         {
@@ -58,18 +63,18 @@ const router = new VueRouter({
     ]
 });
 
-// router.beforeEach(async (to, _, next) => {
-//   let isAuth = store.getters['AUTH/$isAuth'];
-//   if (to.matched.some(record => record.meta.requiresAuth)) {
-//     if (!isAuth) return next({
-//       path: '/login', query: { redirect: to.fullPath }
-//     })
-//     return next()
-//   }
-//   else if (to.path === '/login' && isAuth) {
-//     return next({ path: '/' })
-//   }
-//   return next()
-// })
+router.beforeEach(async (to, _, next) => {
+  let isAuth = store.getters['AUTH/$isAuth'];
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isAuth) return next({
+      path: '/login', query: { redirect: to.fullPath }
+    })
+    return next()
+  }
+  else if (to.path === '/login' && isAuth) {
+    return next({ path: '/' })
+  }
+  return next()
+})
 
 export default router

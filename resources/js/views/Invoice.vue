@@ -1,10 +1,10 @@
 <template>
   <div class="ml-3">
-    <v-dialog v-model="cmDialog" width="60%">
+    <v-dialog v-model="cmDialog" width="40%">
       <v-card>
         <v-card-text>
-          <v-card-title> Create company </v-card-title>
-          <IncomeForm :isUpdate='update.dialog' :data='update.data' />
+          <v-card-title> Create invoice </v-card-title>
+          <InvoiceForm :isUpdate='update.dialog' :data='update.data' />
         </v-card-text>
         <v-card-actions>
           <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
@@ -13,7 +13,7 @@
     </v-dialog>
     <v-card>
       <v-card-title>
-        Company
+        Invoice
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -58,13 +58,13 @@
 </template>
 
 <script>
-import IncomeForm from "@/components/forms/IncomeForm.vue";
+import InvoiceForm from "@/components/forms/InvoiceForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin"
 export default {
   mixins:[crudMixin],
   components:{
-    IncomeForm, fabCreateButton,
+    InvoiceForm, fabCreateButton,
   },
   data(){
     return{
@@ -72,13 +72,17 @@ export default {
       search:'',
        headers: [
           {
-            text: 'Name',
+            text: 'Client',
             align: 'start',
             sortable: false,
-            value: 'name',
+            value: 'client',
           },
-          { text: 'Address', value: 'address',sortable: false },
-          { text: 'Actions', value: 'actions', sortable: false }
+          { text: 'Compnay', value: 'company_id',sortable: false },
+          { text: 'Type', value: 'sending_type', sortable: false },
+          { text: 'Date', value: 'sending_date',sortable: false },
+          { text: 'Recurring period', value: 'recurring_period', sortable: false },
+          { text: 'Created by', value: 'created_by', sortable: false }
+          
         
         ],
         desserts: [

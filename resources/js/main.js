@@ -28,13 +28,15 @@ const {
   userId,
   accessToken
 } = cookies.get('isAuth', 'userId', 'accessToken')
-store.commit('AUTH/SET', {
-  isAuth:true,
-  accessToken:'aweaweklajwekl',
-  user: userId ? {
-    id: userId
-  } : 1
-})
+store.commit("AUTH/SET", {
+    isAuth,
+    accessToken,
+    user: userId
+        ? {
+              id: userId
+          }
+        : 1
+});
 
 // Disabling production tips
 Vue.config.productionTip = false

@@ -66,7 +66,6 @@ export default {
                email:'',
                password:'',
                company_id:'',
-               company_id: '',
                role:''
             }
         };
@@ -79,7 +78,10 @@ export default {
         if (!this.isUpdate) return;
         this.user = {
           name: v.name,
-          address: v.address,
+          email: v.email,
+          password:v.password,
+          company_id:v.company_id,
+          role:v.role
         };
       },
     }

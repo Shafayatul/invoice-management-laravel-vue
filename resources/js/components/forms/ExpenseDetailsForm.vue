@@ -8,9 +8,9 @@
     >
       <v-row>
         <v-col cols="12" md="12" lg="12">
-          <v-text-field
-            v-model="expenses.user_id"
-            label="Name"
+          <v-select
+            v-model="expenses.category_id"
+            label="Category"
             v-bind="fieldOptions"
           />
         </v-col>
