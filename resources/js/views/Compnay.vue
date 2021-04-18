@@ -3,8 +3,8 @@
     <v-dialog v-model="cmDialog" width="60%">
       <v-card>
         <v-card-text>
-          <v-card-title> Create User </v-card-title>
-          <UserForm :isUpdate="update.dialog" :data="update.data" />
+          <v-card-title> Create company </v-card-title>
+          <CompanyForm :isUpdate='update.dialog' :data='update.data' />
         </v-card-text>
         <v-card-actions>
           <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
@@ -40,7 +40,7 @@
 
             <v-list>
               <v-list-item @click="initUpdate(item)" dense link>
-                <v-icon class="mr-2">mdi-pencil</v-icon>
+                <v-icon  class="mr-2">mdi-pencil</v-icon>
                 Edit
               </v-list-item>
               <v-divider></v-divider>
@@ -53,18 +53,18 @@
         </template>
       </v-data-table>
     </v-card>
-    <fabCreateButton @click="initCreate()" />
+    <fabCreateButton @click="initCreate()"/>
   </div>
 </template>
 
 <script>
-import UserForm from "@/components/forms/UserForm.vue";
+import CompanyForm from "@/components/forms/CompanyForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin"
 export default {
   mixins:[crudMixin],
   components:{
-    UserForm, fabCreateButton,
+    CompanyForm, fabCreateButton,
   },
   data(){
     return{
@@ -77,19 +77,14 @@ export default {
             sortable: false,
             value: 'name',
           },
-          { text: 'Email', value: 'email',sortable: false },
-          { text: 'Role', value: 'role',sortable: false },
-          { text: 'Company', value: 'company',sortable: false },
+          { text: 'Address', value: 'address',sortable: false },
           { text: 'Actions', value: 'actions', sortable: false }
         
         ],
         desserts: [
         {
           name: 'Lorem Ipsum',
-          email: 'lorem@gmail.com',
-          role:'lorem',
-          company:'ABCD',
-
+          address: 'lorem ipsum dolor sit',
         },
         ]
     }
