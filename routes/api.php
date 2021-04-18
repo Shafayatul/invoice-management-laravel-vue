@@ -24,7 +24,7 @@ Route::group(['prefix' => 'v1'],function () {
         return response()->json(['error' => 'Unauthorised'], 401);
     })->name('api.unauthorized');
     Route::post('register', [ApiAuthController::class, 'register'])->name('api.register');
-    Route::post('login', [ApiAuthController::class, 'login']); //->name('api.login');
+    Route::post('login', [ApiAuthController::class, 'login'])->name('api.login');
     
     Route::middleware('auth:api')->group(function () {
         
