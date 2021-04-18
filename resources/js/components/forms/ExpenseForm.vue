@@ -1,83 +1,146 @@
 <template>
-  <div class="ml-4">
-    <v-form
-      lazy-validation
-      v-model="isValid"
-      ref="ExpenseForm"
-      @submit.prevent="onSubmit"
-    >
-      <v-row>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-            v-model="expenses.user_id"
-            label="Name"
-            v-bind="fieldOptions"
-          />
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <!-- <v-text-field
-            v-model="expenses.email"
-            v-bind="fieldOptions"
-            label="Email"
-          ></v-text-field> -->
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-            v-model="expenses.type"
-            v-bind="fieldOptions"
-            label="Password"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-select
-            v-model="expenses.amount"
-            v-bind="fieldOptions"
-            label="Company"
-          ></v-select>
-        </v-col>
-      </v-row>
-    </v-form>
-  </div>
+  <v-card class="mt-2">
+    <v-card-title>Create Expense</v-card-title>
+    <v-card-text>
+      <v-card 
+        class="mb-2"
+        v-for="(expense, index) in expenses"
+        :key="index"
+        outlined
+      >
+        <!-- <v-card-title>Create Expense</v-card-title> -->
+        <v-card-text>
+          <v-form
+            lazy-validation
+            v-model="isValid"
+            ref="ExpenseForm"
+            @submit.prevent="onSubmit"
+          >
+            <v-row>
+              <v-col cols="12" sm="6" md="3">
+                <v-text-field
+                  v-model="expense.type"
+                  label="Type"
+                  v-bind="fieldOptions"
+                />
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <v-menu
+                  :ref="'menu-' + index"
+                  v-model="expense.menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="expense.date"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="expense.date"
+                      dense
+                      outlined
+                      hide-details="auto"
+                      label="Picker in menu"
+                      prepend-innder-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="expense.date" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="expense.menu = false">
+                      Cancel
+                    </v-btn>
+                    <!-- $refs['menu-'+index][0].$el -->
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs['menu-' + index][0].save(expense.date)"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <v-text-field
+                  v-model="expenses.amount"
+                  v-bind="fieldOptions"
+                  label="Amount"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <div class="d-flex">
+                  <v-file-input
+                    v-model="expenses.billFile"
+                    v-bind="fieldOptions"
+                    label="Bills file"
+                  ></v-file-input>
+                  <v-btn @click="expenses.splice(index, 1)" class="ma-1" icon>
+                    <v-icon color="red">mdi-delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-card-text>
+    <v-card-actions class="mb-1">
+      <v-btn class="ml-2"  @click="onAddMoreExpense" color="primary">
+        <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-
 import formFieldMixin from "@/mixins/formFieldMixin";
+const newExpenseItem = ()=> ({
+                type: "",
+                amount: "",
+                billFile: "",
+                role: "",
+                date: new Date().toISOString().substr(0, 10),
+                menu:false
+            })
 export default {
-    name: "expensesForm",
+    name: "ExpensesForm",
     mixins: [formFieldMixin],
-    props:{
-        isUpdate:Boolean,
-        data:Object
+    props: {
+        isUpdate: Boolean,
+        data: Object
+    },
+    mounted(){
+       console.log(this.$refs);
     },
 
     data() {
         return {
             isValid: false,
-            expenses:{
-               category_id: '',
-               date:'',
-               type:'',
-               amount:'',
-               billFile: '',
-               role
-            }
+            expenses: [newExpenseItem()],
+            date: new Date().toISOString().substr(0, 10),
+            menu: false,
         };
+    },
+    methods:{
+      onAddMoreExpense(){
+        this.expenses.push(newExpenseItem())
+      }
     },
     watch: {
-        data:{
-      deep: true,
-      immediate: true,
-      handler(v) {
-        if (!this.isUpdate) return;
-        this.expenses = {
-          name: v.name,
-          address: v.address,
-        };
-      },
+        data: {
+            deep: true,
+            immediate: true,
+            handler(v) {
+                if (!this.isUpdate) return;
+                this.expenses = {
+                    name: v.name,
+                    address: v.address
+                };
+            }
+        }
     }
-    },
-    
 };
 </script>
-
