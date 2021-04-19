@@ -1,19 +1,24 @@
 <template>
   <div class="ml-3">
-    <v-dialog v-model="cmDialog" width="40%">
+    <v-dialog
+      v-model="cmDialog"
+      @input="onInputUserDialog"
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+    >
       <v-card>
         <v-card-text>
-          <v-card-title> Create User </v-card-title>
-          <UserForm :isUpdate="update.dialog" :data="update.data" />
+          <UserForm
+            v-if="cmDialog"
+            :isUpdate="update.dialog"
+            :data="update.data"
+          />
         </v-card-text>
-        <v-card-actions>
-          <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
-        </v-card-actions>
+    
       </v-card>
     </v-dialog>
     <v-card>
       <v-card-title>
-        Company
+        Users
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -62,6 +67,7 @@ import UserForm from "@/components/forms/UserForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin"
 export default {
+  name:'Users',
   mixins:[crudMixin],
   components:{
     UserForm, fabCreateButton,
@@ -97,6 +103,12 @@ export default {
   methods:{
     click(){
       this.dialog=true;
+    },
+    onInputUserDialog(dialog){
+      if(!dialog){
+        this.resetUpdate()
+        this.resetCreate()
+      }
     }
   }
 }

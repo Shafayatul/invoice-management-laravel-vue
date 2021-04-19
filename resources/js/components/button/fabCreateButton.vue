@@ -6,7 +6,6 @@
 		dark
 		bottom
 		color="primary"
-		class="d-none d-sm-flex"
 		@click="$emit('click')"
 	>
 		<v-icon>mdi-plus</v-icon>

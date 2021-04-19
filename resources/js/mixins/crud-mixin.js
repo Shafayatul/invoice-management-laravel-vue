@@ -33,6 +33,7 @@ export default {
             set(v) {
                 if (this.create.dialog) this.create.dialog = v;
                 if (this.update.dialog) this.update.dialog = v;
+                
             }
         }
     },

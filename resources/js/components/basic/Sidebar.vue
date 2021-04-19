@@ -10,11 +10,11 @@
     color="#393A3D"
     dark
   >
-    <v-list v-if="user">
+    <v-list v-if="user.name">
       <v-list-item two-line :class="`${$drawer ? 'px-4' : 'px-2'}`">
         <v-list-item-avatar>
           <v-avatar  size="38" color="white" class="black--text">
-            {{ user.name && user.name[0] }}
+            {{  user.name.charAt(0) }}
           </v-avatar>
         </v-list-item-avatar>
         <v-list-item-content>

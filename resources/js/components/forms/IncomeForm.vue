@@ -1,97 +1,108 @@
 <template>
-    <div class="ml-4">
-        <v-form
-            lazy-validation
-            v-model="isValid"
-            ref="IncomeForm"
-            @submit.prevent="onSubmit"
-        >
-            <v-row>
-                <v-col cols="12" md="12" lg="12">
-                    <v-select
-                        v-model="expenses.category_id"
-                        label="Category"
-                        v-bind="fieldOptions"
-                    />
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-text-field
-                        v-model="expenses.client_id"
-                        v-bind="fieldOptions"
-                        label="Client"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-text-field
-                        v-model="expenses.invoice_id"
-                        v-bind="fieldOptions"
-                        label="Invoice ID"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-text-field
-                        v-model="expenses.company"
-                        v-bind="fieldOptions"
-                        label="Company"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <!-- <input @change="onFilePicked" ref="fileInput" type="file" style="display:none"> -->
-                    <v-file-input
-                        v-model="expenses.bills_file"
-                        v-bind="fieldOptions"
-                        label="Bills File"
-                    ></v-file-input>
-                    <!-- <v-btn @click="$refs.fileInput.click()">Click me</v-btn>
+  <div >
+    <v-card-title>
+      <span class="mx-auto"
+        >{{ isUpdate ? "Edit Invoice" : "Create Invoice" }}
+      </span>
+    </v-card-title>
+    <v-form
+      lazy-validation
+      v-model="isValid"
+      ref="IncomeForm"
+      @submit.prevent="handleIncome"
+    >
+      <v-row>
+        <v-col cols="12" md="12" lg="12">
+          <v-select
+            v-model="expenses.category_id"
+            :rules="[rules.required('Category')]"
+            label="Category"
+            v-bind="fieldOptions"
+          />
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            v-model="expenses.client_id"
+            :rules="[rules.required('Client')]"
+            v-bind="fieldOptions"
+            label="Client"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+           :rules="[rules.required('Invoice ID')]"
+            v-model="expenses.invoice_id"
+            v-bind="fieldOptions"
+            label="Invoice ID"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+           :rules="[rules.required('Company')]"
+            v-model="expenses.company"
+            v-bind="fieldOptions"
+            label="Company"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <!-- <input @change="onFilePicked" ref="fileInput" type="file" style="display:none"> -->
+          <v-file-input
+           :rules="[rules.required('Bills File')]"
+            v-model="expenses.bills_file"
+            v-bind="fieldOptions"
+            label="Bills File"
+          ></v-file-input>
+          <!-- <v-btn @click="$refs.fileInput.click()">Click me</v-btn>
           <v-btn @click="$refs.fileInput[0].$el.click()">Click me</v-btn> -->
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-menu
-                        ref="menu"
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :return-value.sync="date"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                    >
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                                v-model="date"
-                                outlined 
-                                label="Expense Date"
-                                dense
-                                prepend-innder-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                            ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="date" no-title scrollable>
-                            <v-spacer></v-spacer>
-                            <v-btn text color="primary" @click="menu = false">
-                                Cancel
-                            </v-btn>
-                            <v-btn
-                                text
-                                color="primary"
-                                @click="$refs.menu.save(date)"
-                            >
-                                OK
-                            </v-btn>
-                        </v-date-picker>
-                    </v-menu>
-                </v-col>
-            </v-row>
-        </v-form>
-    </div>
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :return-value.sync="date"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                :rules="[rules.required('Company')]"
+                outlined
+                label="Expense Date"
+                dense
+                prepend-innder-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title scrollable>
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
+              <v-btn text color="primary" @click="$refs.menu.save(date)">
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-menu>
+        </v-col>
+      </v-row>
+    </v-form>
+    <v-btn block @click="handleInvoice" class="my-3" color="primary">
+      ADD
+    </v-btn>
+  </div>
 </template>
 
 <script>
 import formFieldMixin from "@/mixins/formFieldMixin";
+import { createFormMixin } from "@/mixins/form-mixin";
 export default {
     name: "expensesForm",
-    mixins: [formFieldMixin],
+    mixins: [formFieldMixin,createFormMixin({
+      rules: ["required", "email", "password"],
+    })],
     props: {
         isUpdate: Boolean,
         data: Object
@@ -135,6 +146,10 @@ export default {
         onFilePicked(event) {
             console.log("onFilePicked", event);
             // this.some
+        },
+        handleInvoice(){
+            this.$refs.IncomeForm.validate();
+            if (!this.isValid) return
         }
     }
 };

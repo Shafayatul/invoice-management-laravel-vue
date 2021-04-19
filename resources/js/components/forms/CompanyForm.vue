@@ -1,37 +1,51 @@
 <template>
-  <div class="ml-4">
+  <div >
+    <v-card-title>
+     <span class="mx-auto"
+        >{{ isUpdate ? "Edit Company" : "Create Company" }}
+      </span>
+        </v-card-title>
     <v-form
       lazy-validation
       v-model="isValid"
-      ref="employeeForm"
-      @submit.prevent="onSubmit"
+      ref="CompanyForm"
+      @submit.prevent="handleCompany"
     >
       <v-row>
         <v-col cols="12" md="12" lg="12">
           <v-text-field
             v-model="company.name"
-            label="Name"
+            :rules="[rules.required('Company Name')]"
+            label="Company Name"
             v-bind="fieldOptions"
           />
         </v-col>
         <v-col cols="12" md="12" lg="12">
           <v-textarea
             v-model="company.address"
+            :rules="[rules.required('Address')]"
             v-bind="fieldOptions"
             label="Address"
           ></v-textarea>
         </v-col>
       </v-row>
     </v-form>
+    
+      <v-btn block class="my-3" color="primary" @click="handleCompany"  >
+        ADD
+      </v-btn>
   </div>
 </template>
 
 <script>
 
 import formFieldMixin from "@/mixins/formFieldMixin";
+import { createFormMixin } from "@/mixins/form-mixin";
 export default {
     name: "CompanyForm",
-    mixins: [formFieldMixin],
+    mixins: [formFieldMixin,createFormMixin({
+      rules: ["required"],
+    })],
     props:{
         isUpdate:Boolean,
         data:Object
@@ -55,10 +69,19 @@ export default {
         this.company = {
           name: v.name,
           address: v.address,
+          company_id:v.id
         };
       },
     }
     },
+    methods:{
+      handleCompany(){
+        this.$refs.CompanyForm.validate();
+        if (!this.isValid) return;
+        this.isUpdate? this.$emit("editCompany", this.company) : this.$emit("addCompany", this.company)
+        
+      }
+    }
     
 };
 </script>

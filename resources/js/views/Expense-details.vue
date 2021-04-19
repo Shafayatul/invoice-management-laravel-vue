@@ -1,10 +1,13 @@
 <template>
   <div class="ml-3">
-    <v-dialog v-model="cmDialog" width="60%">
+    <v-dialog
+      v-model="cmDialog"
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+    >
       <v-card>
         <v-card-text>
           <v-card-title> Create company </v-card-title>
-          <ExpenseDetailsForm :isUpdate='update.dialog' :data='update.data' />
+          <ExpenseDetailsForm :isUpdate="update.dialog" :data="update.data" />
         </v-card-text>
         <v-card-actions>
           <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
@@ -40,7 +43,7 @@
 
             <v-list>
               <v-list-item @click="initUpdate(item)" dense link>
-                <v-icon  class="mr-2">mdi-pencil</v-icon>
+                <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
               </v-list-item>
               <v-divider></v-divider>
@@ -53,7 +56,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <fabCreateButton @click="initCreate()"/>
+    <fabCreateButton @click="initCreate()" />
   </div>
 </template>
 

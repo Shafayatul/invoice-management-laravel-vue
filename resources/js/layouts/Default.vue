@@ -50,11 +50,12 @@
             <v-avatar
               size="32"
               v-on="on"
-              color="primary"
+            
               v-bind="attrs"
               class="white--text"
-            >
-              A
+            > 
+            <v-icon size="30" >mdi-account-circle</v-icon>
+              <!-- {{$user.name.charAt(0)}} -->
             </v-avatar>
           </template>
           <v-card width="300">
@@ -200,15 +201,11 @@ export default {
     ...mapActions("AUTH", ["logout", "fetchProfile"]),
     ...mapActions(["toggleDrawer", "toggleLoading", "toggleTheme"]),
     async onCreated() {
-      // this.isLoaded = false;
-      // this.toggleLoading(true);
-      // await this.fetchProfile();
-      // if (!this.$isAuth) {
-      //   await this.fetchRooms();
-      //   await this.fetchMeetings({ date: formatDate() });
-      // }
-      // this.isLoaded = true;
-      // this.toggleLoading(false);
+      this.isLoaded = false;
+      this.toggleLoading(true);
+      await this.fetchProfile();
+      this.isLoaded = true;
+      this.toggleLoading(false);
     },
     async handleLogout() {
       this.SET({ loading: true });
@@ -235,7 +232,7 @@ export default {
   }
   .sidebar {
     &__nav-list {
-      height: calc(100vh - 96px);
+      height: calc(100vh - 100px);
     }
   }
 }
