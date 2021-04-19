@@ -87,12 +87,12 @@ class UserController extends Controller {
     public function update(Request $request){
         $validation = Validator::make($request->all(), [
             'name'       => 'required|string',
-            'phone'        => 'required|string',
-            'email'       => 'required|unique:users,email,'.$request->user_id,
-            'password'     => 'bail|confirmed|min:8|max:6',
-            'role'     => 'required|string|max:10',
-            'user_id'       => 'required|exists:users,id',
-            'company_id'       => 'required|exists:companies,id',
+            'phone'      => 'required|string',
+            'email'      => 'required|unique:users,email,'.$request->user_id,
+            'password'   => 'bail|confirmed|min:8|max:6',
+            'role'       => 'required|string|max:10',
+            'user_id'    => 'required|exists:users,id',
+            'company_id' => 'required|exists:companies,id',
         ]);
         if($validation->fails())
             return response()->json(['errors' => $validation->errors()], 422);
@@ -172,5 +172,72 @@ class UserController extends Controller {
                 'success' => false,
                 'message' => 'User not added'
             ], 500);
+    }
+
+    public function AssignCompany(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'user_id'    => 'required|exists:users,id',
+            'company_id' => 'required|exists:companies,id',
+        ]);
+        if($validation->fails())
+            return response()->json(['errors' => $validation->errors()], 422);
+        
+        $user = User::find($request->user_id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $updated = $user->fill($request->all())->save();
+
+        if ($updated)
+            return response()->json([
+                'success' => true
+            ], 200);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'User can not be updated'
+            ], 500);
+    }
+
+    public function UpdatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ 
+            'old_password'      => ['required', 'string', 'min:8'],
+            'new_password'      => ['required', 'string', 'min:8'],
+            'confirm_password'  => ['required', 'string', 'min:8'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json([ 'error'=> $validator->errors() ]);
+        }
+
+        $old_password       = $request->old_password;
+        $new_password       = $request->new_password;
+        $confirm_password   = $request->confirm_password;
+        
+        
+        if($new_password == $confirm_password){
+            $current_password = Auth::user()->password;
+            if(Hash::check($old_password, $current_password))
+            {
+                $id             = Auth::user()->id;
+                $user           = User::findOrFail($id);
+                $user->password = Hash::make($new_password);
+                $user->save(); 
+                return response()->json(['status'=>'Passowrd Updated!', 'code' => 201], 201);
+            }else{
+                return response()->json([
+                    'status' => 'Password Not Correct!',
+                ], 404);
+            }
+        }else{
+            return response()->json([
+                'status' => 'New Password and Confirm password not matching!',
+            ], 404);
+        }
     }
 }
