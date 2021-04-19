@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +26,21 @@ Route::group(['prefix' => 'v1'],function () {
     })->name('api.unauthorized');
     Route::post('register', [ApiAuthController::class, 'register'])->name('api.register');
     Route::post('login', [ApiAuthController::class, 'login'])->name('api.login');
+
+    Route::group([
+        'prefix' => 'password'
+      ], function () {
+        Route::post('forgot', [PasswordResetController::class, 'forgot']);
+        Route::get('check', [PasswordResetController::class, 'check']);
+        Route::post('reset', [PasswordResetController::class, 'reset']);
+    });
     
     Route::middleware('auth:api')->group(function () {
         
         Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
         Route::get('logout', [ApiAuthController::class, 'logout'])->name('api.logout');
         Route::resource('posts', ExpenseController::class);
+        Route::post('update-password', [UserController::class, 'UpdatePassword']);
 
         Route::group(['prefix' => 'company'],function () {
             Route::get('index', [CompanyController::class, 'index']);
@@ -47,6 +57,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::post('update', [UserController::class, 'update']);
             Route::get('destroy', [UserController::class, 'destroy']);
             Route::get('block-or-unblock/{id}', [UserController::class, 'BlockOrUnblockUser']);
+            Route::post('assign-company', [UserController::class, 'AssignCompany']);
         });
 
         Route::group(['prefix' => 'invoice'],function () {
