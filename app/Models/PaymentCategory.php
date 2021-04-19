@@ -12,7 +12,7 @@ class PaymentCategory extends Model
 {
     use HasFactory, SoftDeletes;
         
-    protected $table = 'expenses';
+    protected $table = 'payment_categories';
 
     protected $fillable = ['name', 'type', 'details', 'deleted_at'];
     
