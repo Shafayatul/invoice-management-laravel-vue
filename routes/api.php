@@ -9,6 +9,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PaymentCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,14 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [InvoiceController::class, 'show']);
             Route::post('update', [InvoiceController::class, 'update']);
             Route::get('destroy', [InvoiceController::class, 'destroy']);
+        });
+
+        Route::group(['prefix' => 'payment-category'],function () {
+            Route::get('index', [PaymentCategoryController::class, 'index']);
+            Route::post('store', [PaymentCategoryController::class, 'store']);
+            Route::get('show', [PaymentCategoryController::class, 'show']);
+            Route::post('update', [PaymentCategoryController::class, 'update']);
+            Route::get('destroy', [PaymentCategoryController::class, 'destroy']);
         });
     });
 });
