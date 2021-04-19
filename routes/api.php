@@ -46,6 +46,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [UserController::class, 'show']);
             Route::post('update', [UserController::class, 'update']);
             Route::get('destroy', [UserController::class, 'destroy']);
+            Route::get('block-or-unblock/{id}', [UserController::class, 'BlockOrUnblockUser']);
         });
 
         Route::group(['prefix' => 'invoice'],function () {
