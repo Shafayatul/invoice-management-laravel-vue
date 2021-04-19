@@ -149,4 +149,28 @@ class UserController extends Controller {
             'data' => $user->toArray()
         ], 200);
     }
+
+    public function BlockOrUnblockUser($id)
+    {
+        $user = User::find($id);
+        if(!$user)
+            return response()->json(['success' => false,'message' => 'User not found'], 404);
+        
+        if($user->is_active == 1){
+            $user->is_active = false;
+        }else{
+            $user->is_active = true;
+        }
+
+        if($user->save())
+            return response()->json([
+                'success' => true,
+                'data' => $user->toArray()
+            ], 201);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'User not added'
+            ], 500);
+    }
 }
