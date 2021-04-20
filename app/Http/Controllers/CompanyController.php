@@ -126,7 +126,7 @@ class CompanyController extends Controller {
 
     public function CompanyData()
     {
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::select('name', 'id')->get()->toArray();
         return response()->json([
             'companies' => $companies,
             'status'    => 'success',

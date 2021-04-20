@@ -40,7 +40,7 @@ Route::group(['prefix' => 'v1'],function () {
         
         Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
         Route::get('logout', [ApiAuthController::class, 'logout'])->name('api.logout');
-        Route::resource('posts', ExpenseController::class);
+        // Route::resource('posts', ExpenseController::class);
         Route::post('update-password', [UserController::class, 'UpdatePassword']);
 
         Route::group(['prefix' => 'company'],function () {
@@ -76,6 +76,14 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [PaymentCategoryController::class, 'show']);
             Route::post('update', [PaymentCategoryController::class, 'update']);
             Route::get('destroy', [PaymentCategoryController::class, 'destroy']);
+        });
+
+        Route::group(['prefix' => 'expense'], function () {
+            Route::get('index', [ExpenseController::class, 'index']);
+            Route::post('store', [ExpenseController::class, 'store']);
+            Route::get('show', [ExpenseController::class, 'show']);
+            Route::post('update', [ExpenseController::class, 'update']);
+            Route::get('destroy', [ExpenseController::class, 'destroy']);
         });
     });
 });
