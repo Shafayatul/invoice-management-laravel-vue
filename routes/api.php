@@ -49,6 +49,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [CompanyController::class, 'show']);
             Route::post('update', [CompanyController::class, 'update']);
             Route::get('destroy', [CompanyController::class, 'destroy']);
+            Route::get('company-data', [CompanyController::class, 'CompanyData']);
         });
 
         Route::group(['prefix' => 'user'],function () {

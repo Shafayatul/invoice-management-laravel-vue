@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 class CompanyController extends Controller {
     
     protected $data_per_page = 10;
@@ -40,10 +41,13 @@ class CompanyController extends Controller {
     }
 
     public function store(Request $request) {
-        $this->validate($request, [
-            'name' => 'required',
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|unique:companies,name',
             'address' => 'required'
         ]);
+
+        if($validate->fails())
+            return response()->json(['error' => $validate->errors()], 422);
  
         $company = new Company();
         $company->name = $request->name;
@@ -63,10 +67,15 @@ class CompanyController extends Controller {
     }
 
     public function update(Request $request){
-        $this->validate($request, [
-            'name' => 'required',
-            'address' => 'required'
+        $validate = Validator::make($request->all(), [
+            'name'       => 'required|unique:companies,name,'.$request->company_id,
+            'address'    => 'required',
+            'company_id' => 'required|exists:companies,id',
         ]);
+
+        if($validate->fails())
+            return response()->json(['error' => $validate->errors()], 422);
+
         $company = Company::find($request->company_id);
  
         if (!$company) {
@@ -113,5 +122,15 @@ class CompanyController extends Controller {
                 'message' => 'Company can not be deleted'
             ], 500);
         }
+    }
+
+    public function CompanyData()
+    {
+        $companies = Company::pluck('name', 'id');
+        return response()->json([
+            'companies' => $companies,
+            'status'    => 'success',
+            'code'      => 200
+        ], 200);
     }
 }
