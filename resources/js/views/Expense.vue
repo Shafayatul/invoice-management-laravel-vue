@@ -5,7 +5,7 @@
       hide-overlay
       transition="dialog-bottom-transition"
       v-model="cmDialog"
-    > 
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="cmDialog = false">
@@ -19,7 +19,11 @@
         </v-toolbar>
         <v-card-text>
           <!-- <v-card-title> Create Expense </v-card-title> -->
-          <ExpenseForm v-if="cmDialog" :isUpdate="update.dialog" :data="update.data" />
+          <ExpenseForm
+            v-if="cmDialog"
+            :isUpdate="update.dialog"
+            :data="update.data"
+          />
         </v-card-text>
         <!-- <v-card-actions>
           <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
@@ -32,7 +36,9 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
-          append-icon="mdi-magnify"
+          outlined
+          dense
+          prepend-inner-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details

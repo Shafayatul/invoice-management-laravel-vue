@@ -63,6 +63,18 @@ export default {
         },
         resetCreate() {
             this.create = initialCreateUpdate();
+        },
+        enableSnackbar(type,msg) {
+            if (type === 'success') {
+                this.snackbar.text = msg;
+                this.snackbar.color = "success";
+                this.snackbar.action = true;
+            }
+            else {
+                this.snackbar.text = `An error occured when creating ${item}`;
+                this.snackbar.color = "error";
+                this.snackbar.action = true;
+            }
         }
     }
 };

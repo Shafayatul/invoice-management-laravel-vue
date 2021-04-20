@@ -18,7 +18,7 @@ export default {
 	name: 'CircleLoader',
 	props: {
 		mxAuto: Boolean,
-    center:Boolean,
+    		center:Boolean,
 		speed: {
 			default: 2,
 			type: [String, Number]

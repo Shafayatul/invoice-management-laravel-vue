@@ -1,5 +1,5 @@
 <template>
-  <v-app  app class="default-layout">
+  <v-app app class="default-layout">
     <Sidebar
       :user="$user"
       class="sidebar"
@@ -47,14 +47,8 @@
           transition="slide-y-transition"
         >
           <template v-slot:activator="{ attrs, on }">
-            <v-avatar
-              size="32"
-              v-on="on"
-            
-              v-bind="attrs"
-              class="white--text"
-            > 
-            <v-icon size="30" >mdi-account-circle</v-icon>
+            <v-avatar size="32" v-on="on" v-bind="attrs" class="white--text">
+              <v-icon size="30">mdi-account-circle</v-icon>
               <!-- {{$user.name.charAt(0)}} -->
             </v-avatar>
           </template>
@@ -84,6 +78,12 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
+              <v-list-item to='/change-password'>
+                <v-list-item-icon>
+                  <v-icon>mdi-lock-reset</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title v-text="'Change Password'" />
+              </v-list-item>
             </v-list>
           </v-card>
         </v-menu>

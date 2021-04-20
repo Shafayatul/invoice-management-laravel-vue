@@ -1,6 +1,6 @@
 <template>
-  <v-app class="login no-auth mx-auto">
-    <div class="login__card overflow-visible mx-auto">
+  <v-app class="login no-auth">
+    <div class="login__card overflow-visible mx-auto my-auto">
       <v-card  :loading="loading" :disabled="loading" >
         <div class="px-3 px-md-8 py-12">
           <v-card-title class="title login__title flex-column"

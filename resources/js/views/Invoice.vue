@@ -1,9 +1,13 @@
 <template>
   <div class="ml-3">
-    <v-dialog @input="onInputCompanyDialog" v-model="cmDialog" :width="this.$vuetify.breakpoint.mdAndUp? '30vw' :'80vw'">
+    <v-dialog
+      @input="onInputCompanyDialog"
+      v-model="cmDialog"
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+    >
       <v-card>
         <v-card-text>
-          <InvoiceForm :isUpdate='update.dialog' :data='update.data' />
+          <InvoiceForm :isUpdate="update.dialog" :data="update.data" />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -13,7 +17,9 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
-          append-icon="mdi-magnify"
+          outlined
+          dense
+          prepend-inner-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details
@@ -36,7 +42,7 @@
 
             <v-list>
               <v-list-item @click="initUpdate(item)" dense link>
-                <v-icon  class="mr-2">mdi-pencil</v-icon>
+                <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
               </v-list-item>
               <v-divider></v-divider>
@@ -49,7 +55,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <fabCreateButton @click="initCreate()"/>
+    <fabCreateButton @click="initCreate()" />
   </div>
 </template>
 

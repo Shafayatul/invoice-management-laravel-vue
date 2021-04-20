@@ -1,13 +1,13 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import store from '../store'
-import { view } from '../helpers'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import store from "../store";
+import { view } from "../helpers";
 
 // Components
-import Home from '@/views/Home.vue'
-import DefaultLayout from '@/layouts/Default.vue'
+import Home from "@/views/Home.vue";
+import DefaultLayout from "@/layouts/Default.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
     mode: "history",
@@ -59,22 +59,43 @@ const router = new VueRouter({
             path: "/login",
             name: "Login",
             component: view("Login")
+        },
+        {
+            path: "/forgot-password",
+            name: "ForgotPassword",
+            component: view("ForgotPassword")
+        },
+        {
+            path: "/reset-password",
+            name: "ResetPassword",
+            component: view("ResetPassword")
+        },
+        {
+            path: "/change-password",
+            name: "ChangePassword",
+            component: view("ChangePassword")
+        },
+        {
+            path: "*",
+            name: "NotFound",
+            component: view("NotFound")
         }
     ]
 });
 
 router.beforeEach(async (to, _, next) => {
-  let isAuth = store.getters['AUTH/$isAuth'];
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!isAuth) return next({
-      path: '/login', query: { redirect: to.fullPath }
-    })
-    return next()
-  }
-  else if (to.path === '/login' && isAuth) {
-    return next({ path: '/' })
-  }
-  return next()
-})
+    let isAuth = store.getters["AUTH/$isAuth"];
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!isAuth)
+            return next({
+                path: "/login",
+                query: { redirect: to.fullPath }
+            });
+        return next();
+    } else if (to.path === "/login" && isAuth) {
+        return next({ path: "/" });
+    }
+    return next();
+});
 
-export default router
+export default router;
