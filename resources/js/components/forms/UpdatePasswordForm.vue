@@ -1,17 +1,21 @@
 <template>
   <v-form
-    ref="loginForm"
+    ref="updatePassword"
     v-model="isValid"
     :disabled="loading"
     @submit.prevent="resetPassword"
   >
-    <!-- <v-text-field
-      label="Email Address"
-      v-bind="fieldOptions"
-      :rules="rules.email"
-      v-model="user.email"
-      prepend-inner-icon="mdi-email"
-    /> -->
+    <v-text-field
+      :rules="[rules.required('Password'), rules.password]"
+      :type="password.show ? 'text' : 'password'"
+      :append-icon="password.show ? 'mdi-eye' : 'mdi-eye-off'"
+      prepend-inner-icon="mdi-lock"
+      @click:append="password.show = !password.show"
+      dense
+      outlined
+      label="Old Passowrd"
+      v-model="user.old_password"
+    />
 
     <v-text-field
       :rules="[rules.required('Password'), rules.password]"
@@ -22,7 +26,7 @@
       dense
       outlined
       label="Passowrd"
-      v-model="user.password"
+      v-model="user.new_password"
     />
 
     <v-text-field
@@ -32,8 +36,8 @@
       dense
       outlined
       @click:append="password.show = !password.show"
-      v-model="user.password_confirmation"
-      :rules="[(v) => confirmPassword(v, user.password)]"
+      v-model="user.confirm_password"
+      :rules="[(v) => confirmPassword(v, user.new_password),rules.required('Confirm Password')]"
       label="Confirm Password"
     />
 
@@ -73,16 +77,17 @@ export default {
         confirmed: false,
       },
       user: {
-        password: "",
-        password_confirmation: "",
+        old_password: "",
+        new_password: "",
+        confirm_password:""
       },
     };
   },
   methods: {
     resetPassword() {
-      this.$refs.loginForm.validate();
+      this.$refs.updatePassword.validate();
       if (!this.isValid) return;
-      this.$emit("resetPassword", this.user);
+      this.$emit("updatePassword", this.user);
     },
     confirmPassword(cPass, pass) {
       return cPass === pass || "Password not matched";

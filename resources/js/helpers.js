@@ -156,11 +156,10 @@ export const toError = error => {
   let data = { error: true, success: false }
   if (error.response) {
     const res = error.response
-    console.log(res);
     data = {
       ...data,
       statusCode: res.status,
-      statusText: res.statusText || res.data.status,
+      statusText: res.data.status || res.statusText,
     }
     if (res.data.errors) data.errors = snakeToCamel(res.data.errors)
     if (res.message) data.message = res.message

@@ -50,6 +50,26 @@ const actions = {
                 user: res.data
             });
         return res;
+    },
+    forgotPassword: async (__, data) => {
+        let res = await API.auth.forgot(data);
+        if (res.error) return res;
+        return res;
+    },
+    resetPassword: async (__, data) => {
+        let res = await API.auth.reset(data);
+        if (res.error) return res;
+        return res;
+    },
+    checkTokenValidity: async (__, token) => {
+        let res = await API.auth.check({token});
+        if (res.error) return res;
+        return res;
+    },
+    updatePassword: async (__, data) => {
+        let res = await API.auth.update(data);
+        if (res.error) return res;
+        return res;
     }
 };
 

@@ -78,7 +78,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
-              <v-list-item to='/change-password'>
+              <v-list-item to='/update-password'>
                 <v-list-item-icon>
                   <v-icon>mdi-lock-reset</v-icon>
                 </v-list-item-icon>
