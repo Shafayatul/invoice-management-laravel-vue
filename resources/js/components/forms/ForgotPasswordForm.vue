@@ -57,7 +57,6 @@ export default {
       this.$refs.loginForm.validate();
       if (!this.isValid) return;
       this.$emit("ForgotPassword",this.user );
-      localStorage.setItem('pepsi-forgot-password-temp-email',this.user.email )
     },
   },
 };

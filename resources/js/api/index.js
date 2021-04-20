@@ -12,17 +12,21 @@ const api = {
         login: data => h(POST, "/login", data),
         register: data => h(POST, "/register", data),
         logout: () => h(POST, "/logout"),
-        fetchProfile: () => h(GET, "/login-user-info")
+        fetchProfile: () => h(GET, "/login-user-info"),
+        forgot: data => h(POST, "/password/forgot", data),
+        reset: data => h(POST, "/password/reset", data),
+        check: token => h(GET, "/password/check", token),
+        update: data => h(POST, "/update-password", data)
     },
 
     // USERS
     users: {
-        getAll: queries => h(GET, "/users/index", queries),
-        get: id => h(GET, "/users/show/" + id),
-        save: data => h(POST, "/users/create", data),
-        update: data => h(POST, "/users/update", data),
-        delete: id => h(DELETE, "/users/delete/" + id),
-        search: data => h(POST, "/users/search-employee", data)
+        getAll: queries => h(GET, "/user/index", queries),
+        update: (data, id) => h(POST, "/user/update?company_id=" + id, data),
+        delete: id => h(GET, "/user/destroy?company_id=" + id),
+        create: data => h(POST, "/user/store", data)
+        // get: id => h(GET, "/users/show/" + id),
+        // search: data => h(POST, "/users/search-employee", data)
     },
     //Company
     company: {

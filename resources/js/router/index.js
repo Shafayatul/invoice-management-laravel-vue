@@ -66,14 +66,14 @@ const router = new VueRouter({
             component: view("ForgotPassword")
         },
         {
-            path: "/reset-password",
-            name: "ResetPassword",
-            component: view("ResetPassword")
+            path: "/update-password",
+            name: "updatePassword",
+            component: view("UpdatePassword")
         },
         {
-            path: "/change-password",
+            path: "/change-password/:token",
             name: "ChangePassword",
-            component: view("ChangePassword")
+            component: view("ResetPassword")
         },
         {
             path: "*",

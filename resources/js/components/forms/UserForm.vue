@@ -63,7 +63,7 @@ import { createFormMixin } from "@/mixins/form-mixin";
 const initialUser = () => ({
                name: '',
                email:'',
-               password:'',
+               phone:'',
                company_id:'',
                role:''
 })

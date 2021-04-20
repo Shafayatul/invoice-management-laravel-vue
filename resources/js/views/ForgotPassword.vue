@@ -27,7 +27,7 @@
 
 <script>
 import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
-// import { mapActions } from "vuex";
+import { mapActions } from "vuex";
 export default {
   name: "ForgotPassword",
   components: {
@@ -44,42 +44,27 @@ export default {
       
     };
   },
-//   methods: {
-//     ...mapActions("auth", ["login"]),
-//     async handleLogin(data) {
-//       this.loading = true;
-//       let res = await this.login(data);
-//       if (res.error) {
-//         this.loading = false;
-//         return (this.error = {
-//           dialog: true,
-//           message: "Incorrect email or password.",
-//         });
-//       }
-//       let { redirect } = { ...this.$route.query };
-//       this.$router.push(redirect ? redirect : "/");
-//     },
-//   },
-//  methods:{
-// 	 ...mapActions("auth",["forgotPassword"]),
-//    async handleForgotPassword(data){
-//      this.loading=true;
-//      let res =await this.forgotPassword(data)
-// 		 if (res.error) {
-//        this.loading=false;
-//        return (this.error={
-//          dialog:true,
-//          message:"Invalid Email Address"
-//        })
-//      }
-//      else{
-//        this.isSuccess=true
-//        this.loading=false;
-//        this.error.dialog=true
-//        this.error.message=res.data.message
-//      }
-// 	 }
-//  }
+
+ methods:{
+	 ...mapActions("AUTH",["forgotPassword"]),
+   async handleForgotPassword(data){
+     this.loading=true;
+     let res =await this.forgotPassword(data)
+		 if (res.error) {
+       this.loading=false;
+       return (this.error={
+         dialog:true,
+         message:"Invalid Email Address"
+       })
+     }
+     else{
+       this.isSuccess=true
+       this.loading=false;
+       this.error.dialog=true
+       this.error.message=res.message
+     }
+	 }
+ }
 };
 </script>
 
