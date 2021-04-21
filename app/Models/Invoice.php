@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Income;
+use App\Models\InvoiceHistory;
 class Invoice extends Model
 {
     use HasFactory, SoftDeletes;
@@ -31,5 +32,10 @@ class Invoice extends Model
     
     public function incomes(){
         return $this->hasMany(Income::class, 'invoice_id')->withTrashed();
+    }
+
+    public function invoiceHistory()
+    {
+        return $this->hasOne(InvoiceHistory::class, 'invoice_id')->withTrashed();
     }
 }

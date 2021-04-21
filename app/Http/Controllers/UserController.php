@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class UserController extends Controller {
 
@@ -52,13 +53,14 @@ class UserController extends Controller {
     }
 
     public function store(Request $request) {
+
         $validation = Validator::make($request->all(), [
             'name'       => 'required|string',
-            'phone'        => 'required|string',
-            'email'       => 'required|unique:users,email',
-            'password'     => 'required|confirmed',
-            'role'     => 'required|string|max:10',
-            'company_id'       => 'required|exists:companies,id',
+            'phone'      => 'required|string',
+            'email'      => 'required|unique:users,email',
+            'role'       => 'required|string|max:10',
+            'password'   => 'required_unless:role,client|confirmed|min:8',
+            'company_id' => 'required|exists:companies,id',
         ]);
         if($validation->fails())
             return response()->json(['errors' => $validation->errors()], 422);
@@ -67,7 +69,11 @@ class UserController extends Controller {
         $user->name       = $request->name;
         $user->phone      = $request->phone;
         $user->email      = $request->email;
-        $user->password   = Hash::make($request->password);
+        if($request->role == 'client'){
+            $user->password   = Hash::make(Str::random(8));
+        }else{
+            $user->password   = Hash::make($request->password);
+        }
         $user->role       = $request->role;
         $user->company_id = $request->company_id;
         
@@ -89,8 +95,8 @@ class UserController extends Controller {
             'name'       => 'required|string',
             'phone'      => 'required|string',
             'email'      => 'required|unique:users,email,'.$request->user_id,
-            'password'   => 'bail|confirmed|min:8|max:6',
-            'role'       => 'required|string|max:10',
+            'password'   => 'bail|confirmed|min:8',
+            'role'       => 'required|string',
             'user_id'    => 'required|exists:users,id',
             'company_id' => 'required|exists:companies,id',
         ]);
@@ -106,11 +112,20 @@ class UserController extends Controller {
             ], 404);
         }
 
-        $updated = $user->fill($request->all())->save();
+        $user->name       = $request->name;
+        $user->phone      = $request->phone;
+        $user->email      = $request->email;
+        if($user->role != 'client'){
+            $user->password   = Hash::make($request->password);
+        }
+        $user->role       = $request->role;
+        $user->company_id = $request->company_id;
+        $user->save();
  
-        if ($updated)
+        if ($user->id > 0)
             return response()->json([
-                'success' => true
+                'success' => true,
+                'data' => $user->toArray()
             ], 200);
         else
             return response()->json([
