@@ -43,13 +43,25 @@ const actions = {
         let res = await api.users.create(data);
         if (res.error) return res;
         //    commit("DELETE", { key: id, array: "users" });
-        dispatch("fetchCompany");
+        dispatch("fetchUsers");
         return res;
     },
     updateUsers: async ({ __, dispatch }, data) => {
-        let res = await api.users.update(data, data.company_id);
+        let res = await api.users.update(data, data.user_id);
         if (res.error) return res;
-        dispatch("fetchCompany");
+        dispatch("fetchUsers");
+        return res;
+    },
+    blockUsers: async ({ __, dispatch }, data) => {
+        let res = await api.users.block(data, data.user_id);
+        if (res.error) return res;
+        dispatch("fetchUsers");
+        return res;
+    },
+    reAssignCompany: async ({ __, dispatch }, data) => {
+        let res = await api.users.reAssign(data);
+        if (res.error) return res;
+        dispatch("fetchUsers");
         return res;
     }
 };

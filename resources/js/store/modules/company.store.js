@@ -8,20 +8,22 @@ const initialState = () => ({
         totalPage: 1,
         perPage: 15
     },
-    company: []
+    company: [],
+    companyList:[],
 });
 
 const state = initialState();
 
 const getters = {
     $pagination: s => s.pagination,
-    $company: s => s.company.sort((a, b) => b.createdAt - a.createdAt)
+    $company: s => s.company.sort((a, b) => b.createdAt - a.createdAt),
+    $companyList: s => s.companyList
 };
 
 const actions = {
     fetchCompany: async ({ commit }) => {
-          // let res = await api.company.getAll();
-          // console.log(res);
+        // let res = await api.company.getAll();
+        // console.log(res);
         let { error, ...data } = await api.company.getAll();
         if (error) return { error, ...data };
         commit("SET", {
@@ -37,14 +39,14 @@ const actions = {
     deleteCompany: async ({ __, dispatch }, id) => {
         let res = await api.company.delete(id);
         if (res.error) return res;
-     //    commit("DELETE", { key: id, array: "users" });
+        //    commit("DELETE", { key: id, array: "users" });
         dispatch("fetchCompany");
         return res;
     },
     addCompany: async ({ __, dispatch }, data) => {
         let res = await api.company.create(data);
         if (res.error) return res;
-     //    commit("DELETE", { key: id, array: "users" });
+        //    commit("DELETE", { key: id, array: "users" });
         dispatch("fetchCompany");
         return res;
     },
@@ -53,6 +55,20 @@ const actions = {
         if (res.error) return res;
         dispatch("fetchCompany");
         return res;
+    },
+
+    fetchCompanyList: async ({ commit }) => {
+        let { error, ...data } = await api.company.compnayList();
+        if (error) return { error, ...data };
+        commit("SET", {
+            //   pagination: {
+            //       totalPage: data.users.total,
+            //       perPage: data.users.perPage,
+            //       currentPage: data.users.currentPage
+            //   },
+            companyList: data.companies
+        });
+        return data;
     }
 };
 

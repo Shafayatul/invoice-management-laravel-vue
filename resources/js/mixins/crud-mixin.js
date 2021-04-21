@@ -49,6 +49,9 @@ export default {
         initCreate() {
             this.create.dialog = true;
         },
+        initReassign(data) {
+            
+        },
         initSearch() {
             this.search.dialog = true;
         },
@@ -71,7 +74,7 @@ export default {
                 this.snackbar.action = true;
             }
             else {
-                this.snackbar.text = `An error occured when creating ${item}`;
+                this.snackbar.text = msg;
                 this.snackbar.color = "error";
                 this.snackbar.action = true;
             }
