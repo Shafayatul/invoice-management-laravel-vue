@@ -47,12 +47,12 @@ const router = new VueRouter({
                     path: "invoice-details",
                     name: "InvoiceDetails",
                     component: view("Invoice")
+                },
+                {
+                    path: "payment-category",
+                    name: "paymentCategory",
+                    component: view("PaymmentCategory")
                 }
-                // {
-                //     path: "expense-details",
-                //     name: "ExpenseDetails",
-                //     component: view("ExpenseDetails")
-                // }
             ]
         },
         {

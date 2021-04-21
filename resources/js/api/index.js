@@ -22,9 +22,11 @@ const api = {
     // USERS
     users: {
         getAll: queries => h(GET, "/user/index", queries),
-        update: (data, id) => h(POST, "/user/update?company_id=" + id, data),
-        delete: id => h(GET, "/user/destroy?company_id=" + id),
-        create: data => h(POST, "/user/store", data)
+        update: (data, id) => h(POST, "/user/update?user_id=" + id, data),
+        delete: id => h(GET, "/user/destroy?user_id=" + id),
+        create: data => h(POST, "/user/store", data),
+        block: id => h(GET, "/user/block-or-unblock/" + id),
+        reAssign: data => h(POST, "user/assign-company", data)
         // get: id => h(GET, "/users/show/" + id),
         // search: data => h(POST, "/users/search-employee", data)
     },
@@ -33,7 +35,16 @@ const api = {
         getAll: queries => h(GET, "/company/index", queries),
         update: (data, id) => h(POST, "/company/update?company_id=" + id, data),
         delete: id => h(GET, "/company/destroy?company_id=" + id),
-        create: data => h(POST, "/company/store", data)
+        create: data => h(POST, "/company/store", data),
+        compnayList: () => h(GET, "company/company-data")
+        // get         : id          => h(GET,     '/users/show/' + id),
+        // search      : data        => h(POST,    '/users/search-employee', data)
+    },
+    payment: {
+        getAll: queries => h(GET, "/payment-category/index", queries),
+        update: (data, id) =>h(POST, "/payment-category/update?payment_category_id=" + id, data),
+        delete: id =>h(GET, "/payment-category/destroy?payment_category_id=" + id),
+        create: data => h(POST, "/payment-category/store", data)
         // get         : id          => h(GET,     '/users/show/' + id),
         // search      : data        => h(POST,    '/users/search-employee', data)
     }
