@@ -155,12 +155,12 @@ export default {
           icon: "mdi-account-group",
         
         },
-        // {
-        //   path: "/expenses-details",
-        //   name: "Expenses Details",
-        //   icon: "mdi-account-group",
+        {
+          path: "/payment-category",
+          name: "Payment Category",
+          icon: "mdi-account-group",
         
-        // },
+        },
         {
           path: "/",
           name: "Invoices",
