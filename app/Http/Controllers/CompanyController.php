@@ -15,7 +15,7 @@ class CompanyController extends Controller {
     }
 
     public function index(Request $request) {
-        $companies = Company::with(['users', 'invoices', 'expenses'])->paginate($this->data_per_page);
+        $companies = Company::with(['users', 'invoices', 'expenses'])->simplePaginate($this->data_per_page);
         return response()->json([
             'companies' => $companies,
             'status'    => 'success',

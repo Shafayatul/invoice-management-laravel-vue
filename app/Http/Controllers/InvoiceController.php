@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InvoiceSent;
+use App\Models\Income;
 
 class InvoiceController extends Controller {
     
@@ -23,7 +24,11 @@ class InvoiceController extends Controller {
     }
 
     public function index(Request $request) {
-        $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->paginate($this->data_per_page);
+        if(Auth::user()->role == 'admin'){
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
+        }else{
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->simplePaginate($this->data_per_page);
+        }
         return response()->json([
             'invoices' => $invoices,
             'status'    => 'success',
@@ -172,7 +177,9 @@ class InvoiceController extends Controller {
     public function PaidInvoice(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'invoice_id' => 'required|exists:invoices,id'
+            'invoice_id' => 'required|exists:invoices,id',
+            'category_id' => 'required|exists:payment_categories,id',
+            'receipt_file' => 'mimes:png,jpg,jpeg,pdf'
         ]);
 
         if($validate->fails())
@@ -185,5 +192,42 @@ class InvoiceController extends Controller {
                 'message' => 'Invoice not found'
             ], 404);
         }
+
+        $invoice_hostory->is_paid = true;
+        $invoice_hostory->save();
+
+        if($invoice_hostory->is_paid == true){
+            if($request->hasFile('receipt_file')){
+                $receipt_file = $request->file('receipt_file');
+                $receipt_file_name = uniqid().strtolower($receipt_file->getClientOriginalExtension());
+                $path = $request->file('receipt_file')->storeAs(
+                    'expense-file',
+                    $receipt_file_name,
+                    'public'
+                );
+            }else{
+                $path = null;
+            }
+
+            $income = new Income();
+            $income->created_by = Auth::id();
+            $income->client_id = $invoice_hostory->client_id;
+            $income->category_id = $request->category_id;
+            $income->invoice_id = $invoice_hostory->invoice_id;
+            $income->income_amount = $invoice_hostory->amount;;
+            $income->receipt_file = $path;
+            $income->save();
+
+            if ($invoice_hostory->id > 0)
+                return response()->json([
+                    'success' => true
+                ], 200);
+            else
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Expense can not be updated'
+                ], 500);
+        }
+
     }
 }

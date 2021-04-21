@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ExpenseController;
@@ -62,12 +63,21 @@ Route::group(['prefix' => 'v1'],function () {
             Route::post('assign-company', [UserController::class, 'AssignCompany']);
         });
 
+        Route::group(['prefix' => 'client'],function () {
+            Route::get('index', [ClientController::class, 'index']);
+            Route::post('store', [ClientController::class, 'store']);
+            Route::get('show', [ClientController::class, 'show']);
+            Route::post('update', [ClientController::class, 'update']);
+            Route::get('destroy', [ClientController::class, 'destroy']);
+        });
+
         Route::group(['prefix' => 'invoice'],function () {
             Route::get('index', [InvoiceController::class, 'index']);
             Route::post('store', [InvoiceController::class, 'store']);
             Route::get('show', [InvoiceController::class, 'show']);
             Route::post('update', [InvoiceController::class, 'update']);
             Route::get('destroy', [InvoiceController::class, 'destroy']);
+            Route::post('paid-invoice', [InvoiceController::class, 'PaidInvoice']);
         });
 
         Route::group(['prefix' => 'payment-category'],function () {
