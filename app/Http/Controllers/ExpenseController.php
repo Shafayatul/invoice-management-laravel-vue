@@ -50,40 +50,47 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'category_id' => 'required|exists:payment_categories,id',
-            'bills_file' => 'mimes:jpg,png,jpeg,pdf',
-            'expense_date' => 'required|date',
-            'expense_amount' => 'required|numeric'
+            'category_id' => 'required|array',
+            'category_id.*' => 'required|exists:payment_categories,id',
+            'bills_file' => 'array',
+            'bills_file.*' => 'mimes:jpg,png,jpeg,pdf',
+            'expense_date' => 'required|array',
+            'expense_date.*' => 'required|date',
+            'expense_amount' => 'required|array',
+            'expense_amount.*' => 'required|numeric'
         ]);
 
         if($validate->fails())
             return response()->json(['error' => $validate->errors()], 422);
 
-        if($request->hasFile('bills_file')){
-            $file = $request->file('bills_file');
-            $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-            $path = $request->file('bills_file')->storeAs(
-                'expense-file',
-                $name,
-                'public'
-            );
-        }else{
-            $path = null;
+        foreach($request->category_id as $key => $category_id){
+            if($request->hasFile('bills_file')){
+                $file = $request->file('bills_file')[$key];
+                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                $path = $request->file('bills_file')[$key]->storeAs(
+                    'expense-file',
+                    $name,
+                    'public'
+                );
+            }else{
+                $path = null;
+            }
+    
+            $expense = new Expense();
+            $expense->category_id = $category_id;
+            $expense->user_id = Auth::id();
+            $expense->company_id = Auth::user()->company_id;
+            $expense->bills_file = $path;
+            $expense->expense_date = Carbon::parse($request->expense_date[$key])->format("Y-m-d h:i:s");
+            $expense->expense_amount = $request->expense_amount[$key];
+            $expense->save();
         }
 
-        $expense = new Expense();
-        $expense->category_id = $request->category_id;
-        $expense->user_id = Auth::id();
-        $expense->company_id = Auth::user()->company_id;
-        $expense->bills_file = $path;
-        $expense->expense_date = Carbon::parse($request->expense_date)->format("Y-m-d h:i:s");
-        $expense->expense_amount = $request->expense_amount;
-        $expense->save();
+        
 
         if($expense->id > 0)
             return response()->json([
                 'success' => true,
-                'data' => $expense->toArray()
             ], 201);
         else
             return response()->json([
@@ -95,49 +102,56 @@ class ExpenseController extends Controller
     public function update(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'category_id'    => 'required|exists:payment_categories,id',
-            'bills_file'     => 'mimes:jpg,png,jpeg,pdf',
-            'expense_date'   => 'required|date',
-            'expense_amount' => 'required|numeric',
-            'expense_id'     => 'required|exists:expenses,id'
+            'category_id'      => 'required|array',
+            'category_id.*'    => 'required|exists:payment_categories,id',
+            'bills_file'       => 'array',
+            'bills_file.*'     => 'mimes:jpg,png,jpeg,pdf',
+            'expense_date'     => 'required|array',
+            'expense_date.*'   => 'required|date',
+            'expense_amount'   => 'required|array',
+            'expense_amount.*' => 'required|numeric',
         ]);
 
         if($validate->fails())
             return response()->json(['error' => $validate->errors()], 422);
 
-        $expense = Expense::find($request->expense_id);
 
-        if (!$expense) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Expense not found'
-            ], 400);
-        }
+        foreach($request->category_id as $key => $category_id){
 
-        if($request->hasFile('bills_file')){
-            $file = $request->file('bills_file');
-            $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-            $path = $request->file('bills_file')->storeAs(
-                'expense-file',
-                $name,
-                'public'
-            );
+            $expense = Expense::find($key);
 
-            if (Storage::disk('public')->exists($expense->bills_file)) {
-                Storage::delete($expense->bills_file);
+            if (!$expense) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Expense not found'
+                ], 400);
             }
 
-        }else{
-            $path = $expense->bills_file;
-        }
+            if($request->hasFile('bills_file')){
+                $file = $request->file('bills_file')[$key];
+                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                $path = $request->file('bills_file')[$key]->storeAs(
+                    'expense-file',
+                    $name,
+                    'public'
+                );
 
-        $expense->category_id    = $request->category_id;
-        $expense->user_id        = Auth::id();
-        $expense->company_id     = Auth::user()->company_id;
-        $expense->bills_file     = $path;
-        $expense->expense_date   = Carbon::parse($request->expense_date)->format("Y-m-d h:i:s");
-        $expense->expense_amount = $request->expense_amount;
-        $expense->save();
+                if (Storage::disk('public')->exists($expense->bills_file)) {
+                    Storage::delete($expense->bills_file);
+                }
+
+            }else{
+                $path = $expense->bills_file;
+            }
+
+            $expense->category_id    = $category_id;
+            $expense->user_id        = Auth::id();
+            $expense->company_id     = Auth::user()->company_id;
+            $expense->bills_file     = $path;
+            $expense->expense_date   = Carbon::parse($request->expense_date[$key])->format("Y-m-d h:i:s");
+            $expense->expense_amount = $request->expense_amount[$key];
+            $expense->save();
+        }
 
         if ($expense->id > 0)
             return response()->json([

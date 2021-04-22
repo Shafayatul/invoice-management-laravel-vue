@@ -25,9 +25,9 @@ class InvoiceController extends Controller {
 
     public function index(Request $request) {
         if(Auth::user()->role == 'admin'){
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
         }else{
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->simplePaginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->simplePaginate($this->data_per_page);
         }
         return response()->json([
             'invoices' => $invoices,
@@ -38,7 +38,7 @@ class InvoiceController extends Controller {
      
     public function show(Request $request)
     {
-        $invoice = Invoice::with(['createdBy', 'client', 'companies', 'incomes'])->find($request->invoice_id);
+        $invoice = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->find($request->invoice_id);
         
         if (!$invoice) {
             return response()->json([

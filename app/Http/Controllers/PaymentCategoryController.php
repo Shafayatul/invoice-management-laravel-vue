@@ -136,4 +136,14 @@ class PaymentCategoryController extends Controller
         }
 
     }
+
+    public function PaymentCategoryData()
+    {
+        $payment_categories = PaymentCategory::select('id', 'name')->get()->toArray();
+        return response()->json([
+            'payment_categories' => $payment_categories,
+            'status'    => 'success',
+            'code'      => 200
+        ], 200);
+    }
 }

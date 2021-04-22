@@ -54,8 +54,6 @@ class ClientController extends Controller
             'name'       => 'required|string',
             'phone'      => 'required|string',
             'email'      => 'required|unique:users,email',
-            'role'       => 'required|string|max:10',
-            'company_id' => 'required|exists:companies,id',
         ]);
         if($validation->fails())
             return response()->json(['errors' => $validation->errors()], 422);
@@ -66,7 +64,7 @@ class ClientController extends Controller
         $client->email      = $request->email;
         $client->password   = Hash::make(Str::random(8));
         $client->role       = 'client';
-        $client->company_id = $request->company_id;
+        $client->company_id = Auth::user()->company_id;
         
 
         if($client->save())
@@ -86,9 +84,7 @@ class ClientController extends Controller
             'name'       => 'required|string',
             'phone'      => 'required|string',
             'email'      => 'required|unique:users,email,'.$request->client_id,
-            'role'       => 'required|string',
             'client_id'  => 'required|exists:users,id',
-            'company_id' => 'required|exists:companies,id',
         ]);
 
         if($validation->fails())
@@ -99,15 +95,14 @@ class ClientController extends Controller
         if (!$client) {
             return response()->json([
                 'success' => false,
-                'message' => 'User not found'
+                'message' => 'Client not found'
             ], 404);
         }
 
         $client->name       = $request->name;
         $client->phone      = $request->phone;
         $client->email      = $request->email;
-        $client->role       = $request->role;
-        $client->company_id = $request->company_id;
+        $client->company_id = Auth::user()->company_id;
         $client->save();
     
         if ($client->id > 0)
@@ -142,5 +137,15 @@ class ClientController extends Controller
                 'message' => 'Client can not be deleted'
             ], 500);
         }
+    }
+
+    public function ClientData()
+    {
+        $clients = User::where('role', 'client')->select('name', 'id')->get()->toArray();
+        return response()->json([
+            'clients' => $clients,
+            'status'    => 'success',
+            'code'      => 200
+        ], 200);
     }
 }

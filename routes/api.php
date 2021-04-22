@@ -41,7 +41,6 @@ Route::group(['prefix' => 'v1'],function () {
         
         Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
         Route::get('logout', [ApiAuthController::class, 'logout'])->name('api.logout');
-        // Route::resource('posts', ExpenseController::class);
         Route::post('update-password', [UserController::class, 'UpdatePassword']);
 
         Route::group(['prefix' => 'company'],function () {
@@ -69,6 +68,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [ClientController::class, 'show']);
             Route::post('update', [ClientController::class, 'update']);
             Route::get('destroy', [ClientController::class, 'destroy']);
+            Route::get('client-data', [ClientController::class, 'ClientData']);
         });
 
         Route::group(['prefix' => 'invoice'],function () {
@@ -86,6 +86,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('show', [PaymentCategoryController::class, 'show']);
             Route::post('update', [PaymentCategoryController::class, 'update']);
             Route::get('destroy', [PaymentCategoryController::class, 'destroy']);
+            Route::get('payment-category-data', [PaymentCategoryController::class, 'PaymentCategoryData']);
         });
 
         Route::group(['prefix' => 'expense'], function () {
