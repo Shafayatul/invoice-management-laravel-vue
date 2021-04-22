@@ -162,6 +162,7 @@ export const toError = error => {
       statusText: res.data.status || res.statusText,
     }
     if (res.data.errors) data.errors = snakeToCamel(res.data.errors)
+    else if (res.data.error) data.errors = snakeToCamel(res.data.error)
     if (res.message) data.message = res.message
   }
   data.message = data.message || error.message

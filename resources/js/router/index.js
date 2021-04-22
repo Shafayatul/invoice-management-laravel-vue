@@ -52,6 +52,11 @@ const router = new VueRouter({
                     path: "payment-category",
                     name: "paymentCategory",
                     component: view("PaymmentCategory")
+                },
+                {
+                    path: "client",
+                    name: "Client",
+                    component: view("Client")
                 }
             ]
         },

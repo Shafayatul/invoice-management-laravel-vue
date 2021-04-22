@@ -1,6 +1,6 @@
 <template>
   <v-card class="mt-2">
-    <v-card-title>Create Expense</v-card-title>
+    <v-card-title><span class="mx-auto">{{ isUpdate ? "Edit EXpense" : "Create EXpense" }} </span></v-card-title>
     <v-card-text>
       <v-card
         class="mb-2 pa-2 pt-6"
@@ -8,7 +8,6 @@
         :key="index"
         outlined
       >
-        <!-- <v-card-title>Create Expense</v-card-title> -->
         <v-btn
           class="fab-btn-right ma-1"
           @click="expenses.splice(index, 1)"
@@ -24,13 +23,6 @@
             @submit.prevent="onSubmit"
           >
             <v-row>
-              <!-- <v-col cols="12" sm="6" md="3">
-                <v-select
-                  v-model="expense.expense_id"
-                  label="Expense"
-                  v-bind="fieldOptions"
-                />
-              </v-col> -->
               <v-col cols="12" sm="6" md="2">
                 <v-select
                   v-model="expense.category_id"
@@ -104,6 +96,7 @@
       </v-card>
     </v-card-text>
     <v-card-actions  class="mb-1 justify-end">
+      <v-btn color="success">ADD</v-btn>
       <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
         <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
       >

@@ -142,6 +142,11 @@ export default {
           name: "Users",
           icon: "mdi-account-group",
         },
+         {
+          path: "/client",
+          name: "Client",
+          icon: "mdi-account-group",
+        },
  
         {
           path: "/income",
