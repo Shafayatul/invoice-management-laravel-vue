@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ApiAuthController extends Controller
 {
@@ -32,7 +33,7 @@ class ApiAuthController extends Controller
        
         $token = $user->createToken('Registration Auth Token')->accessToken;
  
-        return response()->json(['token' => $token], 200);
+        return response()->json(['token' => $token, 'role' => $user->role], 200);
     }
  
     /**
@@ -48,7 +49,7 @@ class ApiAuthController extends Controller
         if($user && $user->is_active == 1){
             if (auth()->attempt($data)) {
                 $token = auth()->user()->createToken('Login Auth Token')->accessToken;
-                return response()->json(['token' => $token], 200);
+                return response()->json(['token' => $token, 'role' => Auth::user()->role], 200);
             } else {
                 return response()->json(['error' => 'Unauthorised'], 401);
             }
