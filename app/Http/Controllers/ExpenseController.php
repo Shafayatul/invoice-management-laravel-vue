@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
 {
@@ -172,6 +173,10 @@ class ExpenseController extends Controller
                 'success' => false,
                 'message' => 'Expense not found'
             ], 404);
+        }
+
+        if (Storage::disk('public')->exists($expense->bills_file)) {
+            Storage::delete($expense->bills_file);
         }
 
 

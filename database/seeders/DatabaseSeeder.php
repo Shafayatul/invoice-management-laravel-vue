@@ -18,20 +18,20 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // $company = Company::create([
-        //     'name' => 'Test Company',
-        //     'address' => 'Test Company Address'
-        // ]);
+        $company = Company::create([
+            'name' => 'Test Company',
+            'address' => 'Test Company Address'
+        ]);
 
-        // $user             = new User();
-        // $user->company_id = $company->id;
-        // $user->name       = 'Super Admin';
-        // $user->email      = 'admin@admin.com';
-        // $user->phone      = '5555555555';
-        // $user->password   = Hash::make('12345678');
-        // $user->role       = 'admin';
-        // $user->is_active  = true;
-        // $user->save();
+        $user             = new User();
+        $user->company_id = $company->id;
+        $user->name       = 'Super Admin';
+        $user->email      = 'admin@admin.com';
+        $user->phone      = '5555555555';
+        $user->password   = Hash::make('12345678');
+        $user->role       = 'super admin';
+        $user->is_active  = true;
+        $user->save();
 
     }
 }

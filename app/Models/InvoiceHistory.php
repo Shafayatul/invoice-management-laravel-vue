@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Invoice;
+use App\Models\User;
 
 class InvoiceHistory extends Model
 {
@@ -19,5 +20,9 @@ class InvoiceHistory extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class, 'invoice_id')->withTrashed();
+    }
+
+    public function client(){
+        return $this->belongsTo(User::class, 'client_id')->withTrashed();
     }
 }
