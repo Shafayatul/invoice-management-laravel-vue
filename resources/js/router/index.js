@@ -26,7 +26,7 @@ const router = new VueRouter({
                 {
                     path: "company",
                     name: "Company",
-                    component: view("Company"),
+                    component: view("Company")
                     // meta: {
                     //     requiresRole: "admindsfds"
                     // }
@@ -60,6 +60,11 @@ const router = new VueRouter({
                     path: "client",
                     name: "Client",
                     component: view("Client")
+                },
+                {
+                    path: "invoice-history",
+                    name: "invoicehistory",
+                    component: view("InvoiceHistories")
                 }
             ]
         },

@@ -2,7 +2,7 @@
     <v-card class="mt-2">
         <v-card-title
             ><span class="mx-auto"
-                >{{ isUpdate ? "Edit Expense" : "Create EXpense" }}
+                >{{ isUpdate ? "Edit Expense" : "Create Expense" }}
             </span></v-card-title
         >
         <v-card-text>

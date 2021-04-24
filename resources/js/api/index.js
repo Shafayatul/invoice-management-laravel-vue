@@ -55,7 +55,8 @@ const api = {
         getAll: queries => h(GET, "/invoice/index", queries),
         update: (data, id) => h(POST, "/invoice/update?invoice_id=" + id, data),
         delete: id => h(GET, "/invoice/destroy?invoice_id=" + id),
-        create: data => h(POST, "/invoice/store", data)
+        create: data => h(POST, "/invoice/store", data),
+        getHistories: queries => h(GET, "/invoice/invoice-history", queries)
         // get         : id          => h(GET,     '/users/show/' + id),
         // search      : data        => h(POST,    '/users/search-employee', data)
     },
@@ -75,6 +76,16 @@ const api = {
         update: (data, id) => h(POST, "/expense/update", data),
         delete: id => h(GET, "/expense/destroy?expense_id=" + id),
         create: data => h(POST, "/expense/store", data)
+        // block: id => h(GET, "/user/block-or-unblock/" + id),
+        // reAssign: data => h(POST, "user/assign-company", data)
+        // get: id => h(GET, "/users/show/" + id),
+        // search: data => h(POST, "/users/search-employee", data)
+    },
+    income: {
+        getAll: queries => h(GET, "/income/index", queries),
+        update: (data, id) => h(POST, "/income/update", data),
+        delete: id => h(GET, "/income/destroy?expense_id=" + id),
+        create: data => h(POST, "/income/store", data)
         // block: id => h(GET, "/user/block-or-unblock/" + id),
         // reAssign: data => h(POST, "user/assign-company", data)
         // get: id => h(GET, "/users/show/" + id),

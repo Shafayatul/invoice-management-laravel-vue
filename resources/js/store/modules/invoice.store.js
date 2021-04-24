@@ -9,7 +9,7 @@ const initialState = () => ({
         perPage: 15
     },
     invoice: [],
-    companyList: []
+    invoiceHistories: []
 });
 
 const state = initialState();
@@ -17,7 +17,7 @@ const state = initialState();
 const getters = {
     $pagination: s => s.pagination,
     $invoice: s => s.invoice,
-
+    $invoiceHistories: s => s.invoiceHistories
 };
 
 const actions = {
@@ -25,7 +25,7 @@ const actions = {
         // let res = await api.invoice.getAll();
         // console.log(res);
         let { error, ...data } = await api.invoice.getAll();
-        console.log(data,'console from store');
+        console.log(data, "console from store");
         if (error) return { error, ...data };
         commit("SET", {
             //   pagination: {
@@ -57,8 +57,23 @@ const actions = {
         dispatch("fetchInvoice");
         return res;
     },
-
-
+    fetchInvoiceHistories: async ({ commit }) => {
+        // let res = await api.invoice.getAll();
+        // console.log(res);
+        let { error, ...data } = await api.invoice.getHistories();
+        console.log(data, "console from store");
+        if (error) return { error, ...data };
+        commit("SET", {
+            //   pagination: {
+            //       totalPage: data.users.total,
+            //       perPage: data.users.perPage,
+            //       currentPage: data.users.currentPage
+            //   },
+            invoiceHistories: data.invoiceHostories.data
+        });
+        console.log(data, "fetchInvoiceHistories");
+        return data;
+    }
 };
 
 const module = {

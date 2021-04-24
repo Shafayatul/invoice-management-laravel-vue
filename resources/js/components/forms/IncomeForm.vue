@@ -1,127 +1,110 @@
 <template>
-  <div >
-    <v-card-title>
-      <span class="mx-auto"
-        >{{ isUpdate ? "Edit Invoice" : "Create Invoice" }}
-      </span>
-    </v-card-title>
-    <v-form
-      lazy-validation
-      v-model="isValid"
-      ref="IncomeForm"
-      @submit.prevent="handleIncome"
-    >
-      <v-row>
-        <v-col cols="12" md="12" lg="12">
-          <v-select
-            v-model="expenses.category_id"
-            :rules="[rules.required('Category')]"
-            label="Category"
-            v-bind="fieldOptions"
-          />
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-            v-model="expenses.client_id"
-            :rules="[rules.required('Client')]"
-            v-bind="fieldOptions"
-            label="Client"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-           :rules="[rules.required('Invoice ID')]"
-            v-model="expenses.invoice_id"
-            v-bind="fieldOptions"
-            label="Invoice ID"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-           :rules="[rules.required('Company')]"
-            v-model="expenses.company"
-            v-bind="fieldOptions"
-            label="Company"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <!-- <input @change="onFilePicked" ref="fileInput" type="file" style="display:none"> -->
-          <v-file-input
-           :rules="[rules.required('Bills File')]"
-            v-model="expenses.bills_file"
-            v-bind="fieldOptions"
-            label="Bills File"
-          ></v-file-input>
-          <!-- <v-btn @click="$refs.fileInput.click()">Click me</v-btn>
-          <v-btn @click="$refs.fileInput[0].$el.click()">Click me</v-btn> -->
-        </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="date"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="date"
-                :rules="[rules.required('Company')]"
-                outlined
-                label="Expense Date"
-                dense
-                prepend-innder-icon="mdi-calendar"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="date" no-title scrollable>
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">
-                OK
-              </v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-    </v-form>
-    <v-btn block @click="handleInvoice" class="my-3" color="primary">
-      ADD
-    </v-btn>
-  </div>
+    <v-card class="mt-2">
+        <v-card-title
+            ><span class="mx-auto"
+                >{{ isUpdate ? "Edit Income" : "Create Income" }}
+            </span></v-card-title
+        >
+        <v-card-text>
+            <v-form
+                lazy-validation
+                v-model="isValid"
+                ref="ExpenseForm"
+                @submit.prevent="onSubmit"
+            >
+                <v-card
+                    class="mb-2 pa-2 pt-6"
+                    v-for="(expense, index) in income"
+                    :key="index"
+                    outlined
+                >
+                    <v-btn
+                        class="fab-btn-right ma-1"
+                        @click="income.splice(index, 1)"
+                        icon
+                    >
+                        <v-icon color="red">mdi-close</v-icon>
+                    </v-btn>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-select
+                                    v-model="expense.ExpensetList"
+                                    :items="paymentList"
+                                    item-text="name"
+                                    item-value="id"
+                                    label="Category"
+                                    v-bind="fieldOptions"
+                                />
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-select
+                                    v-model="expense.client_id"
+                                    :items="clientList"
+                                    item-text="name"
+                                    item-value="id"
+                                    label="Client"
+                                    v-bind="fieldOptions"
+                                />
+                            </v-col>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    v-model="expense.income_amount"
+                                    v-bind="fieldOptions"
+                                    label="Amount"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-form>
+        </v-card-text>
+        <v-card-actions class="mb-1 justify-end">
+            <v-btn @click="handleExpense" color="success">Confirm</v-btn>
+            <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
+                <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
+            >
+        </v-card-actions>
+    </v-card>
 </template>
 
 <script>
 import formFieldMixin from "@/mixins/formFieldMixin";
-import { createFormMixin } from "@/mixins/form-mixin";
+const newIncomeItem = () => ({
+    income_amount:null,
+    client_id: null,
+    category_id: null,
+});
+// expense_id:'',
 export default {
-    name: "expensesForm",
-    mixins: [formFieldMixin,createFormMixin({
-      rules: ["required", "email", "password"],
-    })],
+    name: "incomeForm",
+    mixins: [formFieldMixin],
     props: {
         isUpdate: Boolean,
-        data: Object
+        data: Object,
+        paymentList: Array,
+        clientList:Array,
+    },
+    mounted() {
+        console.log(this.$refs);
     },
 
     data() {
         return {
             isValid: false,
+            income: [newIncomeItem()],
             date: new Date().toISOString().substr(0, 10),
             menu: false,
-            expenses: {
-                category_id: "",
-                client_id: "",
-                invoice_id: "",
-                company: "",
-                expense_date: "",
-                expense_type: "",
-                expense_amount: ""
-            }
+            ExpensetList: [
+                {
+                    name: "One time",
+                    id: "one_time"
+                },
+                {
+                    name: "Recurring",
+                    id: "recurring"
+                }
+            ]
         };
     },
     watch: {
@@ -130,27 +113,76 @@ export default {
             immediate: true,
             handler(v) {
                 if (!this.isUpdate) return;
-                this.expenses = {
-                    company: v.company,
-                    category_id: v.category_id,
-                    client_id: v.client_id,
-                    invoice_id: v.invoice_id,
-                    client_id: v.client_id,
-                    category_id: v.category_id,
-                    client_id: v.client_id
-                };
+                // let x={
+                //     expense_amount: v.expenseAmount,
+                //     category_id: v.categoryId,
+                //     expense_date:new Date(v.expenseDate).toISOString().substr(0, 10),
+                //     bill_file:v.billsFile
+                // };
+                this.income[0].expense_amount=v.expenseAmount,
+                this.income[0].category_id=v.categoryId
+                this.income[0].expense_date=new Date(v.expenseDate).toISOString().substr(0, 10),
+                this.income[0].bill_file=v.billsFile
             }
         }
     },
+    created() {},
     methods: {
-        onFilePicked(event) {
-            console.log("onFilePicked", event);
-            // this.some
+        onAddMoreExpense() {
+            this.income.push(newExpenseItem());
         },
-        handleInvoice(){
-            this.$refs.IncomeForm.validate();
-            if (!this.isValid) return
+        fileInput(event, id) {
+            console.log(event, id, "sdda");
+            console.log(this.income[id].bill_file, "sdsadsadsa");
+            this.income[id].bill_file = event;
+        },
+        handleExpense() {
+            if (this.$refs.ExpenseForm.validate()) {
+                console.log("handleInvoice");
+                // let addExpense = this.income.reduce(
+                //     (acc, val) => {
+                //         Object.entries(val).forEach(([key, value]) => {
+                //             if (acc[key]) acc[key].push(value);
+                //         });
+                //         return acc;
+                //     },
+                //     { expense_amount: [], bill_file: [], expense_date: [], category_id: [] }
+                // );
+                let data = {}
+              //  let addExpense=  this.income.map((y,index)=> Object.entries(y).reduce((acc,[key, value]) => ({...acc,[`${key}[${index}]`]:value}),{}))
+              this.income.forEach((expense, index) => {
+                Object.entries(expense).forEach(([key, value])=>{
+                  if(key !== 'menu'){
+                     data[`${key}[${index}]`] = value
+                  }
+                 
+                })
+              })
+              let editData={}
+              this.income.forEach((expense) => {
+                Object.entries(expense).forEach(([key, value])=>{
+                  if(key !== 'menu'){
+                     editData[`${key}[${this.data.id}]`] = value
+                  }
+                 
+                })
+              })
+
+              console.log(data);
+              
+                this.isUpdate
+                    ? this.$emit("editExpense", editData)
+                    : this.$emit("addExpense", data);
+            }
         }
     }
 };
 </script>
+
+<style>
+.fab-btn-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+</style>
