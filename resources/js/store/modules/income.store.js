@@ -16,15 +16,15 @@ const state = initialState();
 
 const getters = {
     $pagination: s => s.pagination,
-    $income: s => s.expense,
-//     $companyList: s => s.companyList
+    $income: s => s.income
+    //     $companyList: s => s.companyList
 };
 
 const actions = {
     fetchIncome: async ({ commit }) => {
         // let res = await api.company.getAll();
         // console.log(res);
-        let { error, ...data } = await api.expense.getAll();
+        let { error, ...data } = await api.income.getAll();
         if (error) return { error, ...data };
         commit("SET", {
             //   pagination: {
@@ -32,28 +32,30 @@ const actions = {
             //       perPage: data.users.perPage,
             //       currentPage: data.users.currentPage
             //   },
-            expense: data.expenses.data
+             
+            income: data.incomes.data
         });
+          console.log(data);
         return data;
     },
     deleteIncome: async ({ __, dispatch }, id) => {
-        let res = await api.expense.delete(id);
+        let res = await api.income.delete(id);
         if (res.error) return res;
         //    commit("DELETE", { key: id, array: "users" });
-        dispatch("fetchExpense");
+        dispatch("fetchIncome");
         return res;
     },
     addIncome: async ({ __, dispatch }, data) => {
-        let res = await api.expense.create(data);
+        let res = await api.income.create(data);
         if (res.error) return res;
         //    commit("DELETE", { key: id, array: "users" });
-        dispatch("fetchExpense");
+        dispatch("fetchIncome");
         return res;
     },
     updateIncome: async ({ __, dispatch }, data) => {
-        let res = await api.expense.update(data);
+        let res = await api.income.update(data);
         if (res.error) return res;
-        dispatch("fetchExpense");
+        dispatch("fetchIncome");
         return res;
     },
 

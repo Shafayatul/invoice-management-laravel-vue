@@ -21,8 +21,8 @@
           <IncomeForm
             v-if="cmDialog"
             :isUpdate="update.dialog"
-            @editExpense="handleEditExpense"
-            @addExpense="handleAddExpense"
+            @editIncome="handleEditIncome"
+            @addIncome="handleAddIncome"
             :paymentList="$paymentList"
             :clientList="$clientList"
             :data="update.data"
@@ -48,7 +48,7 @@
         :loading="cardloader"
         loading-text="Loading... Please wait"
         :headers="headers"
-        :items="$expense"
+        :items="$income"
         :search="search"
       >
         <template v-slot:item.actions="{ item }">
@@ -106,7 +106,7 @@ import CircleLoader from "@/components/customs/CircleLoader";
 import crudMixin from "@/mixins/crud-mixin";
 export default {
     mixins: [crudMixin],
-    name:'Expenses',
+    name:'Income',
     components: {
         IncomeForm,
         fabCreateButton,
@@ -129,12 +129,12 @@ export default {
                     text: "User",
                     align: "start",
                     sortable: false,
-                    value: "user.name"
+                    value: "client.name"
                 },
-                { text: "Company", value: "company.name", sortable: false },
-                { text: "Amount", value: "expenseAmount", sortable: false },
+                // { text: "Company", value: "company.name", sortable: false },
+                { text: "Amount", value: "incomeAmount", sortable: false },
                 // { text: "Bills File", value: "billsFile", sortable: false },
-                { text: "Date", value: "expenseDate", sortable: false },
+                { text: "Date", value: "createdAt", sortable: false },
                 { text: "Actions", value: "actions", sortable: false }
      
             ],
@@ -166,9 +166,9 @@ export default {
         click() {
             this.dialog = true;
         },
-        async onfetchExpense() {
+        async onfetchIncome() {
             this.tableLoader = true;
-            await this.fetchExpense();
+            await this.fetchIncome();
             this.tableLoader = false;
         },
            async handleDeleteExpense() {
@@ -184,17 +184,17 @@ export default {
             this.resetDelete();
             this.loading = false;
         },
-        async handleAddExpense(addExpense){
+        async handleAddIncome(addExpense){
             console.log('adding', addExpense);
             this.loading = true;
             this.create.loading = true;
-            let res = await this.addExpense(addExpense);
+            let res = await this.addIncome(addExpense);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when creating expense')
+             this.enableSnackbar('failed','An error ocured when creating income')
             } 
             else {
-                this.enableSnackbar('success','Expense created successfully')
+                this.enableSnackbar('success','Income created successfully')
             }
             this.resetCreate();
             this.loading = false;
@@ -205,10 +205,10 @@ export default {
                 this.resetCreate();
             }
         },
-        // handleAddExpense(){
+        // handleAddIncome(){
 
         // },
-       async handleEditExpense(editData){
+       async handleEditIncome(editData){
           console.log('adding',editData);
             this.loading = true;
             // this.create.loading = true;
@@ -226,7 +226,7 @@ export default {
         },
         async onCreate(){
           this.loading=true
-          await this.onfetchExpense();
+          await this.onfetchIncome();
           await this.fetchPaymentList()
           await this.fetchClientList()
           this.loading=false

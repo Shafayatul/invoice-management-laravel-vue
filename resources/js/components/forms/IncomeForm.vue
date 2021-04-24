@@ -9,12 +9,12 @@
             <v-form
                 lazy-validation
                 v-model="isValid"
-                ref="ExpenseForm"
+                ref="IncomeForm"
                 @submit.prevent="onSubmit"
             >
                 <v-card
                     class="mb-2 pa-2 pt-6"
-                    v-for="(expense, index) in income"
+                    v-for="(income, index) in income"
                     :key="index"
                     outlined
                 >
@@ -29,7 +29,7 @@
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
                                 <v-select
-                                    v-model="expense.ExpensetList"
+                                    v-model="income.category_id"
                                     :items="paymentList"
                                     item-text="name"
                                     item-value="id"
@@ -39,7 +39,7 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-select
-                                    v-model="expense.client_id"
+                                    v-model="income.client_id"
                                     :items="clientList"
                                     item-text="name"
                                     item-value="id"
@@ -49,7 +49,7 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    v-model="expense.income_amount"
+                                    v-model="income.income_amount"
                                     v-bind="fieldOptions"
                                     label="Amount"
                                 ></v-text-field>
@@ -60,8 +60,8 @@
             </v-form>
         </v-card-text>
         <v-card-actions class="mb-1 justify-end">
-            <v-btn @click="handleExpense" color="success">Confirm</v-btn>
-            <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
+            <v-btn @click="handleIncome" color="success">Confirm</v-btn>
+            <v-btn class="mr-2" @click="onAddMoreIncome" color="primary">
                 <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
             >
         </v-card-actions>
@@ -95,16 +95,16 @@ export default {
             income: [newIncomeItem()],
             date: new Date().toISOString().substr(0, 10),
             menu: false,
-            ExpensetList: [
-                {
-                    name: "One time",
-                    id: "one_time"
-                },
-                {
-                    name: "Recurring",
-                    id: "recurring"
-                }
-            ]
+            // ExpensetList: [
+            //     {
+            //         name: "One time",
+            //         id: "one_time"
+            //     },
+            //     {
+            //         name: "Recurring",
+            //         id: "recurring"
+            //     }
+            // ]
         };
     },
     watch: {
@@ -128,16 +128,16 @@ export default {
     },
     created() {},
     methods: {
-        onAddMoreExpense() {
-            this.income.push(newExpenseItem());
+        onAddMoreIncome() {
+            this.income.push(newIncomeItem());
         },
         fileInput(event, id) {
             console.log(event, id, "sdda");
             console.log(this.income[id].bill_file, "sdsadsadsa");
             this.income[id].bill_file = event;
         },
-        handleExpense() {
-            if (this.$refs.ExpenseForm.validate()) {
+        handleIncome() {
+            if (this.$refs.IncomeForm.validate()) {
                 console.log("handleInvoice");
                 // let addExpense = this.income.reduce(
                 //     (acc, val) => {
@@ -171,8 +171,8 @@ export default {
               console.log(data);
               
                 this.isUpdate
-                    ? this.$emit("editExpense", editData)
-                    : this.$emit("addExpense", data);
+                    ? this.$emit("editIncome", editData)
+                    : this.$emit("addIncome", data);
             }
         }
     }
