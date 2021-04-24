@@ -95,7 +95,7 @@
       class="default-layout__main grey"
       :class="$theme.dark ? 'darken-4' : 'lighten-3'"
     >
-      <router-wrapper class="mr-3">
+      <router-wrapper class="mx-3">
         <router-view class="" />
       </router-wrapper>
     </v-main>
@@ -140,6 +140,11 @@ export default {
         {
           path: "/users",
           name: "Users",
+          icon: "mdi-account-group",
+        },
+         {
+          path: "/client",
+          name: "Client",
           icon: "mdi-account-group",
         },
  

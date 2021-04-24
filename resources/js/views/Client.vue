@@ -8,14 +8,13 @@
     >
       <v-card>
         <v-card-text>
-          <UserForm
+          <ClientForm
             v-if="cmDialog"
             :isUpdate="update.dialog"
             :data="update.data"
             :companyList="$companyList"
-            @editUser="handleEditUser"
-            @addUser="handleAddUser"
-            @reAssignUser=  handleReassignUser
+            @editClient="handleEditClient"
+            @addClient="handleAddClient"
             :reAssign="reAssign"
           />
         </v-card-text>
@@ -23,7 +22,7 @@
     </v-dialog>
     <v-card>
       <v-card-title>
-        Users
+        Clients
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -39,7 +38,7 @@
         :loading="cardloader"
         loading-text="Loading... Please wait"
         :headers="headers"
-        :items="$users"
+        :items="$client"
         :search="search"
       >
         <template v-slot:item.actions="{ item }">
@@ -60,7 +59,7 @@
                 <v-icon color="error" class="mr-2">mdi-delete</v-icon>
                 Delete
               </v-list-item>
-               <v-divider></v-divider>
+               <!-- <v-divider></v-divider>
                <v-list-item @click="handleBlockUser(item.id,item.isActive)" dense link>
                 <v-icon size="20" color="error" class="mr-3">mdi-block-helper</v-icon>
                 {{ item.isActive =='1'? 'Block' : 'Unblock' }}
@@ -69,7 +68,7 @@
               <v-list-item  @click="initUpdate(item),reAssign=true" dense link>
                 <v-icon  color="error" class="mr-3">mdi-update</v-icon>
                 Change Company
-              </v-list-item>
+              </v-list-item> -->
             </v-list>
           </v-menu>
         </template>
@@ -98,7 +97,7 @@
       subtitle="Once you delete, this action can't be undone"
       v-model="deletee.dialog"
       :loading="deletee.loading"
-      @yes="handleDeleteUser"
+      @yes="handleDeleteClient"
       @no="resetDelete"
     />
   </div>
@@ -106,16 +105,16 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import UserForm from "@/components/forms/UserForm.vue";
+import ClientForm from "@/components/forms/ClientForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin";
 import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
 export default {
-    name: "Users",
+    name: "Client",
     mixins: [crudMixin],
     components: {
-        UserForm,
+        ClientForm,
         fabCreateButton,
         confirm,
         CircleLoader
@@ -157,28 +156,30 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("USERS", ["$users"]),
-        ...mapGetters("COMPANY", ["$companyList"])
+        ...mapGetters("CLIENT", ["$client"]),
+        ...mapGetters("COMPANY", ["$companyList"]),
+        ...mapGetters("AUTH", [ "$user"]),
     },
     methods: {
-        ...mapActions("USERS", [
-            "fetchUsers",
-            "deleteUser",
-            "addUser",
-            "updateUsers",
-            "blockUsers",
-            "reAssignCompany"
+        ...mapActions("CLIENT", [
+            "fetchClient",
+            "deleteClient",
+            "addClient",
+            "updateClient",
+          //   "blockClient",
+          //   "reAssignCompany"
         ]),
         ...mapActions("COMPANY",["fetchCompanyList"]),
+        ...mapActions("AUTH", [ "fetchProfile"]),
         onInputUserDialog(dialog) {
             if (!dialog) {
                 this.resetUpdate();
                 this.resetCreate();
             }
         },
-        async onFetchUsers() {
+        async onFetchClient() {
             this.tableLoader = true;
-            await this.fetchUsers();
+            await this.fetchClient();
             this.tableLoader = false;
         },
         async CompanyList(){
@@ -186,89 +187,95 @@ export default {
             await this.fetchCompanyList()
             this.loading=false
         },
-        async handleAddUser(user) {
+        async fetchProfileData(){
+            
+            await this.fetchProfile()
+          
+        },
+        async handleAddClient(user) {
             console.log('handleAddUser');
             console.log('adding',user);
             this.loading = true;
             // this.create.loading = true;
-            let res = await this.addUser(user);
+            let res = await this.addClient(user);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when creating user')
+             this.enableSnackbar('failed','An error ocured when creating client')
             } 
             else {
-                this.enableSnackbar('success','User created successfully')
+                this.enableSnackbar('success','client created successfully')
             }
             this.resetCreate();
             this.loading = false;
         },
-        async handleEditUser(user) {
+        async handleEditClient(user) {
             console.log('handleEditUser');
             this.loading = true;
             console.log(user);
             this.create.loading = true;
-            let res = await this.updateUsers(user);
+            let res = await this.updateClient(user);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when editing user')
+             this.enableSnackbar('failed','An error ocured when editing client')
             } 
             else {
-                this.enableSnackbar('success','User updated successfully')
+                this.enableSnackbar('success','Client updated successfully')
             }
             this.resetUpdate();
             this.loading = false;
         },
-        async handleDeleteUser() {
+        async handleDeleteClient() {
             
             this.loading = true;
-            let res = await this.deleteUser(this.deletee.id);
+            let res = await this.deleteClient(this.deletee.id);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when deleting User')
+             this.enableSnackbar('failed','An error ocured when deleting client')
             } 
             else {
-                this.enableSnackbar('success','User deleted successfully')
+                this.enableSnackbar('success','Client deleted successfully')
             }
             this.resetDelete();
             this.loading = false;
         },
-        async handleBlockUser(id,type) {
-            let action= (type == 1 ? 'Blocked' : 'Unblocked') 
-            // {{ item.isActive =='1'? 'Block' : 'Unblock' }}
-            this.loading = true;
-            let res = await this.blockUsers(id)
-            if (res.error){
-             console.log(res.error);
-             this.enableSnackbar('failed',`An error ocured when ${action} a user`)
-            } 
-            else {
-                this.enableSnackbar('success',`User ${action} successfully`)
-            }
-            this.resetDelete();
-            this.loading = false;
-        },
-       async handleReassignUser(user){
-            console.log('reasasign');
-            console.log(user);
-            this.loading = true;
-            this.create.loading = true;
-            let res = await this.reAssignCompany({user_id:user.user_id,company_id:user.company_id});
-            if (res.error){
-             console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when Re-assigning a company')
+     //    async handleBlockUser(id,type) {
+     //        let action= (type == 1 ? 'Blocked' : 'Unblocked') 
+     //        // {{ item.isActive =='1'? 'Block' : 'Unblock' }}
+     //        this.loading = true;
+     //        let res = await this.blockClient(id)
+     //        if (res.error){
+     //         console.log(res.error);
+     //         this.enableSnackbar('failed',`An error ocured when ${action} a user`)
+     //        } 
+     //        else {
+     //            this.enableSnackbar('success',`User ${action} successfully`)
+     //        }
+     //        this.resetDelete();
+     //        this.loading = false;
+     //    },
+     //   async handleReassignUser(user){
+     //        console.log('reasasign');
+     //        console.log(user);
+     //        this.loading = true;
+     //        this.create.loading = true;
+     //        let res = await this.reAssignCompany({user_id:user.user_id,company_id:user.company_id});
+     //        if (res.error){
+     //         console.log(res.error);
+     //         this.enableSnackbar('failed','An error ocured when Re-assigning a company')
              
-            } 
-            else {
-                this.enableSnackbar('success','Company Re-assign successfully')
-                this.reAssign=false
-            }
-            this.resetCreate();
-            this.loading = false;
-       } 
+     //        } 
+     //        else {
+     //            this.enableSnackbar('success','Company Re-assign successfully')
+     //            this.reAssign=false
+     //        }
+     //        this.resetCreate();
+     //        this.loading = false;
+     //   } 
     },
     created() {
-        this.onFetchUsers();
-        this.CompanyList()
+        this.onFetchClient();
+        this.CompanyList();
+        this.fetchProfileData();
    
     }
 };

@@ -12,10 +12,10 @@ const state = initalState()
 const mutations = createMutations(['SET', 'RESET'])
 
 const getters = {
-  $user: ({ user }) => user,
-  $isAuth: ({ isAuth }) => isAuth,
-  
-}
+    $user: ({ user }) => user,
+    $isAuth: ({ isAuth }) => isAuth,
+    $authRole :s => s.user && s.user.role
+};
 
 const actions = {
     login: async ({ commit }, payload) => {
@@ -26,13 +26,14 @@ const actions = {
             // const expires = 7
             cookies.set(
                 { key: "isAuth", value: true, expires: 7 },
+                { key: "authRole", value: res.role, expires: 7 },
                 { key: "accessToken", value: res.token, expires: 7 }
                 // { key: 'userId', value: res.user.id, expires },
             );
             commit("SET", {
                 isAuth: true,
-                accessToken: res.token
-                // user: res.user
+                accessToken: res.token,
+                user:{role: res.role}
             });
         }
         return res;

@@ -8,23 +8,24 @@ const initialState = () => ({
         totalPage: 1,
         perPage: 15
     },
-    company: [],
-    companyList: []
+    invoice: [],
+    invoiceHistories: []
 });
 
 const state = initialState();
 
 const getters = {
     $pagination: s => s.pagination,
-    $company: s => s.company.sort((a, b) => b.createdAt - a.createdAt),
-    $companyList: s => s.companyList
+    $invoice: s => s.invoice,
+    $invoiceHistories: s => s.invoiceHistories
 };
 
 const actions = {
-    fetchCompany: async ({ commit }) => {
-        // let res = await api.company.getAll();
+    fetchInvoice: async ({ commit }) => {
+        // let res = await api.invoice.getAll();
         // console.log(res);
-        let { error, ...data } = await api.company.getAll();
+        let { error, ...data } = await api.invoice.getAll();
+        console.log(data, "console from store");
         if (error) return { error, ...data };
         commit("SET", {
             //   pagination: {
@@ -32,33 +33,35 @@ const actions = {
             //       perPage: data.users.perPage,
             //       currentPage: data.users.currentPage
             //   },
-            company: data.companies.data
+            invoice: data.invoices.data
         });
         return data;
     },
-    deleteCompany: async ({ __, dispatch }, id) => {
-        let res = await api.company.delete(id);
+    deleteInvoice: async ({ __, dispatch }, id) => {
+        let res = await api.invoice.delete(id);
         if (res.error) return res;
         //    commit("DELETE", { key: id, array: "users" });
-        dispatch("fetchCompany");
+        dispatch("fetchInvoice");
         return res;
     },
-    addCompany: async ({ __, dispatch }, data) => {
-        let res = await api.company.create(data);
+    addInvoice: async ({ __, dispatch }, data) => {
+        let res = await api.invoice.create(data);
         if (res.error) return res;
         //    commit("DELETE", { key: id, array: "users" });
-        dispatch("fetchCompany");
+        dispatch("fetchInvoice");
         return res;
     },
-    updateCompany: async ({ __, dispatch }, data) => {
-        let res = await api.company.update(data, data.company_id);
+    updateInvoice: async ({ __, dispatch }, data) => {
+        let res = await api.invoice.update(data, data.invoice_id);
         if (res.error) return res;
-        dispatch("fetchCompany");
+        dispatch("fetchInvoice");
         return res;
     },
-
-    fetchCompanyList: async ({ commit }) => {
-        let { error, ...data } = await api.company.compnayList();
+    fetchInvoiceHistories: async ({ commit }) => {
+        // let res = await api.invoice.getAll();
+        // console.log(res);
+        let { error, ...data } = await api.invoice.getHistories();
+        console.log(data, "console from store");
         if (error) return { error, ...data };
         commit("SET", {
             //   pagination: {
@@ -66,8 +69,9 @@ const actions = {
             //       perPage: data.users.perPage,
             //       currentPage: data.users.currentPage
             //   },
-            companyList: data.companies
+            invoiceHistories: data.invoiceHostories.data
         });
+        console.log(data, "fetchInvoiceHistories");
         return data;
     }
 };
