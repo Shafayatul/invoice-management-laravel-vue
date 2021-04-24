@@ -17,8 +17,8 @@ class CreateIncomesTable extends Migration
             $table->id();
             $table->foreignId('created_by')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('client_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('category_id')->references('id')->on('payment_categories')->cascadeOnDelete();
-            $table->foreignId('invoice_id')->references('id')->on('invoices')->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->references('id')->on('payment_categories')->cascadeOnDelete();
+            $table->foreignId('invoice_id')->nullable()->references('id')->on('invoices')->cascadeOnDelete();
             $table->decimal('income_amount', 8,2)->nullable(true);
             $table->string('income_type')->nullable(true);
             $table->text('income_details')->nullable(true);
