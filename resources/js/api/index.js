@@ -84,7 +84,7 @@ const api = {
     income: {
         getAll: queries => h(GET, "/income/index", queries),
         update: (data, id) => h(POST, "/income/update", data),
-        delete: id => h(GET, "/income/destroy?expense_id=" + id),
+        delete: id => h(GET, "/income/destroy?income_id=" + id),
         create: data => h(POST, "/income/store", data)
         // block: id => h(GET, "/user/block-or-unblock/" + id),
         // reAssign: data => h(POST, "user/assign-company", data)
