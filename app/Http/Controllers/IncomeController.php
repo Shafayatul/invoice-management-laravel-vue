@@ -21,7 +21,11 @@ class IncomeController extends Controller
     public function index(Request $request)
     {
         if(Auth::user()->role == 'admin'){
-            $incomes = Income::with(['createdBy', 'client', 'category', 'invoice'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
+            $incomes = Income::with(['createdBy', 'client', 'category', 'invoice'])
+            ->whereHas('createdBy', function($user){
+                $user->where('company_id', Auth::user()->company_id);
+            })
+            ->simplePaginate($this->data_per_page);
         }else{
             $incomes = Income::with(['createdBy', 'client', 'category', 'invoice'])->simplePaginate($this->data_per_page);
         }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
@@ -43,6 +44,8 @@ Route::group(['prefix' => 'v1'],function () {
         Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
         Route::get('logout', [ApiAuthController::class, 'logout'])->name('api.logout');
         Route::post('update-password', [UserController::class, 'UpdatePassword']);
+
+        Route::get('dashboard-data', [DashboardController::class, 'DashboardData']);
 
         Route::group(['prefix' => 'company'],function () {
             Route::get('index', [CompanyController::class, 'index']);
