@@ -51,7 +51,7 @@ const actions = {
         return res;
     },
     updateExpense: async ({ __, dispatch }, data) => {
-        let res = await api.expense.update(data, data.expense_id);
+    let res = await api.expense.update(data);
         if (res.error) return res;
         dispatch("fetchExpense");
         return res;

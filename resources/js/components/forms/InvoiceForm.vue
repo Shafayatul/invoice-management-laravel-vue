@@ -14,14 +14,16 @@
       <v-row>
         <v-col cols="12" md="12" lg="12">
           <v-select
-            v-model="invoiceDetails.client"
+            v-model="invoiceDetails.client_id"
             label="Client"
-          
+            :items="clientList"
+            item-value="id"
+            item-text="name"
             v-bind="fieldOptions"
           />
-            <!-- :rules="[rules.required('client')]" -->
+          <!-- :rules="[rules.required('client')]" -->
         </v-col>
-        <v-col cols="12" md="12" lg="12">
+        <!-- <v-col cols="12" md="12" lg="12">
           <v-select
             :items="companyList"
             item-text="name"
@@ -32,7 +34,7 @@
             v-bind="fieldOptions"
             label="Company"
           ></v-select>
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="12" lg="12">
           <v-select
             v-model="invoiceDetails.sending_type"
@@ -61,7 +63,7 @@
                 hide-details="auto"
                 :rules="[rules.required('Sending Date')]"
                 dense
-                label="Picker in menu"
+                label="Sending Date"
                 prepend-inner-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
@@ -85,14 +87,15 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col cols="12" md="12" lg="12">
+        <v-col v-if="invoiceDetails.sending_type==='recurring'" cols="12" md="12" lg="12">
           <v-text-field
             type="number"
             v-model="invoiceDetails.recurring_period"
-            
             v-bind="fieldOptions"
             label="Recurring Period"
-            :error-messages="errors.recurringPeriod && errors.recurringPeriod[0]"
+            :error-messages="
+              errors.recurringPeriod && errors.recurringPeriod[0]
+            "
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="12" lg="12">
@@ -106,10 +109,9 @@
       </v-row>
     </v-form>
 
-      <v-btn block class="my-3" color="primary" @click="handleInvoice"  >
-        ADD
-      </v-btn>
-
+    <v-btn :loading='loading' block class="my-3" color="primary" @click="handleInvoice">
+      ADD
+    </v-btn>
   </div>
 </template>
 
@@ -117,6 +119,7 @@
 
 import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
+import moment from "moment"
 export default {
     name: "invoiceForm",
     mixins: [formFieldMixin,createFormMixin({
@@ -126,7 +129,9 @@ export default {
         isUpdate:Boolean,
         data:Object,
         companyList: Array,
+        clientList:Array,
         errors: Object,
+        loading:Boolean
     },
 
     data() {
@@ -144,11 +149,10 @@ export default {
                 }
             ],
             invoiceDetails:{
-               client_id: 4,
-               company_id:'',
+               client_id: null,
+               sending_date:null,
                sending_type:'',
-               sending_type:'',
-               recurring_period:null,
+               recurring_period:0,
                amount:'',
             }
         };
@@ -160,11 +164,12 @@ export default {
       handler(v) {
         if (!this.isUpdate) return;
         this.invoiceDetails = {
-          client: v.clientID,
+          client_id: v.clientId,
           company_id: v.companyId,
-          sending_type:v.sending_type,
           sending_type:v.sendingType,
+          sending_date:new Date(v.sendingDate).toISOString().substr(0, 10),
           recurring_period:v.recurringPeriod,
+          amount:v.invoiceHistory.amount,
           invoice_id:v.id
 
    

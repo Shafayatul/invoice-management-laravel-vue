@@ -46,7 +46,8 @@ const api = {
             h(POST, "/payment-category/update?payment_category_id=" + id, data),
         delete: id =>
             h(GET, "/payment-category/destroy?payment_category_id=" + id),
-        create: data => h(POST, "/payment-category/store", data)
+        create: data => h(POST, "/payment-category/store", data),
+        paymentList: () => h(GET, "/payment-category/payment-category-data")
         // get         : id          => h(GET,     '/users/show/' + id),
         // search      : data        => h(POST,    '/users/search-employee', data)
     },
@@ -62,7 +63,8 @@ const api = {
         getAll: queries => h(GET, "/client/index", queries),
         update: (data, id) => h(POST, "/client/update?client_id=" + id, data),
         delete: id => h(GET, "/client/destroy?client_id=" + id),
-        create: data => h(POST, "/client/store", data)
+        create: data => h(POST, "/client/store", data),
+        clientList: () => h(GET, "client/client-data")
         // block: id => h(GET, "/user/block-or-unblock/" + id),
         // reAssign: data => h(POST, "user/assign-company", data)
         // get: id => h(GET, "/users/show/" + id),
@@ -70,7 +72,7 @@ const api = {
     },
     expense: {
         getAll: queries => h(GET, "/expense/index", queries),
-        update: (data, id) => h(POST, "/expense/update?expense_id=" + id, data),
+        update: (data, id) => h(POST, "/expense/update", data),
         delete: id => h(GET, "/expense/destroy?expense_id=" + id),
         create: data => h(POST, "/expense/store", data)
         // block: id => h(GET, "/user/block-or-unblock/" + id),

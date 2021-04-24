@@ -4,7 +4,7 @@
       <v-container class="center">
         <v-row>
           <v-col cols="12" md="8" class="mx-auto">
-            <!-- <v-img contain height="400" src="@/assets/images/404.svg" /> -->
+            <v-img contain height="400" :src="require('@/assets/images/404.svg')" />
             <div class="text-center py-10">
               <h1 class="">Page Not Found</h1>
               <v-chip to="/" dark color="error">

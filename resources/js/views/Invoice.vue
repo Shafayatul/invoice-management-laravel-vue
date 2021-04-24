@@ -6,16 +6,18 @@
       v-if="cmDialog"
       :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
     >
-      <v-card>
+      <v-card :loading="loading">
         <v-card-text>
           <InvoiceForm
             v-if="cmDialog"
-            :errors='errors'
+            :errors="errors"
             @editInvoice="handleEditInvoice"
             :companyList="$companyList"
             @addInvoice="handleAddInvoice"
             :isUpdate="update.dialog"
             :data="update.data"
+            :loading="loading"
+            :clientList="$clientList"
           />
         </v-card-text>
       </v-card>
@@ -53,7 +55,7 @@
               <v-list-item @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
-              </v-list-item >
+              </v-list-item>
               <v-divider></v-divider>
               <v-list-item @click="initDelete(item.id)" dense link>
                 <v-icon class="mr-2">mdi-delete</v-icon>
@@ -141,7 +143,8 @@ export default {
   },
   computed:{
     ...mapGetters("INVOICE", ["$invoice"]),
-    ...mapGetters("COMPANY", ["$companyList"])
+    ...mapGetters("COMPANY", ["$companyList"]),
+    ...mapGetters("CLIENT", ["$clientList"])
   },
   methods:{
     ...mapActions("INVOICE", [
@@ -151,6 +154,7 @@ export default {
             "updateInvoice"
         ]),
     ...mapActions("COMPANY",["fetchCompanyList"]),
+    ...mapActions("CLIENT",["fetchClientList"]),
     click(){
       this.dialog=true;
     },
@@ -165,12 +169,18 @@ export default {
             await this.fetchCompanyList()
             this.loading=false
         },
+        async ClientList(){
+            this.loader=true
+            await this.fetchClientList()
+            this.loading=false
+        },
     async onFetchInvoice() {
             this.tableLoader = true;
             await this.fetchInvoice();
             this.tableLoader = false;
         },
         async handleAddInvoice(invoiceDetails) {
+            console.log(invoiceDetails,'invoiceDetails');
             this.loading = true;
             console.log(invoiceDetails);
             // this.create.loading = true;
@@ -214,12 +224,17 @@ export default {
             }
             this.resetDelete();
             this.loading = false;
+        },
+        async onCreated(){
+          this.loading=true
+          await  this.onFetchInvoice();
+          await  this.CompanyList();
+          await  this.ClientList()
+          this.loading=false
         }
   },
    created() {
-        this.onFetchInvoice();
-        this.CompanyList()
-   
+      this.onCreated()
     }
 }
 </script>

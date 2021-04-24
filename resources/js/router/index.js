@@ -26,7 +26,10 @@ const router = new VueRouter({
                 {
                     path: "company",
                     name: "Company",
-                    component: view("Company")
+                    component: view("Company"),
+                    // meta: {
+                    //     requiresRole: "admindsfds"
+                    // }
                 },
                 {
                     path: "users",
@@ -87,18 +90,45 @@ const router = new VueRouter({
         }
     ]
 });
+// let role='admin'
+// router.beforeEach(async (to, _, next) => {
+//     let isAuth = store.getters["AUTH/$isAuth"];
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//         if (!isAuth)
+//             return next({
+//                 path: "/login",
+//                 query: { redirect: to.fullPath }
+//             });
+//         return next();
+//     } else if (to.path === "/login" && isAuth) {
+//         return next({ path: "/" });
+//     }
+//     return next();
+// });
 
-router.beforeEach(async (to, _, next) => {
-    let isAuth = store.getters["AUTH/$isAuth"];
+router.beforeEach(async (to, from, next) => {
+    const isAuth = store.getters["AUTH/$isAuth"];
+    const authRole = store.getters["AUTH/$authRole"];
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isAuth)
+        let requiresRole;
+        const record = to.matched.find(record => record.meta.requiresRole);
+        if (record) requiresRole = record.meta.requiresRole;
+        if (!isAuth || !authRole) {
             return next({
                 path: "/login",
                 query: { redirect: to.fullPath }
             });
+        }
+        if (requiresRole && requiresRole !== authRole) {
+            return next( "/not-found");
+        }
         return next();
-    } else if (to.path === "/login" && isAuth) {
-        return next({ path: "/" });
+    } else if (
+        isAuth &&
+        authRole &&
+        to.path.includes("login")
+    ) {
+        return next("/");
     }
     return next();
 });

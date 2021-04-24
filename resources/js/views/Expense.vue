@@ -15,9 +15,6 @@
           </v-btn>
           <v-toolbar-title>Expense</v-toolbar-title>
           <v-spacer></v-spacer>
-          <!-- <v-toolbar-items>
-            <v-btn dark text @click="dialog = false"> Save </v-btn>
-          </v-toolbar-items> -->
         </v-toolbar>
         <v-card-text>
           <!-- <v-card-title> Create Expense </v-card-title> -->
@@ -26,12 +23,10 @@
             :isUpdate="update.dialog"
             @editExpense="handleEditExpense"
             @addExpense="handleAddExpense"
+            :paymentList="$paymentList"
             :data="update.data"
           />
         </v-card-text>
-        <!-- <v-card-actions>
-          <v-btn class="ml-6 mb-2" color="primary" outlined> ADD </v-btn>
-        </v-card-actions> -->
       </v-card>
     </v-dialog>
     <v-card>
@@ -79,8 +74,8 @@
       </v-data-table>
     </v-card>
     <fabCreateButton @click="initCreate()" />
-     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
-     <v-snackbar
+    <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
+    <v-snackbar
       v-model="snackbar.action"
       :timeout="snackbar.timeout"
       :color="snackbar.color"
@@ -90,13 +85,13 @@
     >
       {{ snackbar.text }}
       <confirm
-      title="Are you sure to delete?"
-      subtitle="Once you delete, this action can't be undone"
-      v-model="deletee.dialog"
-      :loading="deletee.loading"
-      @yes="handleDeleteExpense"
-      @no="resetDelete"
-    />
+        title="Are you sure to delete?"
+        subtitle="Once you delete, this action can't be undone"
+        v-model="deletee.dialog"
+        :loading="deletee.loading"
+        @yes="handleDeleteExpense"
+        @no="resetDelete"
+      />
     </v-snackbar>
   </div>
 </template>
@@ -137,13 +132,8 @@ export default {
                 },
                 { text: "Company", value: "company.name", sortable: false },
                 { text: "Amount", value: "expenseAmount", sortable: false },
-                { text: "Bills File", value: "billsFile", sortable: false },
+                // { text: "Bills File", value: "billsFile", sortable: false },
                 { text: "Date", value: "expenseDate", sortable: false },
-                {
-                    text: "Expense Type",
-                    value: "expense_type",
-                    sortable: false
-                },
                 { text: "Actions", value: "actions", sortable: false }
      
             ],
@@ -152,16 +142,16 @@ export default {
                     user: "Lorem Ipsum",
                     category: "lorem ipsum dolor sit",
                     company: "",
-                    bills_file: "",
+                    // bills_file: "",
                     date: "",
-                    expense_type: ""
                 }
             ]
         };
     },
     computed: {
         ...mapGetters("EXPENSE", ["$expense"]),
-        ...mapGetters("COMPANY", ["$companyList"])
+        ...mapGetters("PAYMENT", ["$paymentList"])
+        // ...mapGetters("COMPANY", ["$companyList"])
     },
     methods: {
       ...mapActions("EXPENSE", [
@@ -170,7 +160,8 @@ export default {
             "addExpense",
             "updateExpense",
         ]),
-        ...mapActions("COMPANY",["fetchCompanyList"]),
+        // ...mapActions("COMPANY",["fetchCompanyList"]),
+        ...mapActions("PAYMENT",["fetchPaymentList"]),
         click() {
             this.dialog = true;
         },
@@ -192,26 +183,56 @@ export default {
             this.resetDelete();
             this.loading = false;
         },
-        async handleAddExpense(){
-            console.log('adding',user);
+        async handleAddExpense(addExpense){
+            console.log('adding', addExpense);
             this.loading = true;
-            // this.create.loading = true;
-            let res = await this.addExpense(expense);
+            this.create.loading = true;
+            let res = await this.addExpense(addExpense);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when creating user')
+             this.enableSnackbar('failed','An error ocured when creating expense')
             } 
             else {
-                this.enableSnackbar('success','User created successfully')
+                this.enableSnackbar('success','Expense created successfully')
             }
             this.resetCreate();
             this.loading = false;
+        },
+        onInputUserDialog(dialog) {
+            if (!dialog) {
+                this.resetUpdate();
+                this.resetCreate();
+            }
+        },
+        // handleAddExpense(){
+
+        // },
+       async handleEditExpense(editData){
+          console.log('adding',editData);
+            this.loading = true;
+            // this.create.loading = true;
+            let res = await this.updateExpense(editData);
+            if (res.error){
+             console.log(res.error);
+             this.enableSnackbar('failed','An error ocured when updating expense')
+            } 
+            else {
+                this.enableSnackbar('success','Expense updated successfully')
+            }
+            this.resetCreate();
+            this.loading = false
+
+        },
+        async onCreate(){
+          this.loading=true
+          await this.onfetchExpense();
+          await this.fetchPaymentList()
+          this.loading=false
         }
     },
     created() {
-        this.onfetchExpense();
-        // this.CompanyList()
-   
+       
+        this.onCreate()
     }
 };
 </script>
