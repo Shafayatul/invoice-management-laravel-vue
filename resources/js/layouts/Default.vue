@@ -78,7 +78,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
-              <v-list-item to='/update-password'>
+              <v-list-item to="/update-password">
                 <v-list-item-icon>
                   <v-icon>mdi-lock-reset</v-icon>
                 </v-list-item-icon>
@@ -130,56 +130,42 @@ export default {
         {
           path: "/",
           name: "Dashboard",
-          icon: "mdi-home",
+          icon: "mdi-chart-box-outline",
         },
-        {
-          path: "/company",
-          name: "Company",
-          icon: "mdi-account-group",
-        },
-        {
-          path: "/users",
-          name: "Users",
-          icon: "mdi-account-group",
-        },
-         {
-          path: "/client",
-          name: "Client",
-          icon: "mdi-account-group",
-        },
+        
  
         {
           path: "/income",
           name: "Income",
-          icon: "mdi-account-group",
+          icon: "mdi-cash-usd",
        
         },
         {
           path: "/expense",
           name: "Expenses",
-          icon: "mdi-account-group",
+          icon: "mdi-cash-remove",
         
         },
         {
           path: "/payment-category",
           name: "Payment Category",
-          icon: "mdi-account-group",
+          icon: "mdi-wallet",
         
         },
         {
           path: "/",
           name: "Invoices",
-          icon: "mdi-account-group",
+          icon: "mdi-newspaper-variant-outline",
           childrens: [
             {
               path: "invoice-details",
               name: "Invoice Details",
-              icon: "mdi-account-group",
+              icon: "mdi-newspaper-plus",
             },
             {
               path: "invoice-history",
               name: "Invoice History",
-              icon: "mdi-account-group",
+              icon: "mdi-newspaper-minus",
             },
           ],
         }
@@ -211,6 +197,23 @@ export default {
       await this.fetchProfile();
       this.isLoaded = true;
       this.toggleLoading(false);
+
+      if(this.$user.role==='super admin') this.routes.splice(1,0,{
+          path: "/company",
+          name: "Company",
+          icon: "mdi-home",
+          
+        },
+        {
+          path: "/users",
+          name: "Users",
+          icon: "mdi-account",
+        },)
+        else if(this.$user.role==='admin')this.routes.splice(1,0, {
+          path: "/client",
+          name: "Client",
+          icon: "mdi-account",
+        },)
     },
     async handleLogout() {
       this.SET({ loading: true });

@@ -66,30 +66,21 @@ const api = {
         delete: id => h(GET, "/client/destroy?client_id=" + id),
         create: data => h(POST, "/client/store", data),
         clientList: () => h(GET, "client/client-data")
-        // block: id => h(GET, "/user/block-or-unblock/" + id),
-        // reAssign: data => h(POST, "user/assign-company", data)
-        // get: id => h(GET, "/users/show/" + id),
-        // search: data => h(POST, "/users/search-employee", data)
     },
     expense: {
         getAll: queries => h(GET, "/expense/index", queries),
         update: (data, id) => h(POST, "/expense/update", data),
         delete: id => h(GET, "/expense/destroy?expense_id=" + id),
         create: data => h(POST, "/expense/store", data)
-        // block: id => h(GET, "/user/block-or-unblock/" + id),
-        // reAssign: data => h(POST, "user/assign-company", data)
-        // get: id => h(GET, "/users/show/" + id),
-        // search: data => h(POST, "/users/search-employee", data)
     },
     income: {
         getAll: queries => h(GET, "/income/index", queries),
         update: (data, id) => h(POST, "/income/update", data),
         delete: id => h(GET, "/income/destroy?income_id=" + id),
         create: data => h(POST, "/income/store", data)
-        // block: id => h(GET, "/user/block-or-unblock/" + id),
-        // reAssign: data => h(POST, "user/assign-company", data)
-        // get: id => h(GET, "/users/show/" + id),
-        // search: data => h(POST, "/users/search-employee", data)
+    },
+    dashboard: {
+        getAll: () => h(GET, "/dashboard-data"),
     }
 };
 
