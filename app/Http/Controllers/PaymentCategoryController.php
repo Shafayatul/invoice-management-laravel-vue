@@ -16,7 +16,7 @@ class PaymentCategoryController extends Controller
     }
 
     public function index(Request $request) {
-        $payment_categories = PaymentCategory::with(['incomes', 'expenses'])->simplePaginate($this->data_per_page);
+        $payment_categories = PaymentCategory::with(['incomes', 'expenses'])->paginate($this->data_per_page);
         return response()->json([
             'payment_categories' => $payment_categories,
             'status'             => 'success',

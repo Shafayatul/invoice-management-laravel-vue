@@ -20,9 +20,9 @@ class ExpenseController extends Controller
 
     public function index(Request $request) {
         if(Auth::user()->role == 'admin'){
-            $expenses = Expense::with(['user', 'category', 'company'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
+            $expenses = Expense::with(['user', 'category', 'company'])->where('company_id', Auth::user()->company_id)->paginate($this->data_per_page);
         }else{
-            $expenses = Expense::with(['user', 'category', 'company'])->simplePaginate($this->data_per_page);
+            $expenses = Expense::with(['user', 'category', 'company'])->paginate($this->data_per_page);
         }
         return response()->json([
             'expenses' => $expenses,

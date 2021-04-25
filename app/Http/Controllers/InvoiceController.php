@@ -25,9 +25,9 @@ class InvoiceController extends Controller {
 
     public function index(Request $request) {
         if(Auth::user()->role == 'admin'){
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->simplePaginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->paginate($this->data_per_page);
         }else{
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->simplePaginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->paginate($this->data_per_page);
         }
         return response()->json([
             'invoices' => $invoices,
@@ -240,11 +240,11 @@ class InvoiceController extends Controller {
             ->whereHas('invoice', function($invoice){
                 $invoice->where('company_id', Auth::user()->company_id);
             })
-            ->simplePaginate($this->data_per_page);
+            ->paginate($this->data_per_page);
         }else{
             $invoice_hostories = InvoiceHistory::with(['client', 'invoice' => function($invoice){
                 $invoice->with(['createdBy', 'companies', 'incomes']);
-            }])->simplePaginate($this->data_per_page);
+            }])->paginate($this->data_per_page);
         }
         return response()->json([
             'invoice_hostories' => $invoice_hostories,

@@ -21,7 +21,7 @@ class UserController extends Controller {
     }
 
     public function index(Request $request) {
-        $users = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->simplePaginate($this->data_per_page);
+        $users = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->paginate($this->data_per_page);
         return response()->json([
             'users' => $users,
             'status'    => 'success',
@@ -59,7 +59,7 @@ class UserController extends Controller {
             'phone'      => 'required|string',
             'email'      => 'required|unique:users,email',
             'role'       => 'required|string|max:10',
-            'password'   => 'required_unless:role,client|confirmed|min:8',
+            'password'   => 'required_unless:role,client|confirmed',
             'company_id' => 'required|exists:companies,id',
         ]);
         if($validation->fails())
