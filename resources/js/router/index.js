@@ -26,15 +26,18 @@ const router = new VueRouter({
                 {
                     path: "company",
                     name: "Company",
-                    component: view("Company")
-                    // meta: {
-                    //     requiresRole: "admindsfds"
-                    // }
+                    component: view("Company"),
+                    meta: {
+                        requiresRole: "super admin"
+                    }
                 },
                 {
                     path: "users",
                     name: "Users",
-                    component: view("Users")
+                    component: view("Users"),
+                    meta: {
+                        requiresRole: "super admin"
+                    }
                 },
                 {
                     path: "income",
@@ -59,7 +62,10 @@ const router = new VueRouter({
                 {
                     path: "client",
                     name: "Client",
-                    component: view("Client")
+                    component: view("Client"),
+                      meta: {
+                        requiresRole: "admin"
+                    }
                 },
                 {
                     path: "invoice-history",

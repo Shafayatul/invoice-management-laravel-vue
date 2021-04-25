@@ -50,7 +50,10 @@
         :headers="headers"
         :items="$income"
         :search="search"
-      >
+      > 
+       <template v-slot:item.createdAt="{ item }">
+               {{new Date().toISOString(item.createdAt).substr(0, 10)}}     
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
             <template v-slot:activator="{ on, attrs }">
@@ -173,13 +176,13 @@ export default {
         },
            async handleDeleteExpense() {
             this.loading = true;
-            let res = await this.deleteExpense(this.deletee.id);
+            let res = await this.deleteIncome(this.deletee.id);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when deleting Expense')
+             this.enableSnackbar('failed','An error ocured when deleting Income')
             } 
             else {
-                this.enableSnackbar('success','Expense deleted successfully')
+                this.enableSnackbar('success','Income deleted successfully')
             }
             this.resetDelete();
             this.loading = false;
@@ -197,6 +200,7 @@ export default {
                 this.enableSnackbar('success','Income created successfully')
             }
             this.resetCreate();
+           
             this.loading = false;
         },
         onInputUserDialog(dialog) {
@@ -212,15 +216,16 @@ export default {
           console.log('adding',editData);
             this.loading = true;
             // this.create.loading = true;
-            let res = await this.updateExpense(editData);
+            let res = await this.updateIncome(editData);
             if (res.error){
              console.log(res.error);
-             this.enableSnackbar('failed','An error ocured when updating expense')
+             this.enableSnackbar('failed','An error ocured when updating income')
             } 
             else {
-                this.enableSnackbar('success','Expense updated successfully')
+                this.enableSnackbar('success','Income updated successfully')
             }
-            this.resetCreate();
+            this.resetUpdate();
+            this.cmDialog=false
             this.loading = false
 
         },

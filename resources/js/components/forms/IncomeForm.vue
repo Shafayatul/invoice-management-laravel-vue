@@ -119,10 +119,9 @@ export default {
                 //     expense_date:new Date(v.expenseDate).toISOString().substr(0, 10),
                 //     bill_file:v.billsFile
                 // };
-                this.income[0].expense_amount=v.expenseAmount,
-                this.income[0].category_id=v.categoryId
-                this.income[0].expense_date=new Date(v.expenseDate).toISOString().substr(0, 10),
-                this.income[0].bill_file=v.billsFile
+                this.income[0].income_amount=v.incomeAmount,
+                this.income[0].category_id=v.categoryId,
+                this.income[0].client_id=v.clientId
             }
         }
     },

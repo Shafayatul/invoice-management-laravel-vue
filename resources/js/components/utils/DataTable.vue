@@ -32,7 +32,7 @@
         :loading="loading"
         :expanded.sync="mExpanded"
         :show-expand="expanded"
-        :items-per-page="options.itemsPerPage"
+        :items-per-page="+options.itemsPerPage"
         item-key="id"
         class="pt-3 pb-5 transparent"
       >
