@@ -8,6 +8,11 @@ const initialState = () => ({
         totalPage: 1,
         perPage: 15
     },
+    paginationHistories:{
+       currentPage: 1,
+        totalPage: 1,
+        perPage: 15
+    },
     invoice: [],
     invoiceHistories: []
 });
@@ -17,22 +22,23 @@ const state = initialState();
 const getters = {
     $pagination: s => s.pagination,
     $invoice: s => s.invoice,
-    $invoiceHistories: s => s.invoiceHistories
+    $invoiceHistories: s => s.invoiceHistories,
+    $paginationHistories: s => s.paginationHistories
 };
 
 const actions = {
-    fetchInvoice: async ({ commit }) => {
+    fetchInvoice: async({ commit }, payload) => {
         // let res = await api.invoice.getAll();
         // console.log(res);
-        let { error, ...data } = await api.invoice.getAll();
+        let { error, ...data } = await api.invoice.getAll(payload);
         console.log(data, "console from store");
         if (error) return { error, ...data };
         commit("SET", {
-            //   pagination: {
-            //       totalPage: data.users.total,
-            //       perPage: data.users.perPage,
-            //       currentPage: data.users.currentPage
-            //   },
+            pagination: {
+                totalPage: data.invoices.total,
+                perPage: data.invoices.perPage,
+                currentPage: data.invoices.currentPage
+            },
             invoice: data.invoices.data
         });
         return data;
@@ -57,18 +63,18 @@ const actions = {
         dispatch("fetchInvoice");
         return res;
     },
-    fetchInvoiceHistories: async ({ commit }) => {
+    fetchInvoiceHistories: async ({ commit },payload) => {
         // let res = await api.invoice.getAll();
         // console.log(res);
-        let { error, ...data } = await api.invoice.getHistories();
+        let { error, ...data } = await api.invoice.getHistories(payload);
         console.log(data, "console from store");
         if (error) return { error, ...data };
         commit("SET", {
-            //   pagination: {
-            //       totalPage: data.users.total,
-            //       perPage: data.users.perPage,
-            //       currentPage: data.users.currentPage
-            //   },
+            paginationHistories: {
+                totalPage: data.invoiceHostories.total,
+                perPage: data.invoiceHostories.perPage,
+                currentPage: data.invoiceHostories.currentPage
+            },
             invoiceHistories: data.invoiceHostories.data
         });
         console.log(data, "fetchInvoiceHistories");

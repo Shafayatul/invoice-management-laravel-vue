@@ -42,6 +42,8 @@
         :headers="headers"
         :items="$invoice"
         :search="search"
+        hide-default-footer
+        :items-per-page="+$pagination.perPage"
       >
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -65,6 +67,13 @@
           </v-menu>
         </template>
       </v-data-table>
+      <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <v-snackbar
@@ -142,7 +151,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters("INVOICE", ["$invoice"]),
+    ...mapGetters("INVOICE", ["$invoice","$pagination"]),
     ...mapGetters("COMPANY", ["$companyList"]),
     ...mapGetters("CLIENT", ["$clientList"])
   },
@@ -158,6 +167,11 @@ export default {
     click(){
       this.dialog=true;
     },
+    async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchInvoice({page,per_page:5});
+            this.tableLoader = false;
+        },
     onInputInvoiceDialog(dialog) {
             if (!dialog) {
                 this.resetUpdate();
@@ -176,7 +190,7 @@ export default {
         },
     async onFetchInvoice() {
             this.tableLoader = true;
-            await this.fetchInvoice();
+            await this.fetchInvoice({per_page:5,page:1});
             this.tableLoader = false;
         },
         async handleAddInvoice(invoiceDetails) {

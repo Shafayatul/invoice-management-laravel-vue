@@ -6,7 +6,7 @@ const initialState = () => ({
     pagination: {
         currentPage: 1,
         totalPage: 1,
-        perPage: 15
+        perPage: 10
     },
     payment: [],
     paymentList:[],
@@ -21,15 +21,15 @@ const getters = {
 };
 
 const actions = {
-    fetchPayment: async ({ commit }) => {
-        let { error, ...data } = await api.payment.getAll();
+    fetchPayment: async ({ commit },payload) => {
+        let { error, ...data } = await api.payment.getAll(payload);
         if (error) return { error, ...data };
         commit("SET", {
-            // pagination: {
-            //   totalPage: data.users.total,
-            //   perPage: data.users.perPage,
-            //   currentPage: data.users.currentPage,
-            // },
+            pagination: {
+                totalPage: data.paymentCategories.total,
+                perPage: data.paymentCategories.perPage,
+                currentPage: data.paymentCategories.currentPage
+            },
             payment: data.paymentCategories.data
         });
         console.log(data);

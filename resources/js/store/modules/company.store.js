@@ -5,8 +5,8 @@ import { mutations } from "../helpers";
 const initialState = () => ({
     pagination: {
         currentPage: 1,
-        totalPage: 1,
-        perPage: 15
+        totalPage: null,
+        perPage: null
     },
     company: [],
     companyList: []
@@ -21,17 +21,17 @@ const getters = {
 };
 
 const actions = {
-    fetchCompany: async ({ commit }) => {
+    fetchCompany: async ({ commit },payload) => {
         // let res = await api.company.getAll();
         // console.log(res);
-        let { error, ...data } = await api.company.getAll();
+        let { error, ...data } = await api.company.getAll(payload);
         if (error) return { error, ...data };
         commit("SET", {
-            //   pagination: {
-            //       totalPage: data.users.total,
-            //       perPage: data.users.perPage,
-            //       currentPage: data.users.currentPage
-            //   },
+            pagination: {
+                totalPage: data.companies.total,
+                perPage: +data.companies.perPage,
+                currentPage: data.companies.currentPage
+            },
             company: data.companies.data
         });
         return data;

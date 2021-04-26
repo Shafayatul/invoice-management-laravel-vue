@@ -39,8 +39,10 @@
         :loading="cardloader"
         loading-text="Loading... Please wait"
         :headers="headers"
-        :items="$users"
+        :items="$users.filter((user)=>user.role !=='super admin')"
         :search="search"
+        hide-default-footer
+        :items-per-page="+$pagination.perPage"
       >
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -80,6 +82,13 @@
           {{ item.isActive =='1'? 'Active' : 'Blocked' }}
         </template>
       </v-data-table>
+      <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -157,7 +166,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("USERS", ["$users"]),
+        ...mapGetters("USERS", ["$users","$pagination"]),
         ...mapGetters("COMPANY", ["$companyList"])
     },
     methods: {
@@ -170,6 +179,12 @@ export default {
             "reAssignCompany"
         ]),
         ...mapActions("COMPANY",["fetchCompanyList"]),
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchUsers({page,per_page:5});
+            this.tableLoader = false;
+        },
+
         onInputUserDialog(dialog) {
             if (!dialog) {
                 this.resetUpdate();
@@ -178,7 +193,7 @@ export default {
         },
         async onFetchUsers() {
             this.tableLoader = true;
-            await this.fetchUsers();
+            await this.fetchUsers({per_page:5,page:1});
             this.tableLoader = false;
         },
         async CompanyList(){

@@ -6,7 +6,7 @@ const initialState = () => ({
   pagination: {
     currentPage: 1,
     totalPage: 1,
-    perPage: 15,
+    perPage: 10,
   },
   users: []
 })
@@ -19,15 +19,15 @@ const getters = {
 }
 
 const actions = {
-    fetchUsers: async ({ commit }) => {
-        let { error, ...data } = await api.users.getAll();
+    fetchUsers: async ({ commit }, payload) => {
+        let { error, ...data } = await api.users.getAll(payload);
         if (error) return { error, ...data };
         commit("SET", {
-            // pagination: {
-            //   totalPage: data.users.total,
-            //   perPage: data.users.perPage,
-            //   currentPage: data.users.currentPage,
-            // },
+            pagination: {
+              totalPage: data.users.total,
+              perPage: +data.users.perPage,
+              currentPage: data.users.currentPage,
+            },
             users: data.users.data
         });
         return data;

@@ -50,7 +50,7 @@
             label="Password"
             v-bind="fieldOptions"
             v-model="user.password"
-            :rules=" isUpdate?'':[rules.required('Password')]"
+            :rules=" isUpdate?[]:[rules.required('Password'),rules.password]"
             prepend-inner-icon="mdi-lock"
             :type="password.show ? 'text' : 'password'"
             :append-icon="password.show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -65,7 +65,7 @@
             v-bind="fieldOptions"
             @click:append="password.show = !password.show"
             v-model="user.password_confirmation"
-            :rules=" isUpdate?'':[
+            :rules=" isUpdate?[]:[
               (v) => password_confirmation(v, user.password),
               rules.required('Confirm Password'),
             ]"

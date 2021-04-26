@@ -6,7 +6,7 @@ const initialState = () => ({
     pagination: {
         currentPage: 1,
         totalPage: 1,
-        perPage: 15
+        perPage: 10
     },
     expense: [],
     companyList: []
@@ -21,17 +21,17 @@ const getters = {
 };
 
 const actions = {
-    fetchExpense: async ({ commit }) => {
+    fetchExpense: async ({ commit },paylaod) => {
         // let res = await api.company.getAll();
         // console.log(res);
-        let { error, ...data } = await api.expense.getAll();
+        let { error, ...data } = await api.expense.getAll(paylaod);
         if (error) return { error, ...data };
         commit("SET", {
-            //   pagination: {
-            //       totalPage: data.users.total,
-            //       perPage: data.users.perPage,
-            //       currentPage: data.users.currentPage
-            //   },
+            pagination: {
+                totalPage: data.expenses.total,
+                perPage: data.expenses.perPage,
+                currentPage: data.expenses.currentPage
+            },
             expense: data.expenses.data
         });
         return data;

@@ -8,6 +8,8 @@
                 :headers="headers"
                 :items="$invoiceHistories"
                 :search="search"
+                hide-default-footer
+                :items-per-page="+$paginationHistories.perPage"
             >
                 <!-- <template v-slot:item.Status="{ item }">
                     {{ "sdadsadas" }}
@@ -28,6 +30,13 @@
                     <!-- {{item.isPaid}} -->
                 </template>
             </v-data-table>
+            <div class="text-center pt-2">
+      <v-pagination
+        :value='$paginationHistories.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($paginationHistories.totalPage/ $paginationHistories.perPage)"
+      ></v-pagination>
+    </div>
         </v-card>
         <CircleLoader
             center
@@ -73,14 +82,19 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("INVOICE", ["$invoiceHistories"])
+        ...mapGetters("INVOICE", ["$invoiceHistories","$paginationHistories"])
     },
     methods: {
         ...mapActions("INVOICE", ["fetchInvoiceHistories"]),
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchInvoiceHistories({page,per_page:5});
+            this.tableLoader = false;
+        },
         async invoiceHistories() {
             this.cardloader = true;
             this.cardloader = true;
-            await this.fetchInvoiceHistories();
+            await this.fetchInvoiceHistories({per_page:5,page:1});
             this.cardloader = false;
             this.cardloader = false;
         }

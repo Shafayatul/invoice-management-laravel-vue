@@ -49,6 +49,8 @@
         :headers="headers"
         :items="$expense"
         :search="search"
+        hide-default-footer
+        :items-per-page="+$pagination.perPage"
       >
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -72,6 +74,13 @@
           </v-menu>
         </template>
       </v-data-table>
+      <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -149,7 +158,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("EXPENSE", ["$expense"]),
+        ...mapGetters("EXPENSE", ["$expense","$pagination"]),
         ...mapGetters("PAYMENT", ["$paymentList"])
         // ...mapGetters("COMPANY", ["$companyList"])
     },
@@ -162,12 +171,17 @@ export default {
         ]),
         // ...mapActions("COMPANY",["fetchCompanyList"]),
         ...mapActions("PAYMENT",["fetchPaymentList"]),
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchExpense({page,per_page:5});
+            this.tableLoader = false;
+        },
         click() {
             this.dialog = true;
         },
         async onfetchExpense() {
             this.tableLoader = true;
-            await this.fetchExpense();
+            await this.fetchExpense({per_page:5,page:1});
             this.tableLoader = false;
         },
            async handleDeleteExpense() {

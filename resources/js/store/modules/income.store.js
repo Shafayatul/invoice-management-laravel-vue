@@ -21,18 +21,18 @@ const getters = {
 };
 
 const actions = {
-    fetchIncome: async ({ commit }) => {
+    fetchIncome: async ({ commit },payload) => {
         // let res = await api.company.getAll();
         // console.log(res);
-        let { error, ...data } = await api.income.getAll();
+        let { error, ...data } = await api.income.getAll(payload);
         if (error) return { error, ...data };
         commit("SET", {
-            //   pagination: {
-            //       totalPage: data.users.total,
-            //       perPage: data.users.perPage,
-            //       currentPage: data.users.currentPage
-            //   },
-             
+            pagination: {
+                totalPage: data.incomes.total,
+                perPage: data.incomes.perPage,
+                currentPage: data.incomes.currentPage
+            },
+
             income: data.incomes.data
         });
           console.log(data);

@@ -16,6 +16,8 @@
             @editClient="handleEditClient"
             @addClient="handleAddClient"
             :reAssign="reAssign"
+             hide-default-footer
+             :items-per-page="+$pagination.perPage"
           />
         </v-card-text>
       </v-card>
@@ -79,6 +81,13 @@
           {{ item.isActive =='1'? 'Active' : 'Blocked' }}
         </template>
       </v-data-table>
+       <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -156,7 +165,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("CLIENT", ["$client"]),
+        ...mapGetters("CLIENT", ["$client","$pagination"]),
         ...mapGetters("COMPANY", ["$companyList"]),
         ...mapGetters("AUTH", [ "$user"]),
     },
@@ -177,9 +186,14 @@ export default {
                 this.resetCreate();
             }
         },
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchClient({page,per_page:5});
+            this.tableLoader = false;
+        },
         async onFetchClient() {
             this.tableLoader = true;
-            await this.fetchClient();
+            await this.fetchClient({per_page:5,page:1});
             this.tableLoader = false;
         },
         async CompanyList(){

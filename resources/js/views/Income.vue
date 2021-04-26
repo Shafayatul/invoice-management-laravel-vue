@@ -76,6 +76,13 @@
           </v-menu>
         </template>
       </v-data-table>
+          <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -153,7 +160,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("INCOME", ["$income"]),
+        ...mapGetters("INCOME", ["$income","$pagination"]),
         ...mapGetters("PAYMENT", ["$paymentList"]),
         ...mapGetters("CLIENT", ["$clientList"])
     },
@@ -169,9 +176,14 @@ export default {
         click() {
             this.dialog = true;
         },
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchIncome({page,per_page:5});
+            this.tableLoader = false;
+        },
         async onfetchIncome() {
             this.tableLoader = true;
-            await this.fetchIncome();
+            await this.fetchIncome({per_page:5,page:1});
             this.tableLoader = false;
         },
            async handleDeleteExpense() {

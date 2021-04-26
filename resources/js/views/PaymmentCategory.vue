@@ -38,6 +38,8 @@
         :headers="headers"
         :items="$payment"
         :search="search"
+         hide-default-footer
+        :items-per-page="+$pagination.perPage"
       >
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -65,6 +67,13 @@
          
         </template>
       </v-data-table>
+       <div class="text-center pt-2">
+      <v-pagination
+        :value='$pagination.currentPage'
+        @input="onChangePage"
+        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
+      ></v-pagination>
+    </div>
       <!-- Start Confirm delete action -->
       <confirm
         title="Are you sure to delete?"
@@ -138,7 +147,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("PAYMENT", ["$payment"])
+        ...mapGetters("PAYMENT", ["$payment","$pagination"])
     },
     methods: {
         ...mapActions("PAYMENT", [
@@ -147,6 +156,11 @@ export default {
             "addPayment",
             "updatePayment"
         ]),
+        async onChangePage(page){
+          this.tableLoader = true;
+            await this.fetchPayment({page,per_page:5});
+            this.tableLoader = false;
+        },
         click() {
             this.dialog = true;
         },
@@ -159,7 +173,7 @@ export default {
         },
         async onFetchPayment() {
             this.tableLoader = true;
-            await this.fetchPayment();
+            await this.fetchPayment({per_page:5,page:1});
             this.tableLoader = false;
         },
         async handleAddPayment(payment) {
