@@ -56,14 +56,18 @@ class InvoiceSentClient extends Command
             }
             
             if(Carbon::now() >= $last_mailing_time){
-                $invoice = Invoice::find($history->invoice_id);
                 $client = User::find($history->client_id);
-                Mail::to($client->email)->send(new InvoiceSent($invoice));
-
-                $invoice_history = InvoiceHistory::find($history->id);
-                $invoice_history->last_mailing_time = Carbon::now();
-                $invoice_history->mailing_count = $invoice_history->mailing_count+1;
-                $invoice_history->save();
+                if($client){
+                    $invoice = Invoice::find($history->invoice_id);
+                    
+                    Mail::to($client->email)->send(new InvoiceSent($invoice));
+    
+                    $invoice_history = InvoiceHistory::find($history->id);
+                    $invoice_history->last_mailing_time = Carbon::now();
+                    $invoice_history->mailing_count = $invoice_history->mailing_count+1;
+                    $invoice_history->save();
+                    sleep(1);
+                }
             }
         }
     }
