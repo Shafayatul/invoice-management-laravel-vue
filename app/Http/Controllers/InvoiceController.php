@@ -69,7 +69,7 @@ class InvoiceController extends Controller {
         $invoice->client_id        = $request->client_id;
         $invoice->company_id       = Auth::user()->company_id;
         $invoice->sending_type     = $request->sending_type;
-        $invoice->sending_date     = Carbon::parse($request->sending_date);//->format("Y-m-d H:i:s");
+        $invoice->sending_date     = Carbon::parse($request->sending_date);
         if($request->sending_type == 'one_time'){
             $invoice->recurring_period = 0;
         }else{
@@ -83,13 +83,9 @@ class InvoiceController extends Controller {
             $invoice_hostory->invoice_id        = $invoice->id;
             $invoice_hostory->is_paid           = false;
             $invoice_hostory->amount            = $request->amount;
-            $invoice_hostory->last_mailing_time = Carbon::now();
-            $invoice_hostory->mailing_count     = 1;
+            $invoice_hostory->last_mailing_time = $request->sending_date.' '.Carbon::now()->format("H:i:s");
+            $invoice_hostory->mailing_count     = 0;
             $invoice_hostory->save();
-
-            $client = User::find($request->client_id);
-
-            Mail::to($client->email)->send(new InvoiceSent($invoice));
         }else{
             $invoice->delete();
         }
@@ -123,18 +119,18 @@ class InvoiceController extends Controller {
             return response()->json(['error' => 'Invoice Not Found'], 404);
         }
 
-        $invoice->created_by       = Auth::id();
-        $invoice->client_id        = $request->client_id;
-        $invoice->company_id       = Auth::user()->company_id;
-        $invoice->sending_type     = $request->sending_type;
-        $invoice->sending_date     = Carbon::parse($request->sending_date);//->format("Y-m-d H:i:s");
+        // $invoice->created_by       = Auth::id();
+        // $invoice->client_id        = $request->client_id;
+        // $invoice->company_id       = Auth::user()->company_id;
+        // $invoice->sending_type     = $request->sending_type;
+        // $invoice->sending_date     = Carbon::parse($request->sending_date);//->format("Y-m-d H:i:s");
         $invoice->recurring_period = $request->recurring_period;
         $invoice->save();
 
         if($invoice){
             $invoice_hostory             = InvoiceHistory::where('invoice_id', $invoice->id)->first();
-            $invoice_hostory->client_id  = $request->client_id;
-            $invoice_hostory->invoice_id = $invoice->id;
+            // $invoice_hostory->client_id  = $request->client_id;
+            // $invoice_hostory->invoice_id = $invoice->id;
             $invoice_hostory->amount     = $request->amount;
             $invoice_hostory->save();
         }else{
@@ -193,10 +189,9 @@ class InvoiceController extends Controller {
             ], 404);
         }
 
-        $invoice_hostory->is_paid = true;
-        $invoice_hostory->save();
+        
 
-        if($invoice_hostory->is_paid == true){
+        if($invoice_hostory->is_paid == false){
             if($request->hasFile('receipt_file')){
                 $receipt_file = $request->file('receipt_file');
                 $receipt_file_name = uniqid().strtolower($receipt_file->getClientOriginalExtension());
@@ -218,6 +213,9 @@ class InvoiceController extends Controller {
             $income->receipt_file = $path;
             $income->save();
 
+            $invoice_hostory->is_paid = true;
+            $invoice_hostory->save();
+
             if ($invoice_hostory->id > 0)
                 return response()->json([
                     'success' => true
@@ -225,7 +223,7 @@ class InvoiceController extends Controller {
             else
                 return response()->json([
                     'success' => false,
-                    'message' => 'Expense can not be updated'
+                    'message' => 'Invoice Not Paid'
                 ], 500);
         }
 

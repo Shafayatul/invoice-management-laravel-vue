@@ -43,10 +43,18 @@ class InvoiceSentClient extends Command
      */
     public function handle()
     {
-        $invoices = Invoice::where('sending_type', 'recurring')->select('id')->get()->toArray();
+        $invoices = Invoice::select('id')->get()->toArray();
         $invoice_histories = InvoiceHistory::withTrashed('invoice')->whereIn('invoice_id', $invoices)->where('is_paid', 0)->get();
         foreach($invoice_histories as $history){
             $last_mailing_time = Carbon::parse($history->last_mailing_time)->addDays($history->invoice->recurring_period);
+            if($history->invoice->sending_type == 'one_time' && $history->mailing_count == 0){
+                $last_mailing_time = Carbon::parse($history->last_mailing_time);
+            }
+            
+            if($history->invoice->sending_type == 'recurring' && $history->mailing_count == 0){
+                $last_mailing_time = Carbon::parse($history->last_mailing_time);
+            }
+            
             if(Carbon::now() >= $last_mailing_time){
                 $invoice = Invoice::find($history->invoice_id);
                 $client = User::find($history->client_id);
