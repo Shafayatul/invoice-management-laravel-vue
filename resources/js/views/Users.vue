@@ -15,7 +15,7 @@
             :companyList="$companyList"
             @editUser="handleEditUser"
             @addUser="handleAddUser"
-            @reAssignUser=  handleReassignUser
+            @reAssignUser="handleReassignUser"
             :reAssign="reAssign"
           />
         </v-card-text>
@@ -39,7 +39,7 @@
         :loading="cardloader"
         loading-text="Loading... Please wait"
         :headers="headers"
-        :items="$users.filter((user)=>user.role !=='super admin')"
+        :items="$users.filter((user) => user.role !== 'super admin')"
         :search="search"
         hide-default-footer
         :items-per-page="+$pagination.perPage"
@@ -62,14 +62,24 @@
                 <v-icon color="error" class="mr-2">mdi-delete</v-icon>
                 Delete
               </v-list-item>
-               <v-divider></v-divider>
-               <v-list-item @click="handleBlockUser(item.id,item.isActive)" dense link>
-                <v-icon size="20" color="error" class="mr-3">mdi-block-helper</v-icon>
-                {{ item.isActive =='1'? 'Block' : 'Unblock' }}
+              <v-divider></v-divider>
+              <v-list-item
+                @click="handleBlockUser(item.id, item.isActive)"
+                dense
+                link
+              >
+                <v-icon size="20" color="error" class="mr-3"
+                  >mdi-block-helper</v-icon
+                >
+                {{ item.isActive == "1" ? "Block" : "Unblock" }}
               </v-list-item>
               <v-divider></v-divider>
-              <v-list-item  @click="initUpdate(item),reAssign=true" dense link>
-                <v-icon  color="error" class="mr-3">mdi-update</v-icon>
+              <v-list-item
+                @click="initUpdate(item), (reAssign = true)"
+                dense
+                link
+              >
+                <v-icon color="error" class="mr-3">mdi-update</v-icon>
                 Change Company
               </v-list-item>
             </v-list>
@@ -79,16 +89,16 @@
           {{ item.company.name }}
         </template>
         <template v-slot:item.isActive="{ item }">
-          {{ item.isActive =='1'? 'Active' : 'Blocked' }}
+          {{ item.isActive == "1" ? "Active" : "Blocked" }}
         </template>
       </v-data-table>
       <div class="text-center pt-2">
-      <v-pagination
-        :value='$pagination.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
-      ></v-pagination>
-    </div>
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -181,7 +191,7 @@ export default {
         ...mapActions("COMPANY",["fetchCompanyList"]),
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchUsers({page,per_page:5});
+            await this.fetchUsers({page,per_page:10});
             this.tableLoader = false;
         },
 
@@ -193,7 +203,7 @@ export default {
         },
         async onFetchUsers() {
             this.tableLoader = true;
-            await this.fetchUsers({per_page:5,page:1});
+            await this.fetchUsers({per_page:10,page:1});
             this.tableLoader = false;
         },
         async CompanyList(){

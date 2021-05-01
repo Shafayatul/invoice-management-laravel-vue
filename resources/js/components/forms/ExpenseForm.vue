@@ -1,135 +1,135 @@
 <template>
-    <v-card class="mt-2">
-        <v-card-title
-            ><span class="mx-auto"
-                >{{ isUpdate ? "Edit Expense" : "Create Expense" }}
-            </span></v-card-title
+  <v-card class="mt-2">
+    <v-card-title
+      ><span class="mx-auto"
+        >{{ isUpdate ? "Edit Expense" : "Create Expense" }}
+      </span></v-card-title
+    >
+    <v-card-text>
+      <v-form
+        lazy-validation
+        v-model="isValid"
+        ref="ExpenseForm"
+        @submit.prevent="onSubmit"
+      >
+        <v-card
+          class="mb-2 pa-2 pt-6"
+          v-for="(expense, index) in expenses"
+          :key="index"
+          outlined
         >
-        <v-card-text>
-            <v-form
-                lazy-validation
-                v-model="isValid"
-                ref="ExpenseForm"
-                @submit.prevent="onSubmit"
-            >
-                <v-card
-                    class="mb-2 pa-2 pt-6"
-                    v-for="(expense, index) in expenses"
-                    :key="index"
-                    outlined
+          <v-btn
+            class="fab-btn-right ma-1"
+            @click="expenses.splice(index, 1)"
+            icon
+          >
+            <v-icon color="red">mdi-close</v-icon>
+          </v-btn>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12" sm="6" md="3">
+                <v-select
+                  v-model="expense.category_id"
+                  :rules="[rules.required('Category')]"
+                  :items="paymentList"
+                  item-text="name"
+                  item-value="id"
+                  label="Category"
+                  v-bind="fieldOptions"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6" md="3">
+                <v-menu
+                  :ref="'menu-' + index"
+                  v-model="expense.menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="expense.expense_date"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
                 >
-                    <v-btn
-                        class="fab-btn-right ma-1"
-                        @click="expenses.splice(index, 1)"
-                        icon
-                    >
-                        <v-icon color="red">mdi-close</v-icon>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="expense.expense_date"
+                      :rules="[rules.required('Expense Date')]"
+                      dense
+                      outlined
+                      hide-details="auto"
+                      label="Expense Date"
+                      prepend-innder-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="expense.expense_date"
+                    no-title
+                    scrollable
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="expense.menu = false">
+                      Cancel
                     </v-btn>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12" sm="6" md="3">
-                                <v-select
-                                    v-model="expense.category_id"
-                                    :items="paymentList"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Category"
-                                    v-bind="fieldOptions"
-                                />
-                            </v-col>
-          
-                            <v-col cols="12" sm="6" md="3">
-                                <v-menu
-                                    :ref="'menu-' + index"
-                                    v-model="expense.menu"
-                                    :close-on-content-click="false"
-                                    :return-value.sync="expense.expense_date"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="auto"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                            v-model="expense.expense_date"
-                                            dense
-                                            outlined
-                                            hide-details="auto"
-                                            label="Expense Date"
-                                            prepend-innder-icon="mdi-calendar"
-                                            readonly
-                                            v-bind="attrs"
-                                            v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                        v-model="expense.expense_date"
-                                        no-title
-                                        scrollable
-                                    >
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                            text
-                                            color="primary"
-                                            @click="expense.menu = false"
-                                        >
-                                            Cancel
-                                        </v-btn>
-                                        <!-- $refs['menu-'+index][0].$el -->
-                                        <v-btn
-                                            text
-                                            color="primary"
-                                            @click="
-                                                $refs['menu-' + index][0].save(
-                                                    expense.expense_date
-                                                )
-                                            "
-                                        >
-                                            OK
-                                        </v-btn>
-                                    </v-date-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="3">
-                                <v-text-field
-                                    v-model="expense.expense_amount"
-                                    v-bind="fieldOptions"
-                                    label="Amount"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="3">
-                                <v-file-input
-                                    @change="fileInput($event, index)"
-                                    v-bind="fieldOptions"
-                                    label="Bills files"
-                                ></v-file-input>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-form>
-        </v-card-text>
-        <v-card-actions class="mb-1 justify-end">
-            <v-btn @click="handleExpense" color="success">Confirm</v-btn>
-            <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
-                <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
-            >
-        </v-card-actions>
-    </v-card>
+                    <!-- $refs['menu-'+index][0].$el -->
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="
+                        $refs['menu-' + index][0].save(expense.expense_date)
+                      "
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <v-text-field
+                  v-model="expense.expense_amount"
+                  :rules="[rules.required('Amount')]"
+                  v-bind="fieldOptions"
+                  label="Amount"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="3">
+                <v-file-input
+                  @change="fileInput($event, index)"
+                  v-bind="fieldOptions"
+                  label="Bills files"
+                ></v-file-input>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-form>
+    </v-card-text>
+    <v-card-actions class="mb-1 justify-end">
+      <v-btn @click="handleExpense" color="success">Confirm</v-btn>
+      <v-btn class="mr-2" @click="onAddMoreExpense" color="primary">
+        <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 import formFieldMixin from "@/mixins/formFieldMixin";
+import { createFormMixin } from "@/mixins/form-mixin";
 const newExpenseItem = () => ({
     expense_amount: null,
     bill_file: "",
     category_id: null,
-    expense_date: new Date().toISOString().substr(0, 10),
+    expense_date:  null,
     menu: false
 });
 // expense_id:'',
 export default {
     name: "ExpensesForm",
-    mixins: [formFieldMixin],
+  mixins: [formFieldMixin,createFormMixin({
+      rules: ["required"],
+    })],
     props: {
         isUpdate: Boolean,
         data: Object,
@@ -143,7 +143,7 @@ export default {
         return {
             isValid: false,
             expenses: [newExpenseItem()],
-            date: new Date().toISOString().substr(0, 10),
+            date: null,
             menu: false,
             ExpensetList: [
                 {

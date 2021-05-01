@@ -110,7 +110,7 @@
     </v-form>
 
     <v-btn :loading='loading' block class="my-3" color="primary" @click="handleInvoice">
-      ADD
+      {{ isUpdate ? "Confirm" : "Add" }}
     </v-btn>
   </div>
 </template>

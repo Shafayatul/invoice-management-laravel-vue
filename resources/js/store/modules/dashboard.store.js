@@ -21,7 +21,7 @@ const getters = {
     $lastMonthUnPaidInvoiceValue: s => s.lastMonthUnPaidInvoiceValue,
     $lastMonthIncome: s => s.lastMonthIncome,
     $lastMonthExpense: s => s.lastMonthExpense,
-    $lastMonthDate: s => s.lastMonthDate
+    $lastMonthDate: s => s.lastMonthDate.reverse()
 };
 
 const actions = {

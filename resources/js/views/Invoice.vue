@@ -68,12 +68,12 @@
         </template>
       </v-data-table>
       <div class="text-center pt-2">
-      <v-pagination
-        :value='$pagination.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
-      ></v-pagination>
-    </div>
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <v-snackbar
@@ -169,7 +169,7 @@ export default {
     },
     async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchInvoice({page,per_page:5});
+            await this.fetchInvoice({page,per_page:10});
             this.tableLoader = false;
         },
     onInputInvoiceDialog(dialog) {
@@ -190,7 +190,7 @@ export default {
         },
     async onFetchInvoice() {
             this.tableLoader = true;
-            await this.fetchInvoice({per_page:5,page:1});
+            await this.fetchInvoice({per_page:10,page:1});
             this.tableLoader = false;
         },
         async handleAddInvoice(invoiceDetails) {

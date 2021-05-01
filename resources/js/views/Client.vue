@@ -16,8 +16,8 @@
             @editClient="handleEditClient"
             @addClient="handleAddClient"
             :reAssign="reAssign"
-             hide-default-footer
-             :items-per-page="+$pagination.perPage"
+            hide-default-footer
+            :items-per-page="+$pagination.perPage"
           />
         </v-card-text>
       </v-card>
@@ -61,7 +61,7 @@
                 <v-icon color="error" class="mr-2">mdi-delete</v-icon>
                 Delete
               </v-list-item>
-               <!-- <v-divider></v-divider>
+              <!-- <v-divider></v-divider>
                <v-list-item @click="handleBlockUser(item.id,item.isActive)" dense link>
                 <v-icon size="20" color="error" class="mr-3">mdi-block-helper</v-icon>
                 {{ item.isActive =='1'? 'Block' : 'Unblock' }}
@@ -78,16 +78,16 @@
           {{ item.company.name }}
         </template>
         <template v-slot:item.isActive="{ item }">
-          {{ item.isActive =='1'? 'Active' : 'Blocked' }}
+          {{ item.isActive == "1" ? "Active" : "Blocked" }}
         </template>
       </v-data-table>
-       <div class="text-center pt-2">
-      <v-pagination
-        :value='$pagination.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
-      ></v-pagination>
-    </div>
+      <div class="text-center pt-2">
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -188,12 +188,12 @@ export default {
         },
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchClient({page,per_page:5});
+            await this.fetchClient({page,per_page:10});
             this.tableLoader = false;
         },
         async onFetchClient() {
             this.tableLoader = true;
-            await this.fetchClient({per_page:5,page:1});
+            await this.fetchClient({per_page:10,page:1});
             this.tableLoader = false;
         },
         async CompanyList(){

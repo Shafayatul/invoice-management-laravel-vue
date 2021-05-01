@@ -10,6 +10,7 @@
         <v-col cols="12" md="12" lg="12">
           <v-select
             v-model="expenses.category_id"
+            :rules="[rules.required('Category')]"
             label="Category"
             v-bind="fieldOptions"
           />
@@ -17,6 +18,7 @@
         <v-col cols="12" md="12" lg="12">
           <v-text-field
             v-model="expenses.category_id"
+            :rules="[rules.required('Email')]"
             v-bind="fieldOptions"
             label="Email"
           ></v-text-field>
@@ -24,6 +26,7 @@
         <v-col cols="12" md="12" lg="12">
           <v-text-field
             v-model="expenses.company_id"
+            :rules="[rules.required('Email')]"
             v-bind="fieldOptions"
             label="Password"
           ></v-text-field>

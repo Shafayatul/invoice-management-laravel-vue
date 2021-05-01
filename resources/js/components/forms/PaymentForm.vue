@@ -1,51 +1,48 @@
 <template>
-    <div>
-        <v-card-title>
-            <span class="mx-auto"
-                >{{ isUpdate ? "Edit Payment" : "Create Payment" }}
-            </span>
-        </v-card-title>
-        <v-form
-            lazy-validation
-            v-model="isValid"
-            ref="paymentForm"
-            @submit.prevent="handlePayment"
-        >
-            <v-row>
-                <v-col cols="12" md="12" lg="12">
-                    <v-text-field
-                        v-model="payment.name"
-                        :rules="[rules.required('Payemnt Name')]"
-                        label="Payemnt Name"
-                        v-bind="fieldOptions"
-                    />
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-select
-                        v-model="payment.type"
-                        item-value="id"
-                        item-text="name"
-                        :rules="[rules.required('Payemnt Type')]"
-                        label="Payemnt Type"
-                        v-bind="fieldOptions"
-                        :items="paymentList"
-                    />
-                </v-col>
-                <v-col cols="12" md="12" lg="12">
-                    <v-textarea
-                        v-model="payment.details"
-                        :rules="[rules.required('Payemnt Details')]"
-                        v-bind="fieldOptions"
-                        label="details"
-                    ></v-textarea>
-                </v-col>
-            </v-row>
-        </v-form>
+  <div>
+    <v-card-title>
+      <span class="mx-auto"
+        >{{ isUpdate ? "Edit Payment" : "Create Payment" }}
+      </span>
+    </v-card-title>
+    <v-form
+      lazy-validation
+      v-model="isValid"
+      ref="paymentForm"
+      @submit.prevent="handlePayment"
+    >
+      <v-row>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            v-model="payment.name"
+            :rules="[rules.required('Payemnt Name')]"
+            label="Payemnt Name"
+            v-bind="fieldOptions"
+          />
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            v-model="payment.type"
+            :rules="[rules.required('Payemnt Type')]"
+            label="Payemnt Type"
+            v-bind="fieldOptions"
+          />
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-textarea
+            v-model="payment.details"
+            :rules="[rules.required('Payemnt Details')]"
+            v-bind="fieldOptions"
+            label="details"
+          ></v-textarea>
+        </v-col>
+      </v-row>
+    </v-form>
 
-        <v-btn block class="my-3" color="primary" @click="handlePayment">
-            ADD
-        </v-btn>
-    </div>
+    <v-btn block class="my-3" color="primary" @click="handlePayment">
+      ADD
+    </v-btn>
+  </div>
 </template>
 
 <script>

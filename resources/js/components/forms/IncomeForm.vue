@@ -1,75 +1,79 @@
 <template>
-    <v-card class="mt-2">
-        <v-card-title
-            ><span class="mx-auto"
-                >{{ isUpdate ? "Edit Income" : "Create Income" }}
-            </span></v-card-title
+  <v-card class="mt-2">
+    <v-card-title
+      ><span class="mx-auto"
+        >{{ isUpdate ? "Edit Income" : "Create Income" }}
+      </span></v-card-title
+    >
+    <v-card-text>
+      <v-form
+        lazy-validation
+        v-model="isValid"
+        ref="IncomeForm"
+        @submit.prevent="onSubmit"
+      >
+        <v-card
+          class="mb-2 pa-2 pt-6"
+          v-for="(incom, index) in income"
+          :key="index"
+          outlined
         >
-        <v-card-text>
-            <v-form
-                lazy-validation
-                v-model="isValid"
-                ref="IncomeForm"
-                @submit.prevent="onSubmit"
-            >
-                <v-card
-                    class="mb-2 pa-2 pt-6"
-                    v-for="(income, index) in income"
-                    :key="index"
-                    outlined
-                >
-                    <v-btn
-                        class="fab-btn-right ma-1"
-                        @click="income.splice(index, 1)"
-                        icon
-                    >
-                        <v-icon color="red">mdi-close</v-icon>
-                    </v-btn>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                    v-model="income.category_id"
-                                    :items="paymentList"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Category"
-                                    v-bind="fieldOptions"
-                                />
-                            </v-col>
-                            <v-col cols="12" sm="6" md="4">
-                                <v-select
-                                    v-model="income.client_id"
-                                    :items="clientList"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Client"
-                                    v-bind="fieldOptions"
-                                />
-                            </v-col>
-                            <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                    v-model="income.income_amount"
-                                    v-bind="fieldOptions"
-                                    label="Amount"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-form>
-        </v-card-text>
-        <v-card-actions class="mb-1 justify-end">
-            <v-btn @click="handleIncome" color="success">Confirm</v-btn>
-            <v-btn class="mr-2" @click="onAddMoreIncome" color="primary">
-                <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
-            >
-        </v-card-actions>
-    </v-card>
+          <v-btn
+            class="fab-btn-right ma-1"
+            @click="income.splice(index, 1)"
+            icon
+          >
+            <v-icon color="red">mdi-close</v-icon>
+          </v-btn>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  v-model="incom.category_id"
+                  :rules="[rules.required('Category')]"
+                  :items="paymentList"
+                  item-text="name"
+                  item-value="id"
+                  label="Category"
+                  v-bind="fieldOptions"
+                />
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-select
+                  v-model="incom.client_id"
+                  :rules="[rules.required('Client')]"
+                  :items="clientList"
+                  item-text="name"
+                  item-value="id"
+                  label="Client"
+                  v-bind="fieldOptions"
+                />
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="incom.income_amount"
+                  :rules="[rules.required('Amount')]"
+                  v-bind="fieldOptions"
+                  label="Amount"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-form>
+    </v-card-text>
+    <v-card-actions class="mb-1 justify-end">
+      <v-btn @click="handleIncome" color="success">Confirm</v-btn>
+      <v-btn class="mr-2" @click="onAddMoreIncome" color="primary">
+        <v-icon class="mr-1">mdi-plus-box</v-icon> ADD More</v-btn
+      >
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 import formFieldMixin from "@/mixins/formFieldMixin";
+import { createFormMixin } from "@/mixins/form-mixin";
 const newIncomeItem = () => ({
     income_amount:null,
     client_id: null,
@@ -78,7 +82,9 @@ const newIncomeItem = () => ({
 // expense_id:'',
 export default {
     name: "incomeForm",
-    mixins: [formFieldMixin],
+    mixins: [formFieldMixin,createFormMixin({
+      rules: ["required"],
+    })],
     props: {
         isUpdate: Boolean,
         data: Object,
@@ -93,7 +99,7 @@ export default {
         return {
             isValid: false,
             income: [newIncomeItem()],
-            date: new Date().toISOString().substr(0, 10),
+            date: null,
             menu: false,
             // ExpensetList: [
             //     {

@@ -85,7 +85,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-btn v-if="!this.reAssign" block @click="handleUser" class="my-3" color="primary"> ADD </v-btn>
+    <v-btn v-if="!this.reAssign" block @click="handleUser" class="my-3" color="primary"> {{ isUpdate ? "Confirm" : "Add" }}</v-btn>
     <v-btn v-else block @click="handleReassignUser" class="my-3" color="primary"> Re-Assign Company </v-btn>
   </div>
 </template>

@@ -75,12 +75,12 @@
         </template>
       </v-data-table>
       <div class="text-center pt-2">
-      <v-pagination
-        :value='$pagination.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
-      ></v-pagination>
-    </div>
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -173,7 +173,7 @@ export default {
         ...mapActions("PAYMENT",["fetchPaymentList"]),
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchExpense({page,per_page:5});
+            await this.fetchExpense({page,per_page:10});
             this.tableLoader = false;
         },
         click() {
@@ -181,7 +181,7 @@ export default {
         },
         async onfetchExpense() {
             this.tableLoader = true;
-            await this.fetchExpense({per_page:5,page:1});
+            await this.fetchExpense({per_page:10,page:1});
             this.tableLoader = false;
         },
            async handleDeleteExpense() {

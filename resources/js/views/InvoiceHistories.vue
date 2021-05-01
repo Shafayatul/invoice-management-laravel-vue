@@ -1,51 +1,40 @@
 <template>
-    <div>
-        <v-card>
-            <v-card-title> Invoice Histories </v-card-title>
-            <v-data-table
-                :loading="cardloader"
-                loading-text="Loading... Please wait"
-                :headers="headers"
-                :items="$invoiceHistories"
-                :search="search"
-                hide-default-footer
-                :items-per-page="+$paginationHistories.perPage"
-            >
-                <!-- <template v-slot:item.Status="{ item }">
+  <div>
+    <v-card>
+      <v-card-title> Invoice Histories </v-card-title>
+      <v-data-table
+        :loading="cardloader"
+        loading-text="Loading... Please wait"
+        :headers="headers"
+        :items="$invoiceHistories"
+        :search="search"
+        hide-default-footer
+        :items-per-page="+$paginationHistories.perPage"
+      >
+        <!-- <template v-slot:item.Status="{ item }">
                     {{ "sdadsadas" }}
                 </template> -->
-                <template v-slot:item.isPaid="{ item }">
-                    <v-chip
-                        small
-                        :color="
-                            item.isPaid === '1' ? 'success' : 'error'
-                        "
-                    >
-                        {{
-                            item.isPaid === '1'
-                                ? "Paid"
-                                : "Pending"
-                        }}</v-chip
-                    >
-                    <!-- {{item.isPaid}} -->
-                </template>
-            </v-data-table>
-            <div class="text-center pt-2">
-      <v-pagination
-        :value='$paginationHistories.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($paginationHistories.totalPage/ $paginationHistories.perPage)"
-      ></v-pagination>
-    </div>
-        </v-card>
-        <CircleLoader
-            center
-            v-if="loading"
-            size="84"
-            speed="1"
-            border-width="3"
-        />
-    </div>
+        <template v-slot:item.isPaid="{ item }">
+          <v-chip small :color="item.isPaid === '1' ? 'success' : 'error'">
+            {{ item.isPaid === "1" ? "Paid" : "Pending" }}</v-chip
+          >
+          <!-- {{item.isPaid}} -->
+        </template>
+      </v-data-table>
+      <div class="text-center pt-2">
+        <v-pagination
+          :value="$paginationHistories.currentPage"
+          @input="onChangePage"
+          :length="
+            Math.ceil(
+              $paginationHistories.totalPage / $paginationHistories.perPage
+            )
+          "
+        ></v-pagination>
+      </div>
+    </v-card>
+    <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
+  </div>
 </template>
 
 <script>
@@ -88,13 +77,13 @@ export default {
         ...mapActions("INVOICE", ["fetchInvoiceHistories"]),
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchInvoiceHistories({page,per_page:5});
+            await this.fetchInvoiceHistories({page,per_page:10});
             this.tableLoader = false;
         },
         async invoiceHistories() {
             this.cardloader = true;
             this.cardloader = true;
-            await this.fetchInvoiceHistories({per_page:5,page:1});
+            await this.fetchInvoiceHistories({per_page:10,page:1});
             this.cardloader = false;
             this.cardloader = false;
         }

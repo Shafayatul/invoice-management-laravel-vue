@@ -32,7 +32,7 @@
     </v-dialog>
     <v-card>
       <v-card-title>
-        Expenses
+        Incomes
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -50,9 +50,10 @@
         :headers="headers"
         :items="$income"
         :search="search"
-      > 
-       <template v-slot:item.createdAt="{ item }">
-               {{new Date().toISOString(item.createdAt).substr(0, 10)}}     
+        hide-default-footer
+      >
+        <template v-slot:item.createdAt="{ item }">
+          {{ new Date().toISOString(item.createdAt).substr(0, 10) }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -76,13 +77,13 @@
           </v-menu>
         </template>
       </v-data-table>
-          <div class="text-center pt-2">
-      <v-pagination
-        :value='$pagination.currentPage'
-        @input="onChangePage"
-        :length="Math.ceil($pagination.totalPage/ $pagination.perPage)"
-      ></v-pagination>
-    </div>
+      <div class="text-center pt-2">
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
     </v-card>
     <fabCreateButton @click="initCreate()" />
     <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
@@ -100,7 +101,7 @@
         subtitle="Once you delete, this action can't be undone"
         v-model="deletee.dialog"
         :loading="deletee.loading"
-        @yes="handleDeleteExpense"
+        @yes="handleDeleteIncome"
         @no="resetDelete"
       />
     </v-snackbar>
@@ -178,15 +179,15 @@ export default {
         },
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchIncome({page,per_page:5});
+            await this.fetchIncome({page,per_page:10});
             this.tableLoader = false;
         },
         async onfetchIncome() {
             this.tableLoader = true;
-            await this.fetchIncome({per_page:5,page:1});
+            await this.fetchIncome({per_page:10,page:1});
             this.tableLoader = false;
         },
-           async handleDeleteExpense() {
+           async handleDeleteIncome() {
             this.loading = true;
             let res = await this.deleteIncome(this.deletee.id);
             if (res.error){
@@ -197,6 +198,7 @@ export default {
                 this.enableSnackbar('success','Income deleted successfully')
             }
             this.resetDelete();
+            await this.onfetchIncome();
             this.loading = false;
         },
         async handleAddIncome(addExpense){

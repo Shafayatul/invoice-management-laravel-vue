@@ -32,7 +32,7 @@
     </v-form>
     
       <v-btn block class="my-3" color="primary" @click="handleCompany"  >
-        ADD
+        {{ isUpdate ? "Confirm" : "Add" }}
       </v-btn>
   </div>
 </template>

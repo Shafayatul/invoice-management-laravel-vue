@@ -163,12 +163,12 @@ export default {
         },
         async onChangePage(page){
           this.tableLoader = true;
-            await this.fetchCompany({page,per_page:5});
+            await this.fetchCompany({page,per_page:10});
             this.tableLoader = false;
         },
         async onFetchCompany() {
             this.tableLoader = true;
-            await this.fetchCompany({per_page:5,page:1});
+            await this.fetchCompany({per_page:10,page:1});
             this.tableLoader = false;
         },
         async handleAddCompany(company) {
