@@ -18,6 +18,7 @@
             label="Client"
             :items="clientList"
             item-value="id"
+            :error-messages="errors.clientId && errors.clientId[0]"
             item-text="name"
             v-bind="fieldOptions"
           />
@@ -40,6 +41,7 @@
             v-model="invoiceDetails.sending_type"
             v-bind="fieldOptions"
             :rules="[rules.required('Sending Type')]"
+            :error-messages="errors.sendingType && errors.sendingType[0]"
             label="Sending type"
             :items="paymentList"
             item-value="id"
@@ -62,6 +64,7 @@
                 outlined
                 hide-details="auto"
                 :rules="[rules.required('Sending Date')]"
+                :error-messages="errors.sendingDate && errors.sendingDate[0]"
                 dense
                 label="Sending Date"
                 prepend-inner-icon="mdi-calendar"
@@ -93,9 +96,7 @@
             v-model="invoiceDetails.recurring_period"
             v-bind="fieldOptions"
             label="Recurring Period"
-            :error-messages="
-              errors.recurringPeriod && errors.recurringPeriod[0]
-            "
+            :error-messages="errors.recurringPeriod && errors.recurringPeriod[0]"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="12" lg="12">
@@ -150,7 +151,7 @@ export default {
             ],
             invoiceDetails:{
                client_id: null,
-               sending_date:null,
+               sending_date:new Date().toISOString().substr(0, 10),
                sending_type:'',
                recurring_period:0,
                amount:'',
@@ -180,7 +181,6 @@ export default {
     methods:{
       handleInvoice(){
         if (this.$refs.InvoiceForm.validate()){
-          console.log('handleInvoice');
            this.isUpdate? this.$emit("editInvoice", this.invoiceDetails) : this.$emit("addInvoice", this.invoiceDetails)
         }
       }

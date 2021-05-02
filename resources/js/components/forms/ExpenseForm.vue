@@ -31,6 +31,7 @@
                 <v-select
                   v-model="expense.category_id"
                   :rules="[rules.required('Category')]"
+                  :error-messages="errors.categoryId && errors.categoryId[0]"
                   :items="paymentList"
                   item-text="name"
                   item-value="id"
@@ -53,6 +54,7 @@
                     <v-text-field
                       v-model="expense.expense_date"
                       :rules="[rules.required('Expense Date')]"
+                      :error-messages="errors.expenseDate && errors.expenseDate[0]"
                       dense
                       outlined
                       hide-details="auto"
@@ -89,6 +91,7 @@
                 <v-text-field
                   v-model="expense.expense_amount"
                   :rules="[rules.required('Amount')]"
+                  :error-messages="errors.expenseAmount && errors.expenseAmount[0]"
                   v-bind="fieldOptions"
                   label="Amount"
                 ></v-text-field>
@@ -96,6 +99,7 @@
               <v-col cols="12" sm="6" md="3">
                 <v-file-input
                   @change="fileInput($event, index)"
+                  :error-messages="errors.billFile && errors.billFile[0]"
                   v-bind="fieldOptions"
                   label="Bills files"
                 ></v-file-input>
@@ -121,7 +125,7 @@ const newExpenseItem = () => ({
     expense_amount: null,
     bill_file: "",
     category_id: null,
-    expense_date:  null,
+    expense_date: new Date().toISOString().substr(0, 10),
     menu: false
 });
 // expense_id:'',
@@ -133,10 +137,8 @@ export default {
     props: {
         isUpdate: Boolean,
         data: Object,
-        paymentList: Array
-    },
-    mounted() {
-        console.log(this.$refs);
+        paymentList: Array,
+        errors:Object
     },
 
     data() {
@@ -182,13 +184,11 @@ export default {
             this.expenses.push(newExpenseItem());
         },
         fileInput(event, id) {
-            console.log(event, id, "sdda");
-            console.log(this.expenses[id].bill_file, "sdsadsadsa");
+
             this.expenses[id].bill_file = event;
         },
         handleExpense() {
             if (this.$refs.ExpenseForm.validate()) {
-                console.log("handleInvoice");
                 // let addExpense = this.expenses.reduce(
                 //     (acc, val) => {
                 //         Object.entries(val).forEach(([key, value]) => {
@@ -218,7 +218,6 @@ export default {
                 })
               })
 
-              console.log(data);
               
                 this.isUpdate
                     ? this.$emit("editExpense", editData)

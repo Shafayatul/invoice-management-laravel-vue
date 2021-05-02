@@ -10,7 +10,7 @@
     color="#393A3D"
     dark
   >
-    <v-list v-if="user.name">
+    <v-list v-if="user && user.name ">
       <v-list-item two-line :class="`${$drawer ? 'px-4' : 'px-2'}`">
         <v-list-item-avatar>
           <v-avatar  size="38" color="white" class="black--text">

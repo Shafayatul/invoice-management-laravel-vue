@@ -13,6 +13,7 @@
             @addPayment="handleAddPayment"
             :isUpdate="update.dialog"
             :data="update.data"
+            :error='errors'
           />
         </v-card-text>
       </v-card>
@@ -119,6 +120,7 @@ export default {
         return {
             loading: false,
             tableLoader: false,
+            error:{},
             search: "",
             snackbar: {
                 action: false,
@@ -164,7 +166,6 @@ export default {
             this.dialog = true;
         },
         onInputCompanyDialog(dialog) {
-          console.log('calling');
             if (!dialog) {
                 this.resetUpdate();
                 this.resetCreate();
@@ -177,39 +178,36 @@ export default {
         },
         async handleAddPayment(payment) {
             this.loading = true;
-            console.log(payment);
             // this.create.loading = true;
             let res = await this.addPayment(payment);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when creating Payment')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Payment created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false;
         },
         async handleEditPayment(payment) {
             this.loading = true;
-            console.log(payment);
             // this.create.loading = true;
             let res = await this.updatePayment(payment);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when editing Payment')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Payment updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.loading = false;
         },
         async handleDeletecCmpany() {
             this.loading = true;
             let res = await this.deletePayment(this.deletee.id);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when deleting Payment')
             } 
             else {

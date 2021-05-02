@@ -21,6 +21,7 @@
           <ExpenseForm
             v-if="cmDialog"
             :isUpdate="update.dialog"
+            :errors='errors'
             @editExpense="handleEditExpense"
             @addExpense="handleAddExpense"
             :paymentList="$paymentList"
@@ -52,6 +53,9 @@
         hide-default-footer
         :items-per-page="+$pagination.perPage"
       >
+      <template v-slot:item.expenseDate="{ item }">
+          {{$m(item.expenseDate).format("ll")}}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
             <template v-slot:activator="{ on, attrs }">
@@ -126,6 +130,7 @@ export default {
             cardloader: false,
             search: "",
             loading:false,
+            errors:{},
              snackbar: {
                 action: false,
                 text: "",
@@ -188,8 +193,9 @@ export default {
             this.loading = true;
             let res = await this.deleteExpense(this.deletee.id);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when deleting Expense')
+             
             } 
             else {
                 this.enableSnackbar('success','Expense deleted successfully')
@@ -198,18 +204,19 @@ export default {
             this.loading = false;
         },
         async handleAddExpense(addExpense){
-            console.log('adding', addExpense);
+ 
             this.loading = true;
             this.create.loading = true;
             let res = await this.addExpense(addExpense);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when creating expense')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Expense created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false;
         },
         onInputUserDialog(dialog) {
@@ -222,18 +229,19 @@ export default {
 
         // },
        async handleEditExpense(editData){
-          console.log('adding',editData);
+
             this.loading = true;
             // this.create.loading = true;
             let res = await this.updateExpense(editData);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when updating expense')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Expense updated successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false
 
         },

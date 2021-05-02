@@ -31,12 +31,12 @@
       >Forgot Password?</router-link
     >
 
-    <v-checkbox
+    <!-- <v-checkbox
       v-model="remember_me"
       label="Remember me"
       v-bind="fieldAttrs"
       class="mt-1 pt-0"
-    />
+    /> -->
 
     <div class="text-center mt-4">
       <v-btn

@@ -10,6 +10,7 @@
         <v-card-text>
           <UserForm
             v-if="cmDialog"
+            :errors='errors'
             :isUpdate="update.dialog"
             :data="update.data"
             :companyList="$companyList"
@@ -151,6 +152,7 @@ export default {
                 color: "success",
                 timeout: "3000"
             },
+            errors: {},
             headers: [
                 {
                     text: "Name",
@@ -212,35 +214,35 @@ export default {
             this.loading=false
         },
         async handleAddUser(user) {
-            console.log('handleAddUser');
-            console.log('adding',user);
+
             this.loading = true;
             // this.create.loading = true;
             let res = await this.addUser(user);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when creating user')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','User created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false;
         },
         async handleEditUser(user) {
-            console.log('handleEditUser');
+
             this.loading = true;
-            console.log(user);
+
             this.create.loading = true;
             let res = await this.updateUsers(user);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when editing user')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','User updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.loading = false;
         },
         async handleDeleteUser() {
@@ -248,7 +250,6 @@ export default {
             this.loading = true;
             let res = await this.deleteUser(this.deletee.id);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when deleting User')
             } 
             else {
@@ -263,7 +264,6 @@ export default {
             this.loading = true;
             let res = await this.blockUsers(id)
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed',`An error ocured when ${action} a user`)
             } 
             else {
@@ -273,13 +273,10 @@ export default {
             this.loading = false;
         },
        async handleReassignUser(user){
-            console.log('reasasign');
-            console.log(user);
             this.loading = true;
             this.create.loading = true;
             let res = await this.reAssignCompany({user_id:user.user_id,company_id:user.company_id});
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when Re-assigning a company')
              
             } 

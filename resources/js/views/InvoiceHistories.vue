@@ -11,12 +11,12 @@
         hide-default-footer
         :items-per-page="+$paginationHistories.perPage"
       >
-        <!-- <template v-slot:item.Status="{ item }">
-                    {{ "sdadsadas" }}
-                </template> -->
+        <template v-slot:item.createdAt="{ item }">
+          {{$m(item.createdAt).format("ll")}}
+        </template>
         <template v-slot:item.isPaid="{ item }">
-          <v-chip small :color="item.isPaid === '1' ? 'success' : 'error'">
-            {{ item.isPaid === "1" ? "Paid" : "Pending" }}</v-chip
+          <v-chip small :color="item.isPaid === 1 ? 'success' : 'error'">
+            {{ item.isPaid === 1 ? "Paid" : "Pending" }}</v-chip
           >
           <!-- {{item.isPaid}} -->
         </template>
@@ -59,7 +59,7 @@ export default {
                 },
                 { text: "Email", value: "client.email", sortable: false },
                 { text: "Phone", value: "client.phone", sortable: false },
-                { text: "Date", value: "createdAt", sortable: false },
+                { text: "Created at", value: "createdAt", sortable: false },
                 { text: "Amount", value: "amount", sortable: false },
 
                 {

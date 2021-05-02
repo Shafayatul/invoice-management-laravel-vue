@@ -55,7 +55,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$route.params.token);
     
     // this.email = localStorage.getItem("ForgotPassword-email");
     // localStorage.removeItem("ForgotPassword-email");
@@ -82,23 +81,20 @@ export default {
  
     },
     async handleResetPassword(data) {
-      console.log(data,'data');
       this.loading = true;
         let res = await this.resetPassword({
           ...data,
           email: this.email,
           token: this.token,
         });
-        console.log(res);
         if (res.error) {
-          console.log(res,'res');
-          console.log(res.error,'res.error');
+
           this.loading = false;
           this.error.dialog = true;
           this.error.message = 'res.message';
           this.loading = false;
         } else {
-          console.log(res);
+
           this.isSuccess = true;
           this.loading = false;
           this.error.dialog = true;

@@ -17,6 +17,7 @@
             v-model="company.name"
             :rules="[rules.required('Company Name')]"
             label="Company Name"
+            :error-messages="errors.name && errors.name[0]"
             v-bind="fieldOptions"
           />
         </v-col>
@@ -24,6 +25,7 @@
           <v-textarea
             v-model="company.address"
             :rules="[rules.required('Address')]"
+            :error-messages="errors.address && errors.address[0]"
             v-bind="fieldOptions"
             label="Address"
           ></v-textarea>
@@ -48,7 +50,8 @@ export default {
     })],
     props:{
         isUpdate:Boolean,
-        data:Object
+        data:Object,
+        errors:Object
     },
 
     data() {
