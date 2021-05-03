@@ -91,15 +91,27 @@ class UserController extends Controller {
     }
 
     public function update(Request $request){
-        $validation = Validator::make($request->all(), [
-            'name'       => 'required|string',
-            'phone'      => 'required|string',
-            'email'      => 'required|unique:users,email,'.$request->user_id,
-            'password'   => 'bail|confirmed|min:8',
-            'role'       => 'required|string',
-            'user_id'    => 'required|exists:users,id',
-            'company_id' => 'required|exists:companies,id',
-        ]);
+        if(isset($request->password) && $request->role == 'admin'){
+            $validation = Validator::make($request->all(), [
+                'name'       => 'required|string',
+                'phone'      => 'required|string',
+                'email'      => 'required|unique:users,email,'.$request->user_id,
+                'password'   => 'bail|confirmed',
+                'role'       => 'required|string',
+                'user_id'    => 'required|exists:users,id',
+                'company_id' => 'required|exists:companies,id',
+            ]);
+        }else{
+            $validation = Validator::make($request->all(), [
+                'name'       => 'required|string',
+                'phone'      => 'required|string',
+                'email'      => 'required|unique:users,email,'.$request->user_id,
+                'role'       => 'required|string',
+                'user_id'    => 'required|exists:users,id',
+                'company_id' => 'required|exists:companies,id',
+            ]);
+        }
+        
         if($validation->fails())
             return response()->json(['errors' => $validation->errors()], 422);
 

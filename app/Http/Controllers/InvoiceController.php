@@ -105,9 +105,9 @@ class InvoiceController extends Controller {
     public function update(Request $request){
         $validate = Validator::make($request->all(), [
             'invoice_id'        => 'required|exists:invoices,id',
-            'client_id'        => 'required|exists:users,id',
-            'sending_type'     => 'required',
-            'sending_date'     => 'required|date',
+            // 'client_id'        => 'required|exists:users,id',
+            // 'sending_type'     => 'required',
+            // 'sending_date'     => 'required|date',
             'recurring_period' => 'required|numeric',
             'amount'           => 'required|numeric',
         ]);

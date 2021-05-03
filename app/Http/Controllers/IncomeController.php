@@ -124,28 +124,43 @@ class IncomeController extends Controller
             $income = Income::find($key);
 
             if (!$income) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Income not found'
-                ], 400);
-            }
-
-            if($request->hasFile('receipt_file')){
-                $file = $request->file('receipt_file')[$key];
-                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-                $path = $request->file('receipt_file')[$key]->storeAs(
-                    'income-file',
-                    $name,
-                    'public'
-                );
-
-                if (Storage::disk('public')->exists($income->receipt_file)) {
-                    Storage::delete($income->receipt_file);
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Income not found'
+                // ], 400);
+                $income = new Income();
+                if($request->hasFile('receipt_file')){
+                    $file = $request->file('receipt_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('receipt_file')[$key]->storeAs(
+                        'income-file',
+                        $name,
+                        'public'
+                    );
+    
+                }else{
+                    $path = null;
                 }
-
             }else{
-                $path = $income->receipt_file;
+                if($request->hasFile('receipt_file')){
+                    $file = $request->file('receipt_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('receipt_file')[$key]->storeAs(
+                        'income-file',
+                        $name,
+                        'public'
+                    );
+    
+                    if (Storage::disk('public')->exists($income->receipt_file)) {
+                        Storage::delete($income->receipt_file);
+                    }
+    
+                }else{
+                    $path = $income->receipt_file;
+                }
             }
+
+            
 
             $income->category_id   = $category_id;
             $income->client_id     = $request->client_id[$key];

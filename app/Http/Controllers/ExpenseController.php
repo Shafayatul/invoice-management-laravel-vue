@@ -122,28 +122,44 @@ class ExpenseController extends Controller
             $expense = Expense::find($key);
 
             if (!$expense) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Expense not found'
-                ], 400);
-            }
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Expense not found'
+                // ], 400);
 
-            if($request->hasFile('bills_file')){
-                $file = $request->file('bills_file')[$key];
-                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-                $path = $request->file('bills_file')[$key]->storeAs(
-                    'expense-file',
-                    $name,
-                    'public'
-                );
-
-                if (Storage::disk('public')->exists($expense->bills_file)) {
-                    Storage::delete($expense->bills_file);
+                $expense = new Expense();
+                if($request->hasFile('bills_file')){
+                    $file = $request->file('bills_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('bills_file')[$key]->storeAs(
+                        'expense-file',
+                        $name,
+                        'public'
+                    );
+    
+                }else{
+                    $path = null;
                 }
-
             }else{
-                $path = $expense->bills_file;
+                if($request->hasFile('bills_file')){
+                    $file = $request->file('bills_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('bills_file')[$key]->storeAs(
+                        'expense-file',
+                        $name,
+                        'public'
+                    );
+    
+                    if (Storage::disk('public')->exists($expense->bills_file)) {
+                        Storage::delete($expense->bills_file);
+                    }
+    
+                }else{
+                    $path = $expense->bills_file;
+                }
             }
+
+            
 
             $expense->category_id    = $category_id;
             $expense->user_id        = Auth::id();
