@@ -116,8 +116,8 @@
                 <v-icon class="mr-2">mdi-delete</v-icon>
                 Delete
               </v-list-item>
-              <v-divider v-if="item.invoiceHistory.isPaid === 0"></v-divider>
-              <v-list-item v-if="item.invoiceHistory.isPaid === 0" @click="handlePaidDialog(item)" dense link>
+              <v-divider v-if="item.invoiceHistory.isPaid == 0"></v-divider>
+              <v-list-item v-if="item.invoiceHistory.isPaid == 0" @click="handlePaidDialog(item)" dense link>
                 <v-icon class="mr-2">mdi-cash-check</v-icon>
                 Pay invoice
               </v-list-item>
