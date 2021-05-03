@@ -31,6 +31,7 @@
                 <v-select
                   v-model="incom.category_id"
                   :rules="[rules.required('Category')]"
+                  :error-messages="errors.categoryId && errors.categoryId[0]"
                   :items="paymentList"
                   item-text="name"
                   item-value="id"
@@ -42,6 +43,7 @@
                 <v-select
                   v-model="incom.client_id"
                   :rules="[rules.required('Client')]"
+                  :error-messages="errors.clientId && errors.clientId[0]"
                   :items="clientList"
                   item-text="name"
                   item-value="id"
@@ -53,6 +55,7 @@
                 <v-text-field
                   v-model="incom.income_amount"
                   :rules="[rules.required('Amount')]"
+                  :error-messages="errors.incomeAmount && errors.incomeAmount[0]"
                   v-bind="fieldOptions"
                   label="Amount"
                 ></v-text-field>
@@ -90,11 +93,9 @@ export default {
         data: Object,
         paymentList: Array,
         clientList:Array,
+        errors:Object
     },
-    mounted() {
-        console.log(this.$refs);
-    },
-
+  
     data() {
         return {
             isValid: false,
@@ -137,13 +138,10 @@ export default {
             this.income.push(newIncomeItem());
         },
         fileInput(event, id) {
-            console.log(event, id, "sdda");
-            console.log(this.income[id].bill_file, "sdsadsadsa");
             this.income[id].bill_file = event;
         },
         handleIncome() {
             if (this.$refs.IncomeForm.validate()) {
-                console.log("handleInvoice");
                 // let addExpense = this.income.reduce(
                 //     (acc, val) => {
                 //         Object.entries(val).forEach(([key, value]) => {
@@ -173,8 +171,6 @@ export default {
                 })
               })
 
-              console.log(data);
-              
                 this.isUpdate
                     ? this.$emit("editIncome", editData)
                     : this.$emit("addIncome", data);

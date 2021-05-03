@@ -94,6 +94,9 @@
           :search="search"
           hide-default-footer
         >
+          <template v-slot:item.sendingDate="{ item }">
+          {{$m(item.sendingDate).format("ll")}}
+        </template>
           <template v-slot:item.actions="{ item }">
             <v-menu down left nudge-left="7rem">
               <template v-slot:activator="{ on, attrs }">
@@ -435,7 +438,6 @@ export default {
           
         },
         handleInvoiceHistory(item){
-          console.log(item);
           this.historyDialog=true
           this.invoiceHistory.amount=item.invoiceHistory.amount
           this.invoiceHistory.createdAt= moment(item.invoiceHistory.createdAt).format("ll") 

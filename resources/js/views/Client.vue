@@ -9,6 +9,7 @@
       <v-card>
         <v-card-text>
           <ClientForm
+            :errors="errors"
             v-if="cmDialog"
             :isUpdate="update.dialog"
             :data="update.data"
@@ -42,6 +43,7 @@
         :headers="headers"
         :items="$client"
         :search="search"
+        hide-default-footer
       >
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -140,6 +142,7 @@ export default {
                 color: "success",
                 timeout: "3000"
             },
+            errors: {},
             headers: [
                 {
                     text: "Name",
@@ -206,36 +209,41 @@ export default {
             await this.fetchProfile()
           
         },
+        async oncreated(){
+           this.loading=true
+           await this.onFetchClient();
+           await this.CompanyList();
+           await this.fetchProfileData();
+           this.loading=false
+        },
         async handleAddClient(user) {
-            console.log('handleAddUser');
-            console.log('adding',user);
             this.loading = true;
             // this.create.loading = true;
             let res = await this.addClient(user);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when creating client')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','client created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false;
         },
         async handleEditClient(user) {
-            console.log('handleEditUser');
             this.loading = true;
-            console.log(user);
             this.create.loading = true;
             let res = await this.updateClient(user);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when editing client')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Client updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.loading = false;
         },
         async handleDeleteClient() {
@@ -243,7 +251,6 @@ export default {
             this.loading = true;
             let res = await this.deleteClient(this.deletee.id);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when deleting client')
             } 
             else {
@@ -287,10 +294,7 @@ export default {
      //   } 
     },
     created() {
-        this.onFetchClient();
-        this.CompanyList();
-        this.fetchProfileData();
-   
+        this.oncreated()
     }
 };
 </script>

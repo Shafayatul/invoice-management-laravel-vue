@@ -132,10 +132,9 @@ export default {
         }
     },
     methods: {
-        onFilePicked(event) {
-            console.log("onFilePicked", event);
-            // this.some
-        }
+        // onFilePicked(event) {
+        //     // this.some
+        // }
     }
 };
 </script>

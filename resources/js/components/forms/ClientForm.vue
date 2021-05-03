@@ -17,6 +17,7 @@
             v-model="Client.name"
             label="Name"
             :rules="[rules.required('Name')]"
+            :error-messages="errors.name && errors.name[0]"
             v-bind="fieldOptions"
           />
         </v-col>
@@ -25,6 +26,7 @@
              disabled
             v-model="Client.role"
             :rules="[rules.required('Role')]"
+            :error-messages="errors.role && errors.role[0]"
             v-bind="fieldOptions"
             label="Role"
           ></v-text-field>
@@ -33,6 +35,7 @@
           <v-text-field
             v-model="Client.email"
             :rules="[rules.required('Email'), rules.email]"
+             :error-messages="errors.email && errors.email[0]"
             v-bind="fieldOptions"
             label="Email"
           ></v-text-field>
@@ -41,6 +44,7 @@
           <v-text-field
             v-model="Client.phone"
             :rules="[rules.required('phone')]"
+            :error-messages="errors.phone && errors.phone[0]"
             v-bind="fieldOptions"
             label="Phone"
             hide-details="auto"
@@ -116,6 +120,7 @@ export default {
         data: Object,
         companyList: Array,
         reAssign:Boolean,
+        errors: Object,
     },
 
     data() {
@@ -134,7 +139,6 @@ export default {
             deep: true,
             immediate: true,
             handler(v) {
-                console.log(v);
                 if (!this.isUpdate) this.Client = initialClient();
                 this.Client = {
                     name: v.name,
@@ -150,7 +154,6 @@ export default {
         handleClient() {
             if (this.$refs.ClientForm.validate()) {
                 this.isUpdate  ? this.$emit("editClient", this.Client) : this.$emit("addClient", this.Client)
-                console.log('handleUser');
             }
         },
         CheckIsClient(item){

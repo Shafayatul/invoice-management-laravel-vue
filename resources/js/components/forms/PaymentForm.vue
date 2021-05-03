@@ -16,6 +16,7 @@
           <v-text-field
             v-model="payment.name"
             :rules="[rules.required('Payemnt Name')]"
+            :error-messages="errors.name && errors.name[0]"
             label="Payemnt Name"
             v-bind="fieldOptions"
           />
@@ -24,6 +25,7 @@
           <v-text-field
             v-model="payment.type"
             :rules="[rules.required('Payemnt Type')]"
+            :error-messages="errors.type && errors.type[0]"
             label="Payemnt Type"
             v-bind="fieldOptions"
           />
@@ -32,6 +34,7 @@
           <v-textarea
             v-model="payment.details"
             :rules="[rules.required('Payemnt Details')]"
+            :error-messages="errors.details && errors.details[0]"
             v-bind="fieldOptions"
             label="details"
           ></v-textarea>
@@ -58,7 +61,8 @@ export default {
     ],
     props: {
         isUpdate: Boolean,
-        data: Object
+        data: Object,
+        errors:Object
     },
 
     data() {

@@ -48,7 +48,6 @@ export default {
   methods: {
     ...mapActions("AUTH", ["login"]),
     async handleLogin(data) {
-      console.log(data);
       this.loading = true;
       let res = await this.login(data);
       if (res.error) {

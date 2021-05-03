@@ -45,6 +45,12 @@
         hide-default-footer
         :items-per-page="+$pagination.perPage"
       >
+        <template v-slot:item.sendingDate="{ item }">
+          {{$m(item.sendingDate).format("ll")}}
+        </template>
+        <template v-slot:item.sendingType="{ item }">
+          {{ item.sendingType.charAt(0).toUpperCase() + item.sendingType.slice(1).replace('_',' ')}}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
             <template v-slot:activator="{ on, attrs }">
@@ -194,15 +200,15 @@ export default {
             this.tableLoader = false;
         },
         async handleAddInvoice(invoiceDetails) {
-            console.log(invoiceDetails,'invoiceDetails');
+
             this.loading = true;
-            console.log(invoiceDetails);
+
             // this.create.loading = true;
             let res = await this.addInvoice(invoiceDetails);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when creating Invoice')
-             console.log(res,'errr response');
+
              this.errors = res.errors;
             } 
             else {
@@ -213,24 +219,25 @@ export default {
         },
         async handleEditInvoice(invoiceDetails) {
             this.loading = true;
-            console.log(invoiceDetails);
+
             // this.create.loading = true;
             let res = await this.updateInvoice(invoiceDetails,);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when editing Invoice')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Invoice updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.loading = false;
         },
         async handleDeleteInvoice() {
             this.loading = true;
             let res = await this.deleteInvoice(this.deletee.id);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when deleting Invoice')
             } 
             else {

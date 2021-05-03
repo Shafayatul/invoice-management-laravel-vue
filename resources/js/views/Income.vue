@@ -26,6 +26,7 @@
             :paymentList="$paymentList"
             :clientList="$clientList"
             :data="update.data"
+            :errors="errors"
           />
         </v-card-text>
       </v-card>
@@ -53,7 +54,7 @@
         hide-default-footer
       >
         <template v-slot:item.createdAt="{ item }">
-          {{ new Date().toISOString(item.createdAt).substr(0, 10) }}
+          {{ $m(item.createdAt).format("ll") }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -129,6 +130,7 @@ export default {
             cardloader: false,
             search: "",
             loading:false,
+            errors:{},
              snackbar: {
                 action: false,
                 text: "",
@@ -191,7 +193,7 @@ export default {
             this.loading = true;
             let res = await this.deleteIncome(this.deletee.id);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when deleting Income')
             } 
             else {
@@ -202,18 +204,18 @@ export default {
             this.loading = false;
         },
         async handleAddIncome(addExpense){
-            console.log('adding', addExpense);
+
             this.loading = true;
             this.create.loading = true;
             let res = await this.addIncome(addExpense);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when creating income')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Income created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
            
             this.loading = false;
         },
@@ -227,18 +229,17 @@ export default {
 
         // },
        async handleEditIncome(editData){
-          console.log('adding',editData);
             this.loading = true;
             // this.create.loading = true;
             let res = await this.updateIncome(editData);
             if (res.error){
-             console.log(res.error);
              this.enableSnackbar('failed','An error ocured when updating income')
+             this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Income updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.cmDialog=false
             this.loading = false
 

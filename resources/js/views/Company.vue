@@ -13,6 +13,7 @@
             @addCompany="handleAddCompany"
             :isUpdate="update.dialog"
             :data="update.data"
+            :errors='errors'
           />
         </v-card-text>
       </v-card>
@@ -117,6 +118,7 @@ export default {
             loading: false,
             tableLoader: false,
             search: "",
+            errors:{},
             snackbar: {
                 action: false,
                 text: "",
@@ -155,7 +157,6 @@ export default {
             this.dialog = true;
         },
         onInputCompanyDialog(dialog) {
-          console.log('calling');
             if (!dialog) {
                 this.resetUpdate();
                 this.resetCreate();
@@ -173,39 +174,41 @@ export default {
         },
         async handleAddCompany(company) {
             this.loading = true;
-            console.log(company);
+
             // this.create.loading = true;
             let res = await this.addCompany(company);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when creating Company')
+             this.errors = res.errors
             } 
             else {
                 this.enableSnackbar('success','Company created successfully')
+                this.resetCreate();
             }
-            this.resetCreate();
             this.loading = false;
         },
         async handleEditCompany(company) {
             this.loading = true;
-            console.log(company);
+
             // this.create.loading = true;
             let res = await this.updateCompany(company);
             if (res.error){
-             console.log(res.error);
+    
              this.enableSnackbar('failed','An error ocured when editing Company')
+             this.errors = res.errors
             } 
             else {
                 this.enableSnackbar('success','Company updated successfully')
+                this.resetUpdate();
             }
-            this.resetUpdate();
             this.loading = false;
         },
         async handleDeletecompany() {
             this.loading = true;
             let res = await this.deleteCompany(this.deletee.id);
             if (res.error){
-             console.log(res.error);
+
              this.enableSnackbar('failed','An error ocured when deleting Company')
             } 
             else {

@@ -15,6 +15,7 @@
             v-model="user.name"
             label="Name"
             :rules="[rules.required('Name')]"
+            :error-messages="errors.name && errors.name[0]"
             v-bind="fieldOptions"
           />
         </v-col>
@@ -24,6 +25,7 @@
             :items="['client', 'admin', 'employee']"
             v-model="user.role"
             :rules="[rules.required('Role')]"
+            :error-messages="errors.role && errors.role[0]"
             v-bind="fieldOptions"
             label="Role"
           ></v-select>
@@ -32,6 +34,7 @@
           <v-text-field
             v-model="user.email"
             :rules="[rules.required('Email'), rules.email]"
+            :error-messages="errors.email && errors.email[0]"
             v-bind="fieldOptions"
             label="Email"
           ></v-text-field>
@@ -40,6 +43,7 @@
           <v-text-field
             v-model="user.phone"
             :rules="[rules.required('phone')]"
+            :error-messages="errors.phone && errors.phone[0]"
             v-bind="fieldOptions"
             label="Phone"
             hide-details="auto"
@@ -51,6 +55,7 @@
             v-bind="fieldOptions"
             v-model="user.password"
             :rules=" isUpdate?[]:[rules.required('Password'),rules.password]"
+            :error-messages="errors.password && errors.password[0]"
             prepend-inner-icon="mdi-lock"
             :type="password.show ? 'text' : 'password'"
             :append-icon="password.show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -64,6 +69,7 @@
             prepend-inner-icon="mdi-lock"
             v-bind="fieldOptions"
             @click:append="password.show = !password.show"
+            :error-messages="errors.passwordConfirmation && errors.passwordConfirmation[0]"
             v-model="user.password_confirmation"
             :rules=" isUpdate?[]:[
               (v) => password_confirmation(v, user.password),
@@ -79,6 +85,7 @@
             item-value="id"
             v-model="user.company_id"
             :rules="[rules.required('Company')]"
+            :error-messages="errors.companyId && errors.companyId[0]"
             v-bind="fieldOptions"
             label="Company"
           ></v-select>
@@ -114,7 +121,8 @@ export default {
         isUpdate: Boolean,
         data: Object,
         companyList: Array,
-        reAssign:Boolean
+        reAssign:Boolean,
+        errors: Object
     },
 
     data() {
