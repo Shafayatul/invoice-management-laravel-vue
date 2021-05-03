@@ -27,7 +27,7 @@ const getters = {
 };
 
 const actions = {
-    fetchInvoice: async({ commit }, payload) => {
+    fetchInvoice: async ({ commit }, payload) => {
         // let res = await api.invoice.getAll();
         // console.log(res);
         let { error, ...data } = await api.invoice.getAll(payload);
@@ -63,7 +63,7 @@ const actions = {
         dispatch("fetchInvoice");
         return res;
     },
-    fetchInvoiceHistories: async ({ commit },payload) => {
+    fetchInvoiceHistories: async ({ commit }, payload) => {
         // let res = await api.invoice.getAll();
         // console.log(res);
         let { error, ...data } = await api.invoice.getHistories(payload);
@@ -79,6 +79,12 @@ const actions = {
         });
         console.log(data, "fetchInvoiceHistories");
         return data;
+    },
+    paidInvoice: async ({ __, dispatch }, data) => {
+        let res = await api.invoice.paidInvoice(data);
+        if (res.error) return res;
+        dispatch("fetchInvoice");
+        return res;
     }
 };
 

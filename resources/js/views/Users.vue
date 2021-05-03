@@ -202,6 +202,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         async onFetchUsers() {
             this.tableLoader = true;

@@ -152,19 +152,10 @@ export default {
                 },
                 { text: "Email", value: "email", sortable: false },
                 { text: "Phone", value: "phone", sortable: false },
-                { text: "Role", value: "role", sortable: false },
                 { text: "Company", value: "company", sortable: false },
                 { text: "Status", value: "isActive", sortable: false },
                 { text: "Actions", value: "actions", sortable: false },
             ],
-            desserts: [
-                {
-                    name: "Lorem Ipsum",
-                    email: "lorem@gmail.com",
-                    role: "lorem",
-                    company: "ABCD"
-                }
-            ]
         };
     },
     computed: {
@@ -188,6 +179,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         async onChangePage(page){
           this.tableLoader = true;

@@ -13,7 +13,7 @@
             @addCompany="handleAddCompany"
             :isUpdate="update.dialog"
             :data="update.data"
-            :errors='errors'
+            :errors="errors"
           />
         </v-card-text>
       </v-card>
@@ -68,7 +68,7 @@
         <v-pagination
           :value="$pagination.currentPage"
           @input="onChangePage"
-          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage) || 0"
         ></v-pagination>
       </div>
       <!-- Start Confirm delete action -->
@@ -161,6 +161,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         async onChangePage(page){
           this.tableLoader = true;

@@ -56,7 +56,8 @@ const api = {
         update: (data, id) => h(POST, "/invoice/update?invoice_id=" + id, data),
         delete: id => h(GET, "/invoice/destroy?invoice_id=" + id),
         create: data => h(POST, "/invoice/store", data),
-        getHistories: queries => h(GET, "/invoice/invoice-history", queries)
+        getHistories: queries => h(GET, "/invoice/invoice-history", queries),
+        paidInvoice: data => h(POST, "/invoice/paid-invoice", data)
         // get         : id          => h(GET,     '/users/show/' + id),
         // search      : data        => h(POST,    '/users/search-employee', data)
     },
@@ -80,7 +81,7 @@ const api = {
         create: data => h(POST, "/income/store", data)
     },
     dashboard: {
-        getAll: () => h(GET, "/dashboard-data"),
+        getAll: () => h(GET, "/dashboard-data")
     }
 };
 

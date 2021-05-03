@@ -25,11 +25,11 @@
       :append-icon="password.show ? 'mdi-eye' : 'mdi-eye-off'"
       @click:append="password.show = !password.show"
     />
-    <router-link
-      to="/forgot-password"
-      class="secondary--text d-block text-right p pt-2"
-      >Forgot Password?</router-link
-    >
+    <div class="pt-4 ml-auto text-right">
+      <router-link to="/forgot-password" class="secondary--text pt-2"
+        >Forgot Password?</router-link
+      >
+    </div>
 
     <!-- <v-checkbox
       v-model="remember_me"

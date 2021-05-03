@@ -97,7 +97,8 @@ export default {
   methods:{
     click(){
       this.dialog=true;
-    }
+    },
+    
   }
 }
 </script>
