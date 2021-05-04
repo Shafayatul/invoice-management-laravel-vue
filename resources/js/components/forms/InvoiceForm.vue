@@ -12,9 +12,10 @@
       @submit.prevent="handleInvoice"
     >
       <v-row>
-        <v-col cols="12" md="12" lg="12">
+        <v-col v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-select
             v-model="invoiceDetails.client_id"
+            
             label="Client"
             :items="clientList"
             item-value="id"
@@ -24,21 +25,11 @@
           />
           <!-- :rules="[rules.required('client')]" -->
         </v-col>
-        <!-- <v-col cols="12" md="12" lg="12">
-          <v-select
-            :items="companyList"
-            item-text="name"
-            item-value="id"
-            v-model="invoiceDetails.company_id"
-            :rules="[rules.required('company')]"
-            :error-messages="errors.company_id"
-            v-bind="fieldOptions"
-            label="Company"
-          ></v-select>
-        </v-col> -->
-        <v-col cols="12" md="12" lg="12">
+
+        <v-col v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-select
             v-model="invoiceDetails.sending_type"
+            
             v-bind="fieldOptions"
             :rules="[rules.required('Sending Type')]"
             :error-messages="errors.sendingType && errors.sendingType[0]"
@@ -48,7 +39,7 @@
             item-text="name"
           ></v-select>
         </v-col>
-        <v-col cols="12" md="12" lg="12">
+        <v-col  v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-menu
             ref="menu"
             v-model="menu"
@@ -60,6 +51,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
+             
                 v-model="invoiceDetails.sending_date"
                 outlined
                 hide-details="auto"
@@ -90,19 +82,29 @@
             </v-date-picker>
           </v-menu>
         </v-col>
-        <v-col v-if="invoiceDetails.sending_type==='recurring'" cols="12" md="12" lg="12">
+        <v-col
+          v-if="invoiceDetails.sending_type === 'recurring'"
+          cols="12"
+          md="12"
+          lg="12"
+        >
           <v-text-field
             type="number"
             v-model="invoiceDetails.recurring_period"
             v-bind="fieldOptions"
             label="Recurring Period"
-            :error-messages="errors.recurringPeriod && errors.recurringPeriod[0]"
+            :min="0"
+            :rules="[rules.required('Recurring Period'), rules.min(0)]"
+            :error-messages="
+              errors.recurringPeriod && errors.recurringPeriod[0]
+            "
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="12" lg="12">
           <v-text-field
             v-model="invoiceDetails.amount"
-            :rules="[rules.required('Amount')]"
+            :min="0"
+            :rules="[rules.required('Amount'), rules.min(0)]"
             v-bind="fieldOptions"
             label="Amount"
           ></v-text-field>
@@ -110,7 +112,13 @@
       </v-row>
     </v-form>
 
-    <v-btn :loading='loading' block class="my-3" color="primary" @click="handleInvoice">
+    <v-btn
+      :loading="loading"
+      block
+      class="my-3"
+      color="primary"
+      @click="handleInvoice"
+    >
       {{ isUpdate ? "Confirm" : "Add" }}
     </v-btn>
   </div>
@@ -124,7 +132,7 @@ import moment from "moment"
 export default {
     name: "invoiceForm",
     mixins: [formFieldMixin,createFormMixin({
-      rules: ["required"],
+      rules: ['min',"required"],
     })],
     props:{
         isUpdate:Boolean,

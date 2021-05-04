@@ -79,10 +79,9 @@ export default {
     },
     methods:{
       handleCompany(){
-        this.$refs.CompanyForm.validate();
-        if (!this.isValid) return;
-        this.isUpdate? this.$emit("editCompany", this.company) : this.$emit("addCompany", this.company)
-        
+        if (this.$refs.CompanyForm.validate()) {
+          this.isUpdate? this.$emit("editCompany", this.company) : this.$emit("addCompany", this.company)
+        }
       }
     }
     

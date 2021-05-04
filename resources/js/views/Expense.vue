@@ -146,7 +146,7 @@ export default {
                 },
                 { text: "Company", value: "company.name", sortable: false },
                 { text: "Amount", value: "expenseAmount", sortable: false },
-                // { text: "Bills File", value: "billsFile", sortable: false },
+                { text: "Category", value: "category.name", sortable: false },
                 { text: "Date", value: "expenseDate", sortable: false },
                 { text: "Actions", value: "actions", sortable: false }
      
@@ -224,6 +224,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         // handleAddExpense(){
 

@@ -144,7 +144,7 @@ export default {
                     sortable: false,
                     value: "client.name"
                 },
-                // { text: "Company", value: "company.name", sortable: false },
+                { text: "Category", value: "category.name", sortable: false },
                 { text: "Amount", value: "incomeAmount", sortable: false },
                 // { text: "Bills File", value: "billsFile", sortable: false },
                 { text: "Date", value: "createdAt", sortable: false },
@@ -224,6 +224,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         // handleAddIncome(){
 

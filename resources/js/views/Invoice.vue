@@ -14,11 +14,51 @@
             @editInvoice="handleEditInvoice"
             :companyList="$companyList"
             @addInvoice="handleAddInvoice"
+            @paidInvoice="handlePaidInvoice"
             :isUpdate="update.dialog"
             :data="update.data"
             :loading="loading"
             :clientList="$clientList"
           />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="paidDialog"
+    >
+      <v-card>
+        <v-card-title><span class="mx-auto">Pay invoice</span></v-card-title>
+        <v-card-text>
+          <v-form
+            v-model="isValid"
+            @submit.prevent="handlePaidInvoice"
+            lazy-validation
+            ref="paidInvoiceForm"
+          >
+            <v-row>
+              <v-col cols="12">
+                <v-select
+                  :items="$paymentList"
+                  v-bind="fieldOptions"
+                  v-model="payInvoice.category_id"
+                  :rules="[rules.required('Sending Type')]"
+                  label="Sending type"
+                  item-value="id"
+                  item-text="name"
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-btn
+              :loading="loading"
+              block
+              class="my-3"
+              color="primary"
+              @click="handlePaidInvoice"
+            >
+              confirm
+            </v-btn>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -44,12 +84,19 @@
         :search="search"
         hide-default-footer
         :items-per-page="+$pagination.perPage"
-      >
+      > 
+      <template v-slot:item.invoiceHistory.isPaid="{ item }">
+          <v-chip small :color="item.invoiceHistory.isPaid === 1 ? 'success' : 'error'">
+            {{ item.invoiceHistory.isPaid === 1 ? "Paid" : "Pending" }}</v-chip>
+        </template>
         <template v-slot:item.sendingDate="{ item }">
-          {{$m(item.sendingDate).format("ll")}}
+          {{ $m(item.sendingDate).format("ll") }}
         </template>
         <template v-slot:item.sendingType="{ item }">
-          {{ item.sendingType.charAt(0).toUpperCase() + item.sendingType.slice(1).replace('_',' ')}}
+          {{
+            item.sendingType.charAt(0).toUpperCase() +
+            item.sendingType.slice(1).replace("_", " ")
+          }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -68,6 +115,11 @@
               <v-list-item @click="initDelete(item.id)" dense link>
                 <v-icon class="mr-2">mdi-delete</v-icon>
                 Delete
+              </v-list-item>
+              <v-divider v-if="item.invoiceHistory.isPaid == 0"></v-divider>
+              <v-list-item v-if="item.invoiceHistory.isPaid == 0" @click="handlePaidDialog(item)" dense link>
+                <v-icon class="mr-2">mdi-cash-check</v-icon>
+                Pay invoice
               </v-list-item>
             </v-list>
           </v-menu>
@@ -107,6 +159,9 @@
 </template>
 
 <script>
+
+import formFieldMixin from "@/mixins/formFieldMixin";
+import { createFormMixin } from "@/mixins/form-mixin";
 import { mapActions, mapGetters } from "vuex";
 import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
@@ -115,7 +170,9 @@ import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin"
 export default {
   name:"invoice",
-  mixins:[crudMixin],
+  mixins:[crudMixin,formFieldMixin,createFormMixin({
+      rules: ['min',"required"],
+    })],
   components:{
     InvoiceForm, fabCreateButton,confirm,CircleLoader
   },
@@ -125,7 +182,13 @@ export default {
       loading: false,
       tableLoader: false,
       search:'',
+      paidDialog:false,
+      isValid:false,
       errors: {},
+      payInvoice:{
+        invoice_id:null,
+        category_id:null,
+      },
       snackbar: {
                 action: false,
                 text: "",
@@ -144,6 +207,8 @@ export default {
           { text: 'Date', value: 'sendingDate',sortable: false },
           { text: 'Recurring period', value: 'recurringPeriod', sortable: false },
           { text: 'Created by', value: 'createdBy.name', sortable: false },
+          { text: 'Status', value: 'invoiceHistory.isPaid', sortable: false },
+
           { text: "Actions", value: "actions", sortable: false },
           
         
@@ -159,17 +224,20 @@ export default {
   computed:{
     ...mapGetters("INVOICE", ["$invoice","$pagination"]),
     ...mapGetters("COMPANY", ["$companyList"]),
-    ...mapGetters("CLIENT", ["$clientList"])
+    ...mapGetters("CLIENT", ["$clientList"]),
+    ...mapGetters("PAYMENT", ["$paymentList"])
   },
   methods:{
     ...mapActions("INVOICE", [
             "fetchInvoice",
             "deleteInvoice",
             "addInvoice",
-            "updateInvoice"
+            "updateInvoice",
+            "paidInvoice"
         ]),
     ...mapActions("COMPANY",["fetchCompanyList"]),
     ...mapActions("CLIENT",["fetchClientList"]),
+    ...mapActions("PAYMENT",["fetchPaymentList"]),
     click(){
       this.dialog=true;
     },
@@ -183,6 +251,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
     async CompanyList(){
             this.loader=true
@@ -233,6 +302,26 @@ export default {
             }
             this.loading = false;
         },
+        handlePaidDialog(item){
+         this.paidDialog=true
+         this.payInvoice.invoice_id=item.id
+        },
+        async handlePaidInvoice() {
+          if (this.$refs.paidInvoiceForm.validate()){
+            this.loading = true;
+            // this.create.loading = true;
+            let res = await this.paidInvoice(this.payInvoice);
+            if (res.error){
+             this.enableSnackbar('failed','An error ocured when paying a Invoice')
+             this.errors = res.errors;
+            } 
+            else {
+                this.enableSnackbar('success','Invoice paid successfully')
+                
+            }
+            this.loading = false;
+          }
+        },
         async handleDeleteInvoice() {
             this.loading = true;
             let res = await this.deleteInvoice(this.deletee.id);
@@ -251,6 +340,7 @@ export default {
           await  this.onFetchInvoice();
           await  this.CompanyList();
           await  this.ClientList()
+          await  this.fetchPaymentList()
           this.loading=false
         }
   },

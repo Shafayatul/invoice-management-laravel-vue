@@ -20,6 +20,7 @@
         >
           <v-btn
             class="fab-btn-right ma-1"
+            v-if="expenses.length>1"
             @click="expenses.splice(index, 1)"
             icon
           >
@@ -89,8 +90,10 @@
               </v-col>
               <v-col cols="12" sm="6" md="3">
                 <v-text-field
+                 type="number"
+                 :min="0"
                   v-model="expense.expense_amount"
-                  :rules="[rules.required('Amount')]"
+                  :rules="[rules.required('Amount'), rules.min(0)]"
                   :error-messages="errors.expenseAmount && errors.expenseAmount[0]"
                   v-bind="fieldOptions"
                   label="Amount"
@@ -132,7 +135,7 @@ const newExpenseItem = () => ({
 export default {
     name: "ExpensesForm",
   mixins: [formFieldMixin,createFormMixin({
-      rules: ["required"],
+      rules: ["min","required"],
     })],
     props: {
         isUpdate: Boolean,

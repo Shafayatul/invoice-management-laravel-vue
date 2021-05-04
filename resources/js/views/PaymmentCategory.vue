@@ -13,7 +13,7 @@
             @addPayment="handleAddPayment"
             :isUpdate="update.dialog"
             :data="update.data"
-            :error='errors'
+            :errors='errors'
           />
         </v-card-text>
       </v-card>
@@ -120,7 +120,7 @@ export default {
         return {
             loading: false,
             tableLoader: false,
-            error:{},
+            errors:{},
             search: "",
             snackbar: {
                 action: false,
@@ -170,6 +170,7 @@ export default {
                 this.resetUpdate();
                 this.resetCreate();
             }
+            this.errors={}
         },
         async onFetchPayment() {
             this.tableLoader = true;
@@ -182,7 +183,7 @@ export default {
             let res = await this.addPayment(payment);
             if (res.error){
              this.enableSnackbar('failed','An error ocured when creating Payment')
-             this.errors = res.errors;
+             if(res.errors) this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Payment created successfully')
@@ -196,7 +197,7 @@ export default {
             let res = await this.updatePayment(payment);
             if (res.error){
              this.enableSnackbar('failed','An error ocured when editing Payment')
-             this.errors = res.errors;
+             if(res.errors) this.errors = res.errors;
             } 
             else {
                 this.enableSnackbar('success','Payment updated successfully')

@@ -94,6 +94,9 @@
           :search="search"
           hide-default-footer
         >
+          <template v-slot:item.sendingType="{ item }">
+          {{ item.sendingType.charAt(0).toUpperCase() + item.sendingType.slice(1).replace('_',' ')}}
+        </template>
           <template v-slot:item.sendingDate="{ item }">
           {{$m(item.sendingDate).format("ll")}}
         </template>
