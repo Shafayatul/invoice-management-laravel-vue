@@ -207,9 +207,10 @@ export default {
           { text: 'Date', value: 'sendingDate',sortable: false },
           { text: 'Recurring period', value: 'recurringPeriod', sortable: false },
           { text: 'Created by', value: 'createdBy.name', sortable: false },
+          { text: 'amoount', value: 'invoiceHistory.amount', sortable: false },
           { text: 'Status', value: 'invoiceHistory.isPaid', sortable: false },
-
           { text: "Actions", value: "actions", sortable: false },
+          
           
         
         ],
@@ -317,6 +318,7 @@ export default {
             } 
             else {
                 this.enableSnackbar('success','Invoice paid successfully')
+                this.paidDialog=false
                 
             }
             this.loading = false;

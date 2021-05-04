@@ -284,8 +284,8 @@ export default {
             else {
                 this.enableSnackbar('success','Company Re-assign successfully')
                 this.reAssign=false
+                this.resetUpdate();
             }
-            this.resetCreate();
             this.loading = false;
        } 
     },

@@ -20,7 +20,7 @@
         >
           <v-btn
             class="fab-btn-right ma-1"
-            v-if="income.length>1"
+            v-if="income.length > 1"
             @click="income.splice(index, 1)"
             icon
           >
@@ -54,10 +54,12 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field
-                  :min='0'
+                  :min="0"
                   v-model="incom.income_amount"
-                  :rules="[rules.required('Amount'),rules.min(0)]"
-                  :error-messages="errors.incomeAmount && errors.incomeAmount[0]"
+                  :rules="[rules.required('Amount'), rules.min(0)]"
+                  :error-messages="
+                    errors.incomeAmount && errors.incomeAmount[0]
+                  "
                   v-bind="fieldOptions"
                   label="Amount"
                 ></v-text-field>
@@ -164,11 +166,11 @@ export default {
                 })
               })
               let editData={}
-              this.income.forEach((expense) => {
+              this.income.forEach((expense,index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key !== 'menu'){
-                     editData[`${key}[${this.data.id}]`] = value
-                  }
+                  if(key === 'menu') return
+                  if(index) editData[`${key}[]`] = value
+                  else editData[`${key}[${this.data.id}]`] = value
                  
                 })
               })

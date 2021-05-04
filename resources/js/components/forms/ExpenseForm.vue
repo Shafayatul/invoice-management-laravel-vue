@@ -20,7 +20,7 @@
         >
           <v-btn
             class="fab-btn-right ma-1"
-            v-if="expenses.length>1"
+            v-if="expenses.length > 1"
             @click="expenses.splice(index, 1)"
             icon
           >
@@ -55,7 +55,9 @@
                     <v-text-field
                       v-model="expense.expense_date"
                       :rules="[rules.required('Expense Date')]"
-                      :error-messages="errors.expenseDate && errors.expenseDate[0]"
+                      :error-messages="
+                        errors.expenseDate && errors.expenseDate[0]
+                      "
                       dense
                       outlined
                       hide-details="auto"
@@ -90,11 +92,13 @@
               </v-col>
               <v-col cols="12" sm="6" md="3">
                 <v-text-field
-                 type="number"
-                 :min="0"
+                  type="number"
+                  :min="0"
                   v-model="expense.expense_amount"
                   :rules="[rules.required('Amount'), rules.min(0)]"
-                  :error-messages="errors.expenseAmount && errors.expenseAmount[0]"
+                  :error-messages="
+                    errors.expenseAmount && errors.expenseAmount[0]
+                  "
                   v-bind="fieldOptions"
                   label="Amount"
                 ></v-text-field>
@@ -212,12 +216,11 @@ export default {
                 })
               })
               let editData={}
-              this.expenses.forEach((expense) => {
+              this.expenses.forEach((expense,index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key !== 'menu'){
-                     editData[`${key}[${this.data.id}]`] = value
-                  }
-                 
+                  if(key === 'menu') return
+                  if(index) editData[`${key}[]`] = value
+                  else editData[`${key}[${this.data.id}]`] = value
                 })
               })
 

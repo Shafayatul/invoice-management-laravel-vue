@@ -241,7 +241,7 @@ export default {
             } 
             else {
                 this.enableSnackbar('success','Expense updated successfully')
-                this.resetCreate();
+                this.resetUpdate();
             }
             this.loading = false
 
