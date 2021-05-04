@@ -141,6 +141,7 @@ class ExpenseController extends Controller
                     $path = null;
                 }
             }else{
+                $expense = $expense;
                 if($request->hasFile('bills_file')){
                     $file = $request->file('bills_file')[$key];
                     $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());

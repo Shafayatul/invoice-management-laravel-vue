@@ -158,6 +158,7 @@ class InvoiceController extends Controller {
                 'message' => 'Invoice not found'
             ], 404);
         }
+        $invoice->invoiceHistory()->delete();
         if ($invoice->delete()) {
             return response()->json([
                 'success' => true

@@ -142,6 +142,7 @@ class IncomeController extends Controller
                     $path = null;
                 }
             }else{
+                $income = $income;
                 if($request->hasFile('receipt_file')){
                     $file = $request->file('receipt_file')[$key];
                     $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
