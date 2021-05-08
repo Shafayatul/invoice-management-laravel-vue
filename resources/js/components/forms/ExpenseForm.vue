@@ -130,7 +130,7 @@ import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
 const newExpenseItem = () => ({
     expense_amount: null,
-    bill_file: "",
+    bills_file: "",
     category_id: null,
     expense_date: new Date().toISOString().substr(0, 10),
     menu: false
@@ -181,7 +181,7 @@ export default {
                 this.expenses[0].expense_amount=v.expenseAmount,
                 this.expenses[0].category_id=v.categoryId
                 this.expenses[0].expense_date=new Date(v.expenseDate).toISOString().substr(0, 10),
-                this.expenses[0].bill_file=v.billsFile
+                this.expenses[0].bills_file=v.billsFile
             }
         }
     },
@@ -192,7 +192,7 @@ export default {
         },
         fileInput(event, id) {
 
-            this.expenses[id].bill_file = event;
+            this.expenses[id].bills_file = event;
         },
         handleExpense() {
             if (this.$refs.ExpenseForm.validate()) {
