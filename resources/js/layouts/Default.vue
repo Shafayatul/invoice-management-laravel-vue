@@ -68,7 +68,15 @@
                   :input-value="$theme.dark"
                 ></v-switch>
               </v-list-item>
-              <v-list-item-group color="primary">
+             
+              <v-list-item to="/update-password">
+                <v-list-item-icon>
+                  <v-icon>mdi-lock-reset</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title v-text="'Change Password'" />
+              </v-list-item>
+
+               <v-list-item-group color="primary">
                 <v-list-item :disabled="$loading" @click="handleLogout">
                   <v-list-item-icon>
                     <v-icon>mdi-location-exit</v-icon>
@@ -78,12 +86,6 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
-              <v-list-item to="/update-password">
-                <v-list-item-icon>
-                  <v-icon>mdi-lock-reset</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title v-text="'Change Password'" />
-              </v-list-item>
             </v-list>
           </v-card>
         </v-menu>
@@ -206,9 +208,17 @@ export default {
         },
         {
           path: "/users",
-          name: "Users",
+          name: "Admins",
           icon: "mdi-account",
-        },)
+        },
+        {
+         path: "/client",
+          name: "Client",
+          icon: "mdi-account",
+        }
+         
+        
+        )
         else if(this.$user.role==='admin')this.routes.splice(1,0, {
           path: "/client",
           name: "Client",

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-title>
-      <span class="mx-auto">{{ isUpdate ? "Edit User" : "Create User" }} </span>
+      <span class="mx-auto">{{ isUpdate ? "Edit Admn" : "Create Admn" }} </span>
     </v-card-title>
     <v-form
       lazy-validation
@@ -19,17 +19,7 @@
             v-bind="fieldOptions"
           />
         </v-col>
-        <v-col v-if="!reAssign"  cols="12" md="12" lg="12">
-          <v-select
-            @change="CheckIsClient(user.role)"
-            :items="['client', 'admin', 'employee']"
-            v-model="user.role"
-            :rules="[rules.required('Role')]"
-            :error-messages="errors.role && errors.role[0]"
-            v-bind="fieldOptions"
-            label="Role"
-          ></v-select>
-        </v-col>
+      
         <v-col v-if="!reAssign"  cols="12" md="12" lg="12">
           <v-text-field
             v-model="user.email"
@@ -49,7 +39,7 @@
             hide-details="auto"
           ></v-text-field>
         </v-col>
-        <v-col  v-if="!isClient && !reAssign " cols="12" md="12" lg="12">
+        <v-col  v-if=" !reAssign " cols="12" md="12" lg="12">
           <v-text-field
             label="Password"
             v-bind="fieldOptions"
@@ -62,7 +52,7 @@
             @click:append="password.show = !password.show"
           ></v-text-field>
         </v-col>
-        <v-col  v-if="!isClient && !reAssign " cols="12" md="12" lg="12">
+        <v-col  v-if=" !reAssign " cols="12" md="12" lg="12">
           <v-text-field
             :type="password.show ? 'text' : 'password'"
             :append-icon="password.show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -105,7 +95,7 @@ const initialUser = () => ({
     email: "",
     phone: "",
     companyId: "",
-    role: "",
+    role: "admin",
     password: "",
     password_confirmation: ""
 });

@@ -28,7 +28,7 @@
           </v-btn>
           <v-card-text>
             <v-row>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="3">
                 <v-select
                   v-model="incom.category_id"
                   :rules="[rules.required('Category')]"
@@ -40,7 +40,7 @@
                   v-bind="fieldOptions"
                 />
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="3">
                 <v-select
                   v-model="incom.client_id"
                   :rules="[rules.required('Client')]"
@@ -52,7 +52,7 @@
                   v-bind="fieldOptions"
                 />
               </v-col>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   :min="0"
                   v-model="incom.income_amount"
@@ -64,6 +64,15 @@
                   label="Amount"
                 ></v-text-field>
               </v-col>
+                 <v-col cols="12" sm="6" md="3">
+                <v-file-input
+                  @change="fileInput($event, index)"
+                  :error-messages="errors.billFile && errors.billFile[0]"
+                  v-bind="fieldOptions"
+                  label="Bills files"
+                ></v-file-input>
+              </v-col>
+              
             </v-row>
           </v-card-text>
         </v-card>
@@ -85,6 +94,7 @@ const newIncomeItem = () => ({
     income_amount:null,
     client_id: null,
     category_id: null,
+    bill_file:''
 });
 // expense_id:'',
 export default {
@@ -132,7 +142,8 @@ export default {
                 // };
                 this.income[0].income_amount=v.incomeAmount,
                 this.income[0].category_id=v.categoryId,
-                this.income[0].client_id=v.clientId
+                this.income[0].client_id=v.clientId,
+                this.income[0].bill_file=v.billFile
             }
         }
     },
@@ -142,6 +153,10 @@ export default {
             this.income.push(newIncomeItem());
         },
         fileInput(event, id) {
+            this.income[id].bill_file = event;
+        },
+          fileInput(event, id) {
+
             this.income[id].bill_file = event;
         },
         handleIncome() {

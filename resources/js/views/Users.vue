@@ -10,7 +10,7 @@
         <v-card-text>
           <UserForm
             v-if="cmDialog"
-            :errors='errors'
+            :errors="errors"
             :isUpdate="update.dialog"
             :data="update.data"
             :companyList="$companyList"
@@ -54,6 +54,11 @@
             </template>
 
             <v-list>
+              <v-list-item @click="handleView(item)" dense link>
+                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                View
+              </v-list-item>
+              <v-divider></v-divider>
               <v-list-item @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
@@ -83,6 +88,7 @@
                 <v-icon color="error" class="mr-3">mdi-update</v-icon>
                 Change Company
               </v-list-item>
+              
             </v-list>
           </v-menu>
         </template>
@@ -121,10 +127,74 @@
       @yes="handleDeleteUser"
       @no="resetDelete"
     />
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="viewDetails"
+    >
+      <v-card v-if="viewUserInfo">
+        <v-card-title><span class="mx-auto">View Details</span></v-card-title>
+        <v-card-text>
+          <v-form readonly>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.name"
+                  label="Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.email"
+                  label="Email"
+                ></v-text-field>
+              </v-col>
+              <!-- <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  :v-model="viewUserInfo.isActive == '1'? true: false"
+                  label="Activation"
+                ></v-text-field>
+              </v-col> -->
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.createdAt"
+                  label="Created at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.updatedAt"
+                  label="Update at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.isActive"
+                  label="Status"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewUserInfo.company.name"
+                  label="Name"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import formFieldMixin from "@/mixins/formFieldMixin";
 import { mapActions, mapGetters } from "vuex";
 import UserForm from "@/components/forms/UserForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
@@ -133,7 +203,7 @@ import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
 export default {
     name: "Users",
-    mixins: [crudMixin],
+    mixins: [crudMixin,formFieldMixin],
     components: {
         UserForm,
         fabCreateButton,
@@ -144,6 +214,12 @@ export default {
         return {
             cardloader: false,
             loading:false,
+            viewDetails:false,
+            viewUserInfo:{
+              company: {
+                name:''
+              }
+            },
             search: "",
             reAssign:false,
             snackbar: {
@@ -195,6 +271,13 @@ export default {
           this.tableLoader = true;
             await this.fetchUsers({page,per_page:10});
             this.tableLoader = false;
+        },
+        handleView(item){
+         this.viewDetails=true,
+         this.viewUserInfo=item
+         this.viewUserInfo.isActive=this.viewUserInfo.isActive == "1" ? "Active" : "Blocked" 
+         this.viewUserInfo.createdAt= moment(this.viewUserInfo.createdAt).format('ll')
+          this.viewUserInfo.updatedAt= moment(this.viewUserInfo.updatedAt).format('ll')
         },
 
         onInputUserDialog(dialog) {

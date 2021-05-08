@@ -54,6 +54,11 @@
             </template>
 
             <v-list>
+              <v-list-item @click="handleView(item)" dense link>
+                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                View
+              </v-list-item>
+              <v-divider></v-divider>
               <v-list-item @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
@@ -63,16 +68,6 @@
                 <v-icon color="error" class="mr-2">mdi-delete</v-icon>
                 Delete
               </v-list-item>
-              <!-- <v-divider></v-divider>
-               <v-list-item @click="handleBlockUser(item.id,item.isActive)" dense link>
-                <v-icon size="20" color="error" class="mr-3">mdi-block-helper</v-icon>
-                {{ item.isActive =='1'? 'Block' : 'Unblock' }}
-              </v-list-item>
-              <v-divider></v-divider>
-              <v-list-item  @click="initUpdate(item),reAssign=true" dense link>
-                <v-icon  color="error" class="mr-3">mdi-update</v-icon>
-                Change Company
-              </v-list-item> -->
             </v-list>
           </v-menu>
         </template>
@@ -83,6 +78,7 @@
           {{ item.isActive == "1" ? "Active" : "Blocked" }}
         </template>
       </v-data-table>
+
       <div class="text-center pt-2">
         <v-pagination
           :value="$pagination.currentPage"
@@ -111,11 +107,77 @@
       @yes="handleDeleteClient"
       @no="resetDelete"
     />
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="viewDetails"
+    >
+      <v-card v-if="viewClientInfo">
+        <v-card-title><span class="mx-auto">View Details</span></v-card-title>
+        <v-card-text>
+          <v-form readonly>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.name"
+                  label="Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.email"
+                  label="Email"
+                ></v-text-field>
+              </v-col>
+              <!-- <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  :v-model="viewClientInfo.isActive == '1'? true: false"
+                  label="Activation"
+                ></v-text-field>
+              </v-col> -->
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.createdAt"
+                  label="Created at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.updatedAt"
+                  label="Update at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.isActive"
+                  label="Status"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.company.name"
+                  label="Name"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+          <!-- {{viewClientInfo.company.name}} -->
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
 import { mapActions, mapGetters } from "vuex";
+import formFieldMixin from "@/mixins/formFieldMixin";
 import ClientForm from "@/components/forms/ClientForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin";
@@ -123,7 +185,7 @@ import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
 export default {
     name: "Client",
-    mixins: [crudMixin],
+    mixins: [crudMixin,formFieldMixin,],
     components: {
         ClientForm,
         fabCreateButton,
@@ -135,6 +197,12 @@ export default {
             cardloader: false,
             loading:false,
             search: "",
+            viewDetails:false,
+            viewClientInfo:{
+              company: {
+                name:''
+              }
+            },
             reAssign:false,
             snackbar: {
                 action: false,
@@ -200,6 +268,13 @@ export default {
             
             await this.fetchProfile()
           
+        },
+        handleView(item){
+         this.viewDetails=true,
+         this.viewClientInfo=item
+         this.viewClientInfo.isActive=this.viewClientInfo.isActive == "1" ? "Active" : "Blocked" 
+         this.viewClientInfo.createdAt= moment(this.viewClientInfo.createdAt).format('ll')
+          this.viewClientInfo.updatedAt= moment(this.viewClientInfo.updatedAt).format('ll')
         },
         async oncreated(){
            this.loading=true

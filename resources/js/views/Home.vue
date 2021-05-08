@@ -40,7 +40,7 @@
                         <v-card dark color="teal" outlined>
                             <v-card-title
                                 ><span class="mx-auto py-2 font-weight-bold">
-                                    Profit Ratio : {{ $dashboard.profitRatio }}
+                                    Profit Ratio : {{ $dashboard.profitRatio }} %
                                 </span>
                             </v-card-title>
                         </v-card>
@@ -93,7 +93,7 @@
                     :items="$dashboard.unpaidInvoicesAll"
                     :search="search"
                     hide-default-footer
-                >
+                > 
                     <template v-slot:item.sendingType="{ item }">
                         {{
                             item.sendingType.charAt(0).toUpperCase() +

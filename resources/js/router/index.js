@@ -62,10 +62,7 @@ const router = new VueRouter({
                 {
                     path: "client",
                     name: "Client",
-                    component: view("Client"),
-                      meta: {
-                        requiresRole: "admin"
-                    }
+                    component: view("Client")
                 },
                 {
                     path: "invoice-history",

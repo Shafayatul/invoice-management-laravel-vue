@@ -65,6 +65,11 @@
             </template>
 
             <v-list>
+              <v-list-item @click="handleView(item)" dense link>
+                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                View
+              </v-list-item>
+              <v-divider></v-divider>
               <v-list-item @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
@@ -106,10 +111,76 @@
         @no="resetDelete"
       />
     </v-snackbar>
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="viewDetails"
+    >
+      <v-card v-if="viewIInvoicenfo">
+        <v-card-title><span class="mx-auto">View Details</span></v-card-title>
+        <v-card-text>
+          <v-form readonly>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.category.name"
+                  label="Payment Category"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.createdBy.name"
+                  label="Created by"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.createdBy.email"
+                  label="Phone Number"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.createdBy.phone"
+                  label="Phone Number"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.createdAt"
+                  label="Created at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.updatedAt"
+                  label="Update at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewIInvoicenfo.incomeAmount"
+                  label="Amount"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import formFieldMixin from "@/mixins/formFieldMixin";
 import { mapActions, mapGetters } from "vuex";
 import IncomeForm from "@/components/forms/IncomeForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
@@ -117,7 +188,7 @@ import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
 import crudMixin from "@/mixins/crud-mixin";
 export default {
-    mixins: [crudMixin],
+    mixins: [crudMixin,formFieldMixin],
     name:'Income',
     components: {
         IncomeForm,
@@ -129,6 +200,16 @@ export default {
         return {
             cardloader: false,
             search: "",
+            viewDetails:false,
+            viewIInvoicenfo:{
+             category:{
+               name:'',
+               createdAt:''
+             },
+             createdBy:{
+               name:''
+             }
+            },
             loading:false,
             errors:{},
              snackbar: {
@@ -146,7 +227,7 @@ export default {
                 },
                 { text: "Category", value: "category.name", sortable: false },
                 { text: "Amount", value: "incomeAmount", sortable: false },
-                // { text: "Bills File", value: "billsFile", sortable: false },
+                { text: "Created by", value: "createdBy.name", sortable: false },
                 { text: "Date", value: "createdAt", sortable: false },
                 { text: "Actions", value: "actions", sortable: false }
      
@@ -218,6 +299,11 @@ export default {
             }
            
             this.loading = false;
+        },
+          handleView(item){
+         this.viewDetails=true,
+         this.viewIInvoicenfo=item
+         this.viewIInvoicenfo.createdAt= moment(this.viewIInvoicenfo.createdAt).format('ll')
         },
         onInputUserDialog(dialog) {
             if (!dialog) {

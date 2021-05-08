@@ -21,7 +21,7 @@
           <ExpenseForm
             v-if="cmDialog"
             :isUpdate="update.dialog"
-            :errors='errors'
+            :errors="errors"
             @editExpense="handleEditExpense"
             @addExpense="handleAddExpense"
             :paymentList="$paymentList"
@@ -53,8 +53,8 @@
         hide-default-footer
         :items-per-page="+$pagination.perPage"
       >
-      <template v-slot:item.expenseDate="{ item }">
-          {{$m(item.expenseDate).format("ll")}}
+        <template v-slot:item.expenseDate="{ item }">
+          {{ $m(item.expenseDate).format("ll") }}
         </template>
         <template v-slot:item.actions="{ item }">
           <v-menu down left nudge-left="7rem">
@@ -65,6 +65,11 @@
             </template>
 
             <v-list>
+              <v-list-item @click="handleView(item)" dense link>
+                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                View
+              </v-list-item>
+              <v-divider></v-divider>
               <v-list-item @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
@@ -106,10 +111,61 @@
         @no="resetDelete"
       />
     </v-snackbar>
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="viewDetails"
+    >
+      <v-card v-if="viewExpenseInfo">
+        <v-card-title><span class="mx-auto">View Details</span></v-card-title>
+        <v-card-text>
+          <v-form readonly>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewExpenseInfo.category.name"
+                  label="Payment Category"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewExpenseInfo.createdAt"
+                  label="Created by"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewExpenseInfo.expenseDate"
+                  label="Expense Date"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewExpenseInfo.expenseAmount"
+                  label="Expense amount"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewExpenseInfo.user.name"
+                  label="Expensed by"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import formFieldMixin from "@/mixins/formFieldMixin";
 import { mapActions, mapGetters } from "vuex";
 import ExpenseForm from "@/components/forms/ExpenseForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
@@ -117,7 +173,7 @@ import confirm from "@/components/dialog/confirm.vue";
 import CircleLoader from "@/components/customs/CircleLoader";
 import crudMixin from "@/mixins/crud-mixin";
 export default {
-    mixins: [crudMixin],
+    mixins: [crudMixin,formFieldMixin],
     name:'Expenses',
     components: {
         ExpenseForm,
@@ -130,6 +186,16 @@ export default {
             cardloader: false,
             search: "",
             loading:false,
+            viewDetails:false,
+             viewExpenseInfo:{
+             category:{
+               name:'',
+               createdAt:''
+             },
+             user:{
+               name:''
+             }
+            },
             errors:{},
              snackbar: {
                 action: false,
@@ -139,7 +205,7 @@ export default {
             },
             headers: [
                 {
-                    text: "User",
+                    text: "Expensed by",
                     align: "start",
                     sortable: false,
                     value: "user.name"
@@ -183,6 +249,12 @@ export default {
         },
         click() {
             this.dialog = true;
+        },
+        handleView(item){
+         this.viewDetails=true,
+         this.viewExpenseInfo=item
+         this.viewExpenseInfo.createdAt= moment(this.viewExpenseInfo.createdAt).format('ll')
+         this.viewExpenseInfo.expenseDate= moment(this.viewExpenseInfo.expenseDate).format('ll')
         },
         async onfetchExpense() {
             this.tableLoader = true;
