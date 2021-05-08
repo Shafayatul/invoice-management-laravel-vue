@@ -66,11 +66,13 @@
               </v-col>
                  <v-col cols="12" sm="6" md="3">
                 <v-file-input
+                v-if="!isUpdate"
                   @change="fileInput($event, index)"
                   :error-messages="errors.billFile && errors.billFile[0]"
                   v-bind="fieldOptions"
                   label="Bills files"
                 ></v-file-input>
+                <v-chip v-if="incom.receipt_file && isUpdate"  > <v-icon class="mr-1">mdi-cloud-download</v-icon><a download :href="incom.receipt_file" >download file</a> </v-chip> 
               </v-col>
               
             </v-row>
@@ -94,7 +96,7 @@ const newIncomeItem = () => ({
     income_amount:null,
     client_id: null,
     category_id: null,
-    bill_file:''
+    receipt_file:''
 });
 // expense_id:'',
 export default {
@@ -138,12 +140,12 @@ export default {
                 //     expense_amount: v.expenseAmount,
                 //     category_id: v.categoryId,
                 //     expense_date:new Date(v.expenseDate).toISOString().substr(0, 10),
-                //     bill_file:v.billsFile
+                //     receipt_file:v.billsFile
                 // };
                 this.income[0].income_amount=v.incomeAmount,
                 this.income[0].category_id=v.categoryId,
                 this.income[0].client_id=v.clientId,
-                this.income[0].bill_file=v.billFile
+                this.income[0].receipt_file=v.receiptFile
             }
         }
     },
@@ -153,11 +155,11 @@ export default {
             this.income.push(newIncomeItem());
         },
         fileInput(event, id) {
-            this.income[id].bill_file = event;
+            this.income[id].receipt_file = event;
         },
           fileInput(event, id) {
 
-            this.income[id].bill_file = event;
+            this.income[id].receipt_file = event;
         },
         handleIncome() {
             if (this.$refs.IncomeForm.validate()) {

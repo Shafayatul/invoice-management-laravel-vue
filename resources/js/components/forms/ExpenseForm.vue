@@ -105,11 +105,14 @@
               </v-col>
               <v-col cols="12" sm="6" md="3">
                 <v-file-input
+                  v-if="!isUpdate"
                   @change="fileInput($event, index)"
                   :error-messages="errors.billFile && errors.billFile[0]"
                   v-bind="fieldOptions"
                   label="Bills files"
+                  
                 ></v-file-input>
+                <v-chip v-if="expense.bills_file && isUpdate"  ><v-icon class="mr-1">mdi-cloud-download</v-icon> <a download :href="expense.bills_file" > download file</a> </v-chip> 
               </v-col>
             </v-row>
           </v-card-text>

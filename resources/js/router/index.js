@@ -49,6 +49,7 @@ const router = new VueRouter({
                     name: "Expense",
                     component: view("Expense")
                 },
+
                 {
                     path: "invoice-details",
                     name: "InvoiceDetails",
@@ -95,7 +96,7 @@ const router = new VueRouter({
             path: "*",
             name: "NotFound",
             component: view("NotFound")
-        }
+        },
     ]
 });
 // let role='admin'
