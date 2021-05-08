@@ -26,7 +26,7 @@ class Income extends Model
     }
     
     public function category(){
-        return $this->belongsTo(User::class, 'category_id')->withTrashed();
+        return $this->belongsTo(PaymentCategory::class, 'category_id')->withTrashed();
     }
     
     public function invoice(){

@@ -141,7 +141,7 @@ class ClientController extends Controller
 
     public function ClientData()
     {
-        $clients = User::where('role', 'client')->select('name', 'id')->get()->toArray();
+        $clients = User::where('role', 'client')->where('company_id', Auth::user()->company_id)->select('name', 'id')->get()->toArray();
         return response()->json([
             'clients' => $clients,
             'status'    => 'success',

@@ -40,7 +40,13 @@ class DashboardController extends Controller
 
             $total_expenses = Expense::where('company_id', Auth::user()->company_id)->sum('expense_amount');
 
-            $profit_ratio = (((float)$total_incomes-(float)$total_expenses)/(float)$total_incomes)*100;
+            $net_gross = ((float)$total_incomes-(float)$total_expenses);
+            
+            if($net_gross == 0.0 || $total_incomes == 0){
+                $profit_ratio = 0;
+            }else{
+                $profit_ratio = (((float)$total_incomes-(float)$total_expenses)/(float)$total_incomes)*100;
+            }
 
             
            
