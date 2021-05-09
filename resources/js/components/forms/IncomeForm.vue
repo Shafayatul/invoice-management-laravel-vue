@@ -64,7 +64,7 @@
                   label="Amount"
                 ></v-text-field>
               </v-col>
-                 <v-col cols="12" sm="6" md="3">
+              <v-col cols="12" sm="6" md="3">
                 <v-file-input
                   @change="fileInput($event, index)"
                   :error-messages="errors.billFile && errors.billFile[0]"
@@ -73,7 +73,6 @@
                 ></v-file-input>
                 <!-- <v-chip v-if="incom.receipt_file && isUpdate"  > <v-icon class="mr-1">mdi-cloud-download</v-icon><a download :href="incom.receipt_file" >download file</a> </v-chip>  -->
               </v-col>
-              
             </v-row>
           </v-card-text>
         </v-card>
@@ -95,7 +94,7 @@ const newIncomeItem = () => ({
     income_amount:null,
     client_id: null,
     category_id: null,
-    receipt_file:''
+    receipt_file:null
 });
 // expense_id:'',
 export default {
@@ -143,8 +142,8 @@ export default {
                 // };
                 this.income[0].income_amount=v.incomeAmount,
                 this.income[0].category_id=v.categoryId,
-                this.income[0].client_id=v.clientId,
-                this.income[0].receipt_file=v.receiptFile
+                this.income[0].client_id=v.clientId
+                
             }
         }
     },
@@ -156,10 +155,7 @@ export default {
         fileInput(event, id) {
             this.income[id].receipt_file = event;
         },
-          fileInput(event, id) {
-
-            this.income[id].receipt_file = event;
-        },
+    
         handleIncome() {
             if (this.$refs.IncomeForm.validate()) {
                 // let addExpense = this.income.reduce(
@@ -184,7 +180,7 @@ export default {
               let editData={}
               this.income.forEach((expense,index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key === 'menu') return
+                  if(key === 'menu' || ( key=== 'receipt_file' && !value)) return
                   if(index) editData[`${key}[]`] = value
                   else editData[`${key}[${this.data.id}]`] = value
                  
