@@ -21,7 +21,7 @@
 
             <v-list>
               <v-list-item @click="handleView(item)" dense link>
-                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                <v-icon size="20" color="success" class="mr-3">mdi-eye</v-icon>
                 View
               </v-list-item>
             </v-list>
@@ -83,15 +83,8 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                 
+                  v-model="viewClientInfo.invoice.companies.name"
                   label="Company name"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-bind="fieldOptions"
-                 
-                  label="Created At"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
@@ -118,15 +111,14 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                    v-model="viewClientInfo.amount"
+                  v-model="viewClientInfo.amount"
                   label="Amount"
                 ></v-text-field>
-
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                    v-model="viewClientInfo.isPaid"
+                  v-model="viewClientInfo.isPaid"
                   label="Status"
                 ></v-text-field>
               </v-col>
@@ -161,8 +153,11 @@ export default {
                     email: "",
                     phone: ""
                 },
-                companies: {
-                    name: ""
+                invoice: {
+                    companies:{
+                      name:'',
+                      
+                    }
                 },
                 invoiceHistory: {
                     amount: "",

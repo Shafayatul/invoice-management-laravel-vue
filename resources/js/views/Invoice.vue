@@ -88,7 +88,7 @@
 
                         <v-list>
                             <v-list-item @click="handleView(item)" dense link>
-                                <v-icon size="20" color="error" class="mr-3"
+                                <v-icon size="20" color="success" class="mr-3"
                                     >mdi-eye</v-icon
                                 >
                                 View
@@ -204,7 +204,7 @@
                                 <v-text-field
                                     v-bind="fieldOptions"
                                     v-model="viewClientInfo.companies.createdAt"
-                                    label="Created At"
+                                    label="Created at"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12">
@@ -416,9 +416,10 @@ export default {
         },
         handleView(item) {
             (this.viewDetails = true), (this.viewClientInfo = item);
-
-            this.viewClientInfo.createdAt = moment(
-                this.viewClientInfo.createdAt
+            this.viewClientInfo.sendingType=this.viewClientInfo.sendingType.charAt(0).toUpperCase() +
+                                this.viewClientInfo.sendingType.slice(1).replace("_", " ")
+            this.viewClientInfo.companies.createdAt = moment(
+                this.viewClientInfo.companies.createdAt
             ).format("ll");
             this.viewClientInfo.updatedAt = moment(
                 this.viewClientInfo.updatedAt

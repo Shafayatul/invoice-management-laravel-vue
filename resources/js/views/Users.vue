@@ -55,7 +55,7 @@
 
             <v-list>
               <v-list-item @click="handleView(item)" dense link>
-                <v-icon size="20" color="error" class="mr-3">mdi-eye</v-icon>
+                <v-icon size="20" color="success" class="mr-3">mdi-eye</v-icon>
                 View
               </v-list-item>
               <v-divider></v-divider>
@@ -194,6 +194,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import formFieldMixin from "@/mixins/formFieldMixin";
 import { mapActions, mapGetters } from "vuex";
 import UserForm from "@/components/forms/UserForm.vue";

@@ -21,7 +21,7 @@
             v-bind="fieldOptions"
           />
         </v-col>
-        <v-col v-if="!reAssign" cols="12" md="12" lg="12">
+        <!-- <v-col v-if="!reAssign" cols="12" md="12" lg="12">
           <v-text-field
              disabled
             v-model="Client.role"
@@ -30,7 +30,7 @@
             v-bind="fieldOptions"
             label="Role"
           ></v-text-field>
-        </v-col>
+        </v-col> -->
         <v-col v-if="!reAssign" cols="12" md="12" lg="12">
           <v-text-field
             v-model="Client.email"

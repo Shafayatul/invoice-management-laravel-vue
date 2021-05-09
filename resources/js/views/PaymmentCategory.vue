@@ -13,7 +13,7 @@
             @addPayment="handleAddPayment"
             :isUpdate="update.dialog"
             :data="update.data"
-            :errors='errors'
+            :errors="errors"
           />
         </v-card-text>
       </v-card>
@@ -64,7 +64,12 @@
           </v-menu>
         </template>
         <template v-slot:item.type="{ item }">
-          <v-chip small class="p-1" color="primary"> {{ item.type }}</v-chip>
+          <v-chip small class="p-1" color="primary">
+            {{
+              item.type.charAt(0).toUpperCase() +
+              item.type.slice(1).replace("_", " ")
+            }}</v-chip
+          >
         </template>
       </v-data-table>
       <div class="text-center pt-2">
