@@ -1,253 +1,214 @@
 <template>
-    <div class="ml-3">
-        <v-dialog
-            @input="onInputInvoiceDialog"
-            v-model="cmDialog"
+  <div class="ml-3">
+    <v-dialog
+      @input="onInputInvoiceDialog"
+      v-model="cmDialog"
+      v-if="cmDialog"
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+    >
+      <v-card :loading="loading">
+        <v-card-text>
+          <InvoiceForm
             v-if="cmDialog"
-            :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
-        >
-            <v-card :loading="loading">
-                <v-card-text>
-                    <InvoiceForm
-                        v-if="cmDialog"
-                        :errors="errors"
-                        @editInvoice="handleEditInvoice"
-                        :companyList="$companyList"
-                        @addInvoice="handleAddInvoice"
-                        @paidInvoice="handlePaidInvoice"
-                        :isUpdate="update.dialog"
-                        :data="update.data"
-                        :loading="loading"
-                        :clientList="$clientList"
-                    />
-                </v-card-text>
-            </v-card>
-        </v-dialog>
+            :errors="errors"
+            @editInvoice="handleEditInvoice"
+            :companyList="$companyList"
+            @addInvoice="handleAddInvoice"
+            @paidInvoice="handlePaidInvoice"
+            :isUpdate="update.dialog"
+            :data="update.data"
+            :loading="loading"
+            :clientList="$clientList"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
-        <v-card>
-            <v-card-title>
-                Invoice
-                <v-spacer></v-spacer>
+    <v-card>
+      <v-card-title>
+        Invoice
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          outlined
+          dense
+          prepend-inner-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :loading="cardloader"
+        loading-text="Loading... Please wait"
+        :headers="headers"
+        :items="$invoice"
+        :search="search"
+        hide-default-footer
+        :items-per-page="+$pagination.perPage"
+      >
+        <template v-slot:item.invoiceHistory.isPaid="{ item }">
+          <v-chip
+            small
+            :color="item.invoiceHistory.isPaid == '1' ? 'success' : 'error'"
+          >
+            {{ item.invoiceHistory.isPaid == "1" ? "Paid" : "Pending" }}</v-chip
+          >
+        </template>
+        <template v-slot:item.sendingDate="{ item }">
+          {{ $m(item.sendingDate).format("ll") }}
+        </template>
+        <template v-slot:item.sendingType="{ item }">
+          {{
+            item.sendingType.charAt(0).toUpperCase() +
+            item.sendingType.slice(1).replace("_", " ")
+          }}
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-menu down left nudge-left="7rem">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon color="primary" dark v-bind="attrs" v-on="on">
+                <v-icon> mdi-dots-vertical </v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="handleView(item)" dense link>
+                <v-icon size="20" color="success" class="mr-3">mdi-eye</v-icon>
+                View
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item @click="initUpdate(item)" dense link>
+                <v-icon class="mr-2">mdi-pencil</v-icon>
+                Edit
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item @click="initDelete(item.id)" dense link>
+                <v-icon class="mr-2">mdi-delete</v-icon>
+                Delete
+              </v-list-item>
+              <v-divider v-if="item.invoiceHistory.isPaid == 0"></v-divider>
+              <v-list-item
+                v-if="item.invoiceHistory.isPaid == 0"
+                @click="handlePaidDialog(item)"
+                dense
+                link
+              >
+                <v-icon class="mr-2">mdi-cash-check</v-icon>
+                Pay invoice
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+      </v-data-table>
+      <div class="text-center pt-2">
+        <v-pagination
+          :value="$pagination.currentPage"
+          @input="onChangePage"
+          :length="Math.ceil($pagination.totalPage / $pagination.perPage)"
+        ></v-pagination>
+      </div>
+    </v-card>
+    <fabCreateButton @click="initCreate()" />
+    <v-snackbar
+      v-model="snackbar.action"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+      top
+      right
+      class="font-weight-bold"
+    >
+      {{ snackbar.text }}
+    </v-snackbar>
+    <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
+    <!-- Start Confirm delete action -->
+    <confirm
+      title="Are you sure to delete?"
+      subtitle="Once you delete, this action can't be undone"
+      v-model="deletee.dialog"
+      :loading="deletee.loading"
+      @yes="handleDeleteInvoice"
+      @no="resetDelete"
+    />
+    <!-- End Confirm delete action -->
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="viewDetails"
+    >
+      <v-card v-if="viewClientInfo">
+        <v-card-title><span class="mx-auto">View Details</span></v-card-title>
+        <v-card-text>
+          <v-form readonly>
+            <v-row>
+              <v-col cols="12">
                 <v-text-field
-                    v-model="search"
-                    outlined
-                    dense
-                    prepend-inner-icon="mdi-magnify"
-                    label="Search"
-                    single-line
-                    hide-details
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.client.name"
+                  label="Name"
                 ></v-text-field>
-            </v-card-title>
-            <v-data-table
-                :loading="cardloader"
-                loading-text="Loading... Please wait"
-                :headers="headers"
-                :items="$invoice"
-                :search="search"
-                hide-default-footer
-                :items-per-page="+$pagination.perPage"
-            >
-                <template v-slot:item.invoiceHistory.isPaid="{ item }">
-                    <v-chip
-                        small
-                        :color="
-                            item.invoiceHistory.isPaid == '1'
-                                ? 'success'
-                                : 'error'
-                        "
-                    >
-                        {{
-                            item.invoiceHistory.isPaid == "1"
-                                ? "Paid"
-                                : "Pending"
-                        }}</v-chip
-                    >
-                </template>
-                <template v-slot:item.sendingDate="{ item }">
-                    {{ $m(item.sendingDate).format("ll") }}
-                </template>
-                <template v-slot:item.sendingType="{ item }">
-                    {{
-                        item.sendingType.charAt(0).toUpperCase() +
-                            item.sendingType.slice(1).replace("_", " ")
-                    }}
-                </template>
-                <template v-slot:item.actions="{ item }">
-                    <v-menu down left nudge-left="7rem">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                icon
-                                color="primary"
-                                dark
-                                v-bind="attrs"
-                                v-on="on"
-                            >
-                                <v-icon> mdi-dots-vertical </v-icon>
-                            </v-btn>
-                        </template>
-
-                        <v-list>
-                            <v-list-item @click="handleView(item)" dense link>
-                                <v-icon size="20" color="success" class="mr-3"
-                                    >mdi-eye</v-icon
-                                >
-                                View
-                            </v-list-item>
-                            <v-divider></v-divider>
-                            <v-list-item @click="initUpdate(item)" dense link>
-                                <v-icon class="mr-2">mdi-pencil</v-icon>
-                                Edit
-                            </v-list-item>
-                            <v-divider></v-divider>
-                            <v-list-item
-                                @click="initDelete(item.id)"
-                                dense
-                                link
-                            >
-                                <v-icon class="mr-2">mdi-delete</v-icon>
-                                Delete
-                            </v-list-item>
-                            <v-divider
-                                v-if="item.invoiceHistory.isPaid == 0"
-                            ></v-divider>
-                            <v-list-item
-                                v-if="item.invoiceHistory.isPaid == 0"
-                                @click="handlePaidDialog(item)"
-                                dense
-                                link
-                            >
-                                <v-icon class="mr-2">mdi-cash-check</v-icon>
-                                Pay invoice
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
-                </template>
-            </v-data-table>
-            <div class="text-center pt-2">
-                <v-pagination
-                    :value="$pagination.currentPage"
-                    @input="onChangePage"
-                    :length="
-                        Math.ceil($pagination.totalPage / $pagination.perPage)
-                    "
-                ></v-pagination>
-            </div>
-        </v-card>
-        <fabCreateButton @click="initCreate()" />
-        <v-snackbar
-            v-model="snackbar.action"
-            :timeout="snackbar.timeout"
-            :color="snackbar.color"
-            top
-            right
-            class="font-weight-bold"
-        >
-            {{ snackbar.text }}
-        </v-snackbar>
-        <CircleLoader
-            center
-            v-if="loading"
-            size="84"
-            speed="1"
-            border-width="3"
-        />
-        <!-- Start Confirm delete action -->
-        <confirm
-            title="Are you sure to delete?"
-            subtitle="Once you delete, this action can't be undone"
-            v-model="deletee.dialog"
-            :loading="deletee.loading"
-            @yes="handleDeleteInvoice"
-            @no="resetDelete"
-        />
-        <!-- End Confirm delete action -->
-        <v-dialog
-            :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
-            v-model="viewDetails"
-        >
-            <v-card v-if="viewClientInfo">
-                <v-card-title
-                    ><span class="mx-auto">View Details</span></v-card-title
-                >
-                <v-card-text>
-                    <v-form readonly>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.client.name"
-                                    label="Name"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.client.email"
-                                    label="Email"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.client.phone"
-                                    label="Phone number"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.companies.name"
-                                    label="Company name"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.companies.createdAt"
-                                    label="Created at"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.sendingType"
-                                    label="Sending type"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col
-                                v-if="viewClientInfo.sendingType == 'recurring'"
-                                cols="12"
-                            >
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="viewClientInfo.recurringPeriod"
-                                    label="Recurring period"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="
-                                        viewClientInfo.invoiceHistory.isPaid
-                                    "
-                                    label="Amount"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field
-                                    v-bind="fieldOptions"
-                                    v-model="
-                                        viewClientInfo.invoiceHistory.amount
-                                    "
-                                    label="status"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                </v-card-text>
-            </v-card>
-        </v-dialog>
-    </div>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.client.email"
+                  label="Email"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.client.phone"
+                  label="Phone number"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.companies.name"
+                  label="Company name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.createdAt"
+                  label="Created at"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.sendingType"
+                  label="Sending type"
+                ></v-text-field>
+              </v-col>
+              <v-col v-if="viewClientInfo.sendingType == 'recurring'" cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.recurringPeriod"
+                  label="Recurring period"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.invoiceHistory.isPaid"
+                  label="Amount"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.invoiceHistory.amount"
+                  label="status"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -318,7 +279,7 @@ export default {
                 },
                 { text: "Compnay", value: "companies.name", sortable: false },
                 { text: "Type", value: "sendingType", sortable: false },
-                { text: "Date", value: "sendingDate", sortable: false },
+                { text: "Sending Date", value: "sendingDate", sortable: false },
                 {
                     text: "Recurring period",
                     value: "recurringPeriod",
@@ -330,7 +291,7 @@ export default {
                     sortable: false
                 },
                 {
-                    text: "amoount",
+                    text: "amount",
                     value: "invoiceHistory.amount",
                     sortable: false
                 },
@@ -418,8 +379,8 @@ export default {
             (this.viewDetails = true), (this.viewClientInfo = item);
             this.viewClientInfo.sendingType=this.viewClientInfo.sendingType.charAt(0).toUpperCase() +
                                 this.viewClientInfo.sendingType.slice(1).replace("_", " ")
-            this.viewClientInfo.companies.createdAt = moment(
-                this.viewClientInfo.companies.createdAt
+            this.viewClientInfo.createdAt = moment(
+                this.viewClientInfo.createdAt
             ).format("ll");
             this.viewClientInfo.updatedAt = moment(
                 this.viewClientInfo.updatedAt
