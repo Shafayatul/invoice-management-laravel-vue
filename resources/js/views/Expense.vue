@@ -155,6 +155,19 @@
                   label="Expensed by"
                 ></v-text-field>
               </v-col>
+              <v-col cols="12">
+                <v-chip
+                  dark
+                  outlined
+                  color="primary"
+                  v-if="viewExpenseInfo.billsFile"
+                >
+                  <v-icon class="mr-1">mdi-cloud-download</v-icon
+                  ><a download :href="'/storage/' + viewExpenseInfo.billsFile"
+                    >download file</a
+                  >
+                </v-chip>
+              </v-col>
             </v-row>
           </v-form>
         </v-card-text>

@@ -1,33 +1,49 @@
 <template>
-    <v-app>
-        <v-card
-            :loading="loading"
-            class="mx-auto my-auto"
-            :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
-        >
-            <div class="px-8 py-12">
-                <v-card-title class="title login__title flex-column"
-                    >Change Password</v-card-title
-                >
+  <v-app>
+    <div class="overflow-visible d-flex my-auto">
+      <v-row>
 
-                <v-card-text class="mt-5">
-                    <v-alert
-                        dense
-                        outlined
-                        dismissible
-                        v-model="error.dialog"
-                        :type="isSuccess ? 'success' : 'error'"
-                    >
-                        {{ error.message }}
-                    </v-alert>
-                    <UpdatePasswordForm
-                        @updatePassword="handleUpdatePassword"
-                        :loading="loading"
-                    />
-                </v-card-text>
+          <v-col
+            class="mx-auto"
+            v-if="!$vuetify.breakpoint.smAndDown"
+            cols="12"
+            md="6"
+          >
+            <v-img
+              contain
+              height="300"
+              :src="require('@/assets/my_password.svg')"
+            />
+          </v-col>
+      
+        <v-col>
+          <v-card :loading="loading" class="mx-auto mx-md-0 my-auto" max-width="480">
+            <div class="px-8 py-12">
+              <v-card-title class="title login__title flex-column"
+                >Change Password</v-card-title
+              >
+
+              <v-card-text class="mt-5">
+                <v-alert
+                  dense
+                  outlined
+                  dismissible
+                  v-model="error.dialog"
+                  :type="isSuccess ? 'success' : 'error'"
+                >
+                  {{ error.message }}
+                </v-alert>
+                <UpdatePasswordForm
+                  @updatePassword="handleUpdatePassword"
+                  :loading="loading"
+                />
+              </v-card-text>
             </div>
-        </v-card>
-    </v-app>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+  </v-app>
 </template>
 
 <script>

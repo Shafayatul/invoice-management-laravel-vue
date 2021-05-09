@@ -115,7 +115,7 @@
       :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
       v-model="viewDetails"
     >
-      <v-card v-if="viewIInvoicenfo">
+      <v-card v-if="viewIncomeInfo">
         <v-card-title><span class="mx-auto">View Details</span></v-card-title>
         <v-card-text>
           <v-form readonly>
@@ -123,28 +123,28 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.category.name"
+                  v-model="viewIncomeInfo.category.name"
                   label="Payment Category"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.createdBy.name"
+                  v-model="viewIncomeInfo.createdBy.name"
                   label="Created by"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.createdBy.email"
+                  v-model="viewIncomeInfo.createdBy.email"
                   label="Phone Number"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.createdBy.phone"
+                  v-model="viewIncomeInfo.createdBy.phone"
                   label="Phone Number"
                 ></v-text-field>
               </v-col>
@@ -152,23 +152,36 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.createdAt"
+                  v-model="viewIncomeInfo.createdAt"
                   label="Created at"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.updatedAt"
+                  v-model="viewIncomeInfo.updatedAt"
                   label="Update at"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewIInvoicenfo.incomeAmount"
+                  v-model="viewIncomeInfo.incomeAmount"
                   label="Amount"
                 ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-chip
+                  dark
+                  outlined
+                  color="primary"
+                  v-if="viewIncomeInfo.receiptFile"
+                >
+                  <v-icon class="mr-1">mdi-cloud-download</v-icon
+                  ><a download :href="'/storage/' + viewIncomeInfo.receiptFile"
+                    >download file</a
+                  >
+                </v-chip>
               </v-col>
             </v-row>
           </v-form>
@@ -201,7 +214,7 @@ export default {
             cardloader: false,
             search: "",
             viewDetails:false,
-            viewIInvoicenfo:{
+            viewIncomeInfo:{
              category:{
                name:'',
                createdAt:''
@@ -302,8 +315,8 @@ export default {
         },
           handleView(item){
          this.viewDetails=true,
-         this.viewIInvoicenfo=item
-         this.viewIInvoicenfo.createdAt= moment(this.viewIInvoicenfo.createdAt).format('ll')
+         this.viewIncomeInfo=item
+         this.viewIncomeInfo.createdAt= moment(this.viewIncomeInfo.createdAt).format('ll')
         },
         onInputUserDialog(dialog) {
             if (!dialog) {

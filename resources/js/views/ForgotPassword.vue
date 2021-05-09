@@ -1,27 +1,56 @@
 <template>
-  <v-app >
-      <v-card class="mx-auto my-auto" :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'" :loading="loading" :disabled="loading">
-        <div class="px-4 py-8">
-          <v-card-title class=""
-            ><span class="mx-auto">Forgot password</span> </v-card-title
+  <v-app>
+    <div class="overflow-visible d-flex my-auto">
+      <v-row>
+        <v-col
+          class="mx-auto"
+          v-if="!$vuetify.breakpoint.smAndDown"
+          cols="12"
+          md="6"
+        >
+          <v-img>
+            <v-img
+              contain
+              height="300"
+              :src="require('@/assets/authentication.svg')"
+            />
+          </v-img>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card
+            class="mx-auto mx-md-0 my-auto"
+            max-width="520"
+            :loading="loading"
+            :disabled="loading"
           >
-          <v-card-subtitle class="text-center body-2"
-            >We will send a recovery link to your email address to reset your password</v-card-subtitle
-          >
-          <v-card-text class="mt-5">
-            <v-alert
-              dense
-              outlined
-              dismissible
-              v-model="error.dialog"
-              :type="isSuccess?'success':'error'"
-            >
-              {{ error.message }}
-            </v-alert>
-            <ForgotPasswordForm :loading="loading" @ForgotPassword="handleForgotPassword" />
-          </v-card-text>
-        </div>
-      </v-card>
+            <div class="px-4 py-8">
+              <v-card-title class=""
+                ><span class="mx-auto">Forgot password</span>
+              </v-card-title>
+              <v-card-subtitle class="text-center body-2"
+                >We will send a recovery link to your email address to reset
+                your password</v-card-subtitle
+              >
+              <v-card-text class="mt-5">
+                <v-alert
+                  dense
+                  outlined
+                  dismissible
+                  v-model="error.dialog"
+                  :type="isSuccess ? 'success' : 'error'"
+                >
+                  {{ error.message }}
+                </v-alert>
+                <ForgotPasswordForm
+                  :loading="loading"
+                  @ForgotPassword="handleForgotPassword"
+                />
+              </v-card-text>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
   </v-app>
 </template>
 
