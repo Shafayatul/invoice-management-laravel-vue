@@ -65,6 +65,7 @@ class ClientController extends Controller
         $client->password   = Hash::make(Str::random(8));
         $client->role       = 'client';
         $client->company_id = Auth::user()->company_id;
+        $client->is_active     = true;
         
 
         if($client->save())

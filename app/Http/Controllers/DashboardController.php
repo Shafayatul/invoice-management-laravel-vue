@@ -156,9 +156,9 @@ class DashboardController extends Controller
                 }
             }
 
-            $unpaid_invoices_all = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->whereHas('invoiceHistory', function($invoice){
+            $unpaid_invoices_all = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->whereHas('invoiceHistory', function($invoice){
                 $invoice->where('is_paid', 0);
-            })->get();
+            })->where('company_id', Auth::user()->company_id)->get();
 
         }else{
             $total_clients = User::where('role', 'client')->count();

@@ -178,7 +178,7 @@
                   v-if="viewIncomeInfo.receiptFile"
                 >
                   <v-icon class="mr-1">mdi-cloud-download</v-icon
-                  ><a download :href="'/storage/' + viewIncomeInfo.receiptFile"
+                  ><a download :href="'/invoice-backend/public/storage/' + viewIncomeInfo.receiptFile"
                     >download file</a
                   >
                 </v-chip>
