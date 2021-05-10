@@ -131,7 +131,7 @@ import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
 const newExpenseItem = () => ({
     expense_amount: null,
-    bills_file: "",
+    bills_file: null,
     category_id: null,
     expense_date: new Date().toISOString().substr(0, 10),
     menu: false
@@ -180,9 +180,9 @@ export default {
                 //     bill_file:v.billsFile
                 // };
                 this.expenses[0].expense_amount=v.expenseAmount,
-                this.expenses[0].category_id=v.categoryId
-                this.expenses[0].expense_date=new Date(v.expenseDate).toISOString().substr(0, 10),
-                this.expenses[0].bills_file=v.billsFile
+                this.expenses[0].category_id=v.categoryId,
+                this.expenses[0].expense_date=new Date(v.expenseDate).toISOString().substr(0, 10)
+           
             }
         }
     },
@@ -197,15 +197,7 @@ export default {
         },
         handleExpense() {
             if (this.$refs.ExpenseForm.validate()) {
-                // let addExpense = this.expenses.reduce(
-                //     (acc, val) => {
-                //         Object.entries(val).forEach(([key, value]) => {
-                //             if (acc[key]) acc[key].push(value);
-                //         });
-                //         return acc;
-                //     },
-                //     { expense_amount: [], bill_file: [], expense_date: [], category_id: [] }
-                // );
+            
                 let data = {}
               //  let addExpense=  this.expenses.map((y,index)=> Object.entries(y).reduce((acc,[key, value]) => ({...acc,[`${key}[${index}]`]:value}),{}))
               this.expenses.forEach((expense, index) => {
@@ -219,7 +211,7 @@ export default {
               let editData={}
               this.expenses.forEach((expense,index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key === 'menu') return
+                  if(key === 'menu' || (key=== 'bills_file' && !value)) return
                   if(index) editData[`${key}[]`] = value
                   else editData[`${key}[${this.data.id}]`] = value
                 })
