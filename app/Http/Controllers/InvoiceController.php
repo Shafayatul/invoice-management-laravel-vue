@@ -268,11 +268,18 @@ class InvoiceController extends Controller {
 
         $query = Invoice::query();
         if(Auth::user()->role == 'super admin'){
+            $query->whereHas('invoiceHistory', function($history){
+                $history->where('is_paid', 1);
+            });
             $query->whereBetween('created_at', [$from, $to]);
         }else{
+            $query->whereHas('invoiceHistory', function($history){
+                $history->where('is_paid', 1);
+            });
             $query->whereBetween('created_at', [$from, $to]);
             $query->where('company_id', Auth::user()->company_id);
         }
+        
 
         $invoices = $query->with(['invoiceHistory', 'companies', 'client', 'createdBy'])->latest()->get();
 
@@ -295,5 +302,39 @@ class InvoiceController extends Controller {
 
         $pdf = PDF::loadView('pdf.invoice', compact('invoice'));
         return $pdf->download($invoice->id.'.pdf');
+    }
+
+    public function SummarizeDownload(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        if($validate->fails())
+            return response()->json(['error' => $validate->errors()], 422);
+
+        $from = Carbon::parse($request->start_date)->format("Y-m-d");
+        $to = Carbon::parse($request->end_date)->format("Y-m-d");
+        $user = User::find($request->user_id);
+        $query = Invoice::query();
+        if($user->role == 'super admin'){
+            $query->whereHas('invoiceHistory', function($history){
+                $history->where('is_paid', 1);
+            });
+            $query->whereBetween('created_at', [$from, $to]);
+        }else{
+            $query->whereHas('invoiceHistory', function($history){
+                $history->where('is_paid', 1);
+            });
+            $query->whereBetween('created_at', [$from, $to]);
+            $query->where('company_id', $user->company_id);
+        }
+        
+
+        $invoices = $query->with(['invoiceHistory', 'companies', 'client', 'createdBy'])->latest()->get();
+        $pdf = PDF::loadView('pdf.summarize-download', compact('invoices'));
+        return $pdf->download('Summarize.pdf');
     }
 }

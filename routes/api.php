@@ -38,7 +38,8 @@ Route::group(['prefix' => 'v1'],function () {
         Route::get('check', [PasswordResetController::class, 'check']);
         Route::post('reset', [PasswordResetController::class, 'reset']);
     });
-    
+    Route::get('download/{id}', [InvoiceController::class, 'InvoiceDownload']);
+    Route::get('summarize-download', [InvoiceController::class, 'SummarizeDownload']);
     Route::middleware('auth:api')->group(function () {
         
         Route::get('login-user-info', [UserController::class, 'loginUserInfo'])->name('api.login.user.info');
@@ -84,7 +85,7 @@ Route::group(['prefix' => 'v1'],function () {
             Route::post('paid-invoice', [InvoiceController::class, 'PaidInvoice']);
             Route::get('invoice-history', [InvoiceController::class, 'InvoiceHistory']);
             Route::get('summarized', [InvoiceController::class, 'SummarizedData']);
-            Route::get('download/{id}', [InvoiceController::class, 'InvoiceDownload']);
+            
         });
 
         Route::group(['prefix' => 'income'],function () {
