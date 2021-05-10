@@ -196,7 +196,7 @@ class InvoiceController extends Controller {
         if($invoice_hostory->is_paid == false){
             if($request->hasFile('receipt_file')){
                 $receipt_file = $request->file('receipt_file');
-                $receipt_file_name = uniqid().strtolower($receipt_file->getClientOriginalExtension());
+                $receipt_file_name = uniqid().'.'.strtolower($receipt_file->getClientOriginalExtension());
                 $path = $request->file('receipt_file')->storeAs(
                     'income-file',
                     $receipt_file_name,
