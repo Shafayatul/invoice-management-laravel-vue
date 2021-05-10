@@ -50,9 +50,9 @@
         <template v-slot:item.invoiceHistory.isPaid="{ item }">
           <v-chip
             small
-            :color="item.invoiceHistory.isPaid == '1' ? 'success' : 'error'"
+            :color="item.invoiceHistory.isPaid === 1 ? 'success' : 'error'"
           >
-            {{ item.invoiceHistory.isPaid == "1" ? "Paid" : "Pending" }}</v-chip
+            {{ item.invoiceHistory.isPaid === 1 ? "Paid" : "Pending" }}</v-chip
           >
         </template>
         <template v-slot:item.sendingDate="{ item }">
@@ -239,15 +239,15 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewClientInfo.invoiceHistory.isPaid"
-                  label="Amount"
+                  v-model="viewClientInfo.isPaid"
+                  label="Status"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
                   v-model="viewClientInfo.invoiceHistory.amount"
-                  label="status"
+                  label="Amount"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -436,10 +436,7 @@ export default {
             this.viewClientInfo.updatedAt = moment(
                 this.viewClientInfo.updatedAt
             ).format("ll");
-            this.viewClientInfo.invoiceHistory.isPaid =
-                this.viewClientInfo.invoiceHistory.isPaid == "1"
-                    ? "Paid"
-                    : "Pending";
+            this.viewClientInfo.isPaid = this.viewClientInfo.invoiceHistory.isPaid === 1 ? "Paid" : "Pending";
         },
         async handleEditInvoice(invoiceDetails) {
             this.loading = true;
