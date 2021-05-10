@@ -183,6 +183,7 @@
         </template>
       </v-data-table>
     </v-card>
+    <CircleLoader center v-if="loading" size="84" speed="1" border-width="3" />
   </div>
 </template>
 
