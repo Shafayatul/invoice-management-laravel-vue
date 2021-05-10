@@ -60,7 +60,7 @@ const api = {
         paidInvoice: data => h(POST, "/invoice/paid-invoice", data),
         summarizedVersion: queries => h(GET, "/invoice/summarized", queries),
         download: id => h(GET, "/invoice/download/" + id),
-        downlaodSummarizedVersion: queries =>h(GET, "/invoice/summarize-download", queries)
+        downlaodSummarizedVersion: queries =>h(GET, "/summarize-download", queries)
         // get         : id          => h(GET,     '/users/show/' + id),
 
         // get         : id          => h(GET,     '/users/show/' + id),

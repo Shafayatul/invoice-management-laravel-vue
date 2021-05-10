@@ -273,9 +273,9 @@ export default {
          }
     
        },
-       async handleSummarizedDownload(){
+       async handleSummarizedDownload(){  
+         window.open(`api/v1/summarize-download?start_date=${this.filterSearch.start_date}&end_date=${this.filterSearch.end_date}&user_id=${this.$user.id}}`)
 
-         this.downloadSummarizedInoice({...this.filterSearch,user_id:this.$user.id})
        }
     }
 }

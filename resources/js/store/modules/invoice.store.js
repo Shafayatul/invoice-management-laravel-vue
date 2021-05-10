@@ -105,8 +105,8 @@ const actions = {
         // let res = await api.invoice.getAll();
         // console.log(res);
         let res = await api.invoice.downlaodSummarizedVersion(payload);
- 
-        if (error) return { error, ...data };
+        window.open(res);
+        // if (error) return { error, ...data };
  
     }
 };
