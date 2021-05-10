@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InvoiceSent;
 use App\Models\Income;
+use PDF;
 
 class InvoiceController extends Controller {
     
@@ -25,9 +26,9 @@ class InvoiceController extends Controller {
 
     public function index(Request $request) {
         if(Auth::user()->role == 'admin'){
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->paginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->where('company_id', Auth::user()->company_id)->latest()->paginate($this->data_per_page);
         }else{
-            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->paginate($this->data_per_page);
+            $invoices = Invoice::with(['createdBy', 'client', 'companies', 'incomes', 'invoiceHistory'])->latest()->paginate($this->data_per_page);
         }
         return response()->json([
             'invoices' => $invoices,
@@ -239,16 +240,60 @@ class InvoiceController extends Controller {
             ->whereHas('invoice', function($invoice){
                 $invoice->where('company_id', Auth::user()->company_id);
             })
-            ->paginate($this->data_per_page);
+            ->latest()->paginate($this->data_per_page);
         }else{
             $invoice_hostories = InvoiceHistory::with(['client', 'invoice' => function($invoice){
                 $invoice->with(['createdBy', 'companies', 'incomes']);
-            }])->paginate($this->data_per_page);
+            }])->latest()->paginate($this->data_per_page);
         }
         return response()->json([
             'invoice_hostories' => $invoice_hostories,
             'status'    => 'success',
             'code'      => 200
         ], 200);
+    }
+
+    public function SummarizedData(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        if($validate->fails())
+            return response()->json(['error' => $validate->errors()], 422);
+
+        $from = Carbon::parse($request->start_date)->format("Y-m-d");
+        $to = Carbon::parse($request->end_date)->format("Y-m-d");
+
+        $query = Invoice::query();
+        if(Auth::user()->role == 'super admin'){
+            $query->whereBetween('created_at', [$from, $to]);
+        }else{
+            $query->whereBetween('created_at', [$from, $to]);
+            $query->where('company_id', Auth::user()->company_id);
+        }
+
+        $invoices = $query->with(['invoiceHistory', 'companies', 'client', 'createdBy'])->latest()->get();
+
+        return response()->json([
+            'invoices' => $invoices,
+            'status'    => 'success',
+            'code'      => 200
+        ], 200);
+    }
+
+    public function InvoiceDownload($id)
+    {
+        $invoice = Invoice::with(['createdBy' => function($user){
+            $user->with(['company']);
+        }, 'client', 'companies', 'invoiceHistory'])->find($id);
+
+        if(!$invoice){
+            return response()->json(['errors' => 'Invoice Not Found', 'code' => 404], 404);
+        }
+
+        $pdf = PDF::loadView('pdf.invoice', compact('invoice'));
+        return $pdf->download($invoice->id.'.pdf');
     }
 }

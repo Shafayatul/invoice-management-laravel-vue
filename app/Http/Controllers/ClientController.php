@@ -20,9 +20,9 @@ class ClientController extends Controller
 
     public function index(Request $request) {
         if(Auth::user()->role == 'admin'){
-            $clients = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->where('role', 'client')->where('company_id', Auth::user()->company_id)->paginate($this->data_per_page);
+            $clients = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->where('role', 'client')->where('company_id', Auth::user()->company_id)->latest()->paginate($this->data_per_page);
         }else{
-            $clients = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->where('role', 'client')->paginate($this->data_per_page);
+            $clients = User::with(['expenses', 'company', 'createdInvoices', 'clientInvoices', 'createdIncomes', 'clientIncomes'])->where('role', 'client')->latest()->paginate($this->data_per_page);
         }
         return response()->json([
             'clients' => $clients,

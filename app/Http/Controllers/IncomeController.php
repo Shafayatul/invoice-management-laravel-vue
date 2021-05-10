@@ -25,9 +25,9 @@ class IncomeController extends Controller
             ->whereHas('createdBy', function($user){
                 $user->where('company_id', Auth::user()->company_id);
             })
-            ->paginate($this->data_per_page);
+            ->latest()->paginate($this->data_per_page);
         }else{
-            $incomes = Income::with(['createdBy', 'client', 'category', 'invoice'])->paginate($this->data_per_page);
+            $incomes = Income::with(['createdBy', 'client', 'category', 'invoice'])->latest()->paginate($this->data_per_page);
         }
         return response()->json([
             'incomes' => $incomes,

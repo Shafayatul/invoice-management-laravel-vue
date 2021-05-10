@@ -83,6 +83,8 @@ Route::group(['prefix' => 'v1'],function () {
             Route::get('destroy', [InvoiceController::class, 'destroy']);
             Route::post('paid-invoice', [InvoiceController::class, 'PaidInvoice']);
             Route::get('invoice-history', [InvoiceController::class, 'InvoiceHistory']);
+            Route::get('summarized', [InvoiceController::class, 'SummarizedData']);
+            Route::get('download/{id}', [InvoiceController::class, 'InvoiceDownload']);
         });
 
         Route::group(['prefix' => 'income'],function () {
