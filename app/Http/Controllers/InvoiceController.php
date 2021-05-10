@@ -198,7 +198,7 @@ class InvoiceController extends Controller {
                 $receipt_file = $request->file('receipt_file');
                 $receipt_file_name = uniqid().strtolower($receipt_file->getClientOriginalExtension());
                 $path = $request->file('receipt_file')->storeAs(
-                    'expense-file',
+                    'income-file',
                     $receipt_file_name,
                     'public'
                 );
