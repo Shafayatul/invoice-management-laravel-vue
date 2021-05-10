@@ -8,13 +8,14 @@ const initialState = () => ({
         totalPage: 1,
         perPage: 15
     },
-    paginationHistories:{
-       currentPage: 1,
+    paginationHistories: {
+        currentPage: 1,
         totalPage: 1,
         perPage: 15
     },
     invoice: [],
-    invoiceHistories: []
+    invoiceHistories: [],
+    summarizedInvocie:[]
 });
 
 const state = initialState();
@@ -23,7 +24,8 @@ const getters = {
     $pagination: s => s.pagination,
     $invoice: s => s.invoice,
     $invoiceHistories: s => s.invoiceHistories,
-    $paginationHistories: s => s.paginationHistories
+    $paginationHistories: s => s.paginationHistories,
+    $summarizedInvocie: s => s.summarizedInvocie
 };
 
 const actions = {
@@ -85,6 +87,27 @@ const actions = {
         if (res.error) return res;
         dispatch("fetchInvoice");
         return res;
+    },
+    fetchSummarizedInoice: async ({ commit }, payload) => {
+        // let res = await api.invoice.getAll();
+        // console.log(res);
+        let { error, ...data } = await api.invoice.summarizedVersion(payload);
+        if (error) return { error, ...data };
+        commit("SET", {
+            summarizedInvocie: data.invoices
+        });
+        return data;
+    },
+    downloadInoice: async ({ commit }, id) => {
+        window.open("/api/v1/download/" + id);
+    },
+    downloadSummarizedInoice: async ({ commit }, payload) => {
+        // let res = await api.invoice.getAll();
+        // console.log(res);
+        let res = await api.invoice.downlaodSummarizedVersion(payload);
+ 
+        if (error) return { error, ...data };
+ 
     }
 };
 

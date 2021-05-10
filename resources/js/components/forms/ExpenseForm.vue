@@ -106,10 +106,15 @@
               <v-col cols="12" sm="6" md="3">
                 <v-file-input
                   @change="fileInput($event, index)"
-                  :error-messages="errors.billFile && errors.billFile[0]"
+                  :error-messages="
+                    errors[`billsFile.${index}`]
+                      ? errors[`billsFile.${index}`][0]
+                      : ''
+                  "
                   v-bind="fieldOptions"
                   label="Bills files"
                 ></v-file-input>
+
                 <!-- <v-chip v-if="expense.bills_file && isUpdate"  ><v-icon class="mr-1">mdi-cloud-download</v-icon> <a download :href="expense.bills_file" > download file</a> </v-chip>  -->
               </v-col>
             </v-row>
@@ -131,7 +136,6 @@ import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
 const newExpenseItem = () => ({
     expense_amount: null,
-    bills_file: null,
     category_id: null,
     expense_date: new Date().toISOString().substr(0, 10),
     menu: false
@@ -202,10 +206,8 @@ export default {
               //  let addExpense=  this.expenses.map((y,index)=> Object.entries(y).reduce((acc,[key, value]) => ({...acc,[`${key}[${index}]`]:value}),{}))
               this.expenses.forEach((expense, index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key !== 'menu'){
+                  if(key === 'menu' || (key=== 'bills_file' && !value)) return
                      data[`${key}[${index}]`] = value
-                  }
-                 
                 })
               })
               let editData={}

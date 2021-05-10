@@ -69,6 +69,11 @@ const router = new VueRouter({
                     path: "invoice-history",
                     name: "invoicehistory",
                     component: view("InvoiceHistories")
+                },
+                {
+                    path: "invoice-file",
+                    name: "invoiceFile",
+                    component: view("invoiceFile")
                 }
             ]
         },
@@ -96,7 +101,7 @@ const router = new VueRouter({
             path: "*",
             name: "NotFound",
             component: view("NotFound")
-        },
+        }
     ]
 });
 // let role='admin'

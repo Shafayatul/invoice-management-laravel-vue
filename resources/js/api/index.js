@@ -57,7 +57,12 @@ const api = {
         delete: id => h(GET, "/invoice/destroy?invoice_id=" + id),
         create: data => h(POST, "/invoice/store", data),
         getHistories: queries => h(GET, "/invoice/invoice-history", queries),
-        paidInvoice: data => h(POST, "/invoice/paid-invoice", data)
+        paidInvoice: data => h(POST, "/invoice/paid-invoice", data),
+        summarizedVersion: queries => h(GET, "/invoice/summarized", queries),
+        download: id => h(GET, "/invoice/download/" + id),
+        downlaodSummarizedVersion: queries =>h(GET, "/invoice/summarize-download", queries)
+        // get         : id          => h(GET,     '/users/show/' + id),
+
         // get         : id          => h(GET,     '/users/show/' + id),
         // search      : data        => h(POST,    '/users/search-employee', data)
     },

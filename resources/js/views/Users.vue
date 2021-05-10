@@ -304,11 +304,11 @@ export default {
             // this.create.loading = true;
             let res = await this.addUser(user);
             if (res.error){
-             this.enableSnackbar('failed','An error ocured when creating user')
+             this.enableSnackbar('failed','An error ocured when creating admin')
              this.errors = res.errors;
             } 
             else {
-                this.enableSnackbar('success','User created successfully')
+                this.enableSnackbar('success','Admin created successfully')
                 this.resetCreate();
             }
             this.loading = false;
@@ -321,11 +321,11 @@ export default {
             let res = await this.updateUsers(user);
             if (res.error){
 
-             this.enableSnackbar('failed','An error ocured when editing user')
+             this.enableSnackbar('failed','An error ocured when editing admin')
              this.errors = res.errors;
             } 
             else {
-                this.enableSnackbar('success','User updated successfully')
+                this.enableSnackbar('success','Admin updated successfully')
                 this.resetUpdate();
             }
             this.loading = false;
@@ -335,10 +335,10 @@ export default {
             this.loading = true;
             let res = await this.deleteUser(this.deletee.id);
             if (res.error){
-             this.enableSnackbar('failed','An error ocured when deleting User')
+             this.enableSnackbar('failed','An error ocured when deleting admin')
             } 
             else {
-                this.enableSnackbar('success','User deleted successfully')
+                this.enableSnackbar('success','Admin deleted successfully')
             }
             this.resetDelete();
             this.loading = false;
@@ -349,10 +349,10 @@ export default {
             this.loading = true;
             let res = await this.blockUsers(id)
             if (res.error){
-             this.enableSnackbar('failed',`An error ocured when ${action} a user`)
+             this.enableSnackbar('failed',`An error ocured when ${action} a admin`)
             } 
             else {
-                this.enableSnackbar('success',`User ${action} successfully`)
+                this.enableSnackbar('success',`Admin ${action} successfully`)
             }
             this.resetDelete();
             this.loading = false;

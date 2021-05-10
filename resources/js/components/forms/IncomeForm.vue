@@ -67,10 +67,16 @@
               <v-col cols="12" sm="6" md="3">
                 <v-file-input
                   @change="fileInput($event, index)"
-                  :error-messages="errors.billFile && errors.billFile[0]"
+                  :error-messages="
+                    errors[`receiptFile.${index}`]
+                      ? errors[`receiptFile.${index}`][0]
+                      : ''
+                  "
                   v-bind="fieldOptions"
                   label="Bills files"
+                  accept="image/png, image/jpeg,image/jpg,file/pdf"
                 ></v-file-input>
+                <div class="text-right"></div>
                 <!-- <v-chip v-if="incom.receipt_file && isUpdate"  > <v-icon class="mr-1">mdi-cloud-download</v-icon><a download :href="incom.receipt_file" >download file</a> </v-chip>  -->
               </v-col>
             </v-row>
@@ -94,7 +100,7 @@ const newIncomeItem = () => ({
     income_amount:null,
     client_id: null,
     category_id: null,
-    receipt_file:null
+    // receipt_file:null
 });
 // expense_id:'',
 export default {
@@ -171,9 +177,10 @@ export default {
               //  let addExpense=  this.income.map((y,index)=> Object.entries(y).reduce((acc,[key, value]) => ({...acc,[`${key}[${index}]`]:value}),{}))
               this.income.forEach((expense, index) => {
                 Object.entries(expense).forEach(([key, value])=>{
-                  if(key !== 'menu'){
+                  if(key === 'menu' || ( key=== 'receipt_file' && !value)) return
+                  
                      data[`${key}[${index}]`] = value
-                  }
+                 
                  
                 })
               })

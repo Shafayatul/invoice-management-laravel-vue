@@ -109,7 +109,7 @@
         ></v-pagination>
       </div>
     </v-card>
-    <fabCreateButton @click="initCreate()" />
+    <fabCreateButton v-if="$user.role === 'admin'" @click="initCreate()" />
     <v-snackbar
       v-model="snackbar.action"
       :timeout="snackbar.timeout"
@@ -130,6 +130,53 @@
       @yes="handleDeleteInvoice"
       @no="resetDelete"
     />
+    <v-dialog
+      :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
+      v-model="paidDialog"
+    >
+      <v-card>
+        <v-card-title><span class="mx-auto">Pay invoice</span></v-card-title>
+        <v-card-text>
+          <v-form
+            v-model="isValid"
+            @submit.prevent="handlePaidInvoice"
+            lazy-validation
+            ref="paidInvoiceForm"
+          >
+            <v-row>
+              <v-col cols="12">
+                <v-select
+                  :items="$paymentList"
+                  v-bind="fieldOptions"
+                  v-model="payInvoice.category_id"
+                  :rules="[rules.required('Sending Type')]"
+                  label="Sending type"
+                  item-value="id"
+                  item-text="name"
+                ></v-select>
+              </v-col>
+              <v-col>
+                <v-file-input
+                  @change="fileInput($event)"
+                  v-bind="fieldOptions"
+                  label="Bills files"
+                ></v-file-input>
+              </v-col>
+            </v-row>
+            <v-btn
+              :loading="loading"
+              block
+              class="my-3"
+              color="primary"
+              @click="handlePaidInvoice"
+            >
+              confirm
+            </v-btn>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <!-- End Confirm delete action -->
     <v-dialog
       :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
@@ -221,6 +268,7 @@ import CircleLoader from "@/components/customs/CircleLoader";
 import InvoiceForm from "@/components/forms/InvoiceForm.vue";
 import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin";
+
 export default {
     name: "invoice",
     mixins: [
@@ -247,7 +295,9 @@ export default {
             errors: {},
             payInvoice: {
                 invoice_id: null,
-                category_id: null
+                category_id: null,
+                receipt_file:null,
+
             },
             viewDetails: false,
             viewClientInfo: {
@@ -314,7 +364,8 @@ export default {
         ...mapGetters("INVOICE", ["$invoice", "$pagination"]),
         ...mapGetters("COMPANY", ["$companyList"]),
         ...mapGetters("CLIENT", ["$clientList"]),
-        ...mapGetters("PAYMENT", ["$paymentList"])
+        ...mapGetters("PAYMENT", ["$paymentList"]),
+        ...mapGetters("AUTH", ["$user"]),
     },
     methods: {
         ...mapActions("INVOICE", [
@@ -415,6 +466,9 @@ export default {
             if (this.$refs.paidInvoiceForm.validate()) {
                 this.loading = true;
                 // this.create.loading = true;
+                if (!this.payInvoice.receipt_file) {
+                  delete this.payInvoice.receipt_file
+                }
                 let res = await this.paidInvoice(this.payInvoice);
                 if (res.error) {
                     this.enableSnackbar(
@@ -450,7 +504,11 @@ export default {
             await this.ClientList();
             await this.fetchPaymentList();
             this.loading = false;
-        }
+        },
+          fileInput(event) {
+
+            this.payInvoice.receipt_file = event;
+        },
     },
     created() {
         this.onCreated();

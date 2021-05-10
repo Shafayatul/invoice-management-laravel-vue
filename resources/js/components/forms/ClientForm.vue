@@ -35,7 +35,7 @@
           <v-text-field
             v-model="Client.email"
             :rules="[rules.required('Email'), rules.email]"
-             :error-messages="errors.email && errors.email[0]"
+            :error-messages="errors.email && errors.email[0]"
             v-bind="fieldOptions"
             label="Email"
           ></v-text-field>
@@ -101,12 +101,7 @@
 <script>
 import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
-const initialClient = () => ({
-    name: "",
-    email: "",
-    phone: "",
-    role: "client",
-});
+
 export default {
     name: "ClientForm",
     mixins: [
@@ -119,19 +114,24 @@ export default {
         isUpdate: Boolean,
         data: Object,
         companyList: Array,
-        reAssign:Boolean,
-        errors: Object,
+        reAssign: Boolean,
+        errors: Object
     },
 
     data() {
         return {
             isValid: false,
-            isClient:false,
+            isClient: false,
             password: {
                 show: false,
                 confirmed: false
             },
-            Client: {}
+            Client: {
+                name: "",
+                email: "",
+                phone: "",
+                role: "client"
+            }
         };
     },
     watch: {
@@ -142,10 +142,10 @@ export default {
                 if (!this.isUpdate) this.Client = initialClient();
                 this.Client = {
                     name: v.name,
-                    client_id:v.id,
+                    client_id: v.id,
                     email: v.email,
-                    role: 'client',
-                    phone:v.phone,
+                    role: "client",
+                    phone: v.phone
                 };
             }
         }
@@ -153,18 +153,24 @@ export default {
     methods: {
         handleClient() {
             if (this.$refs.ClientForm.validate()) {
-                this.isUpdate  ? this.$emit("editClient", this.Client) : this.$emit("addClient", this.Client)
+                this.isUpdate
+                    ? this.$emit("editClient", this.Client)
+                    : this.$emit("addClient", this.Client);
             }
         },
-        CheckIsClient(item){
-          item==='client'? (this.isClient=true,this.user.password='',this.user.password_confirmation='') : this.isClient=false
-        },
-     //    handleReassignClient(){
-     //      if (this.$refs.userForm.validate()) {
-     //            this.$emit("reAssignUser", this.user) 
-  
-     //        }
-     //    }
+        CheckIsClient(item) {
+            item === "client"
+                ? ((this.isClient = true),
+                  (this.user.password = ""),
+                  (this.user.password_confirmation = ""))
+                : (this.isClient = false);
+        }
+        //    handleReassignClient(){
+        //      if (this.$refs.userForm.validate()) {
+        //            this.$emit("reAssignUser", this.user)
+
+        //        }
+        //    }
     }
 };
 </script>
