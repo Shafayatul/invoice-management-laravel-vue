@@ -9,7 +9,7 @@
 
     <style>
         body{
-            padding-left: 20%; padding-right: 20%;
+            /* padding-left: 20%; padding-right: 20%; */
         }
         .header-part{
             line-height: 20px;
@@ -96,6 +96,9 @@
             padding: 0;
             margin: 0;
         }
+        .text-align-left{
+            text-align:left;
+        }
     </style>
 </head>
 
@@ -112,8 +115,8 @@
 
         <table class="tabile-one">
             <tr>
-                <th>TO : HALFEN MOMENT SDN BHD     </th>
-                <th>INVOICE</th>   
+                <th class="text-align-left">TO : HALFEN MOMENT SDN BHD     </th>
+                <th class="text-align-left">INVOICE</th>   
             </tr>
             <tr>
                 <td>
@@ -289,26 +292,26 @@
         <h4 class="money-ammount">{{ numberTowords($total_amount) }} RINGGIT ONLY</h4>
         <table class="table-three">
             <tr>
-                <td>Company Name</td>
-                <td>: TENAGA CEKAP MANAGEMENT SDN BHD</td>
+                <td style="font-size:16px;">Company Name</td>
+                <td style="font-size:16px;">: TENAGA CEKAP MANAGEMENT SDN BHD</td>
             </tr>
             <tr>
-                <td>Bank</td>
-                <td>: RHB BANK BERHAD</td>
+                <td style="font-size:16px;">Bank</td>
+                <td style="font-size:16px;">: RHB BANK BERHAD</td>
             </tr>
             <tr>
-                <td>Bank Account No</td>
-                <td>: 21260200015117</td>
+                <td style="font-size:16px;">Bank Account No</td>
+                <td style="font-size:16px;">: 21260200015117</td>
             </tr>
         </table>
         <h4>Yours Truly:</h4>
-        <div class="name">
-            <h4>Sri Krishnan Nair </h4>
-            <h4>Masters Of  Mechanical Engineering (UPM)</h4>
-            <h4>Manager,</h4>
-            <h4>TENAGA CEKAP MANAGEMENT SDN BHD</h4>
-            <h4>(012-6663770/ 012-3587846)</h4>
-        </div>
+        {{-- <div class="name"> --}}
+            <h4 style="line-height: 1; font-size:14px;">Sri Krishnan Nair </h4>
+            <h4 style="line-height: 1; font-size:14px;">Masters Of  Mechanical Engineering (UPM)</h4>
+            <h4 style="line-height: 1; font-size:14px;">Manager,</h4>
+            <h4 style="line-height: 1; font-size:14px;">TENAGA CEKAP MANAGEMENT SDN BHD</h4>
+            <h4 style="line-height: 1; font-size:14px; padding-bottom:35px;">(012-6663770/ 012-3587846)</h4>
+        {{-- </div> --}}
         <h3 class="note">Note: This Invoice Is Computer Generated And No Signature Is Required</h3>
     </section>
     
