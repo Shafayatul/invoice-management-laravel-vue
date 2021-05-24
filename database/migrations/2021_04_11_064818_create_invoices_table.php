@@ -30,6 +30,8 @@ class CreateInvoicesTable extends Migration
             $table->foreignId('client_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('invoice_id')->references('id')->on('invoices')->cascadeOnDelete();
             $table->boolean('is_paid');
+            $table->string('item_name');
+            $table->integer('quantity');
             $table->decimal('amount');
             $table->dateTimeTz('last_mailing_time');
             $table->integer('mailing_count');

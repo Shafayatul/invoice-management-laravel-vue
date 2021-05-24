@@ -61,16 +61,18 @@ class InvoiceController extends Controller {
             'sending_date'     => 'required|date',
             'recurring_period' => 'required_unless:sending_type,one_time|numeric',
             'amount'           => 'required|numeric',
+            'item_name'        => 'required|string|min:3',
+            'quantity'         => 'required|integer'
         ]);
         if($validate->fails())
             return response()->json(['error' => $validate->errors()], 422);
 
-        $invoice                   = new Invoice();
-        $invoice->created_by       = Auth::id();
-        $invoice->client_id        = $request->client_id;
-        $invoice->company_id       = Auth::user()->company_id;
-        $invoice->sending_type     = $request->sending_type;
-        $invoice->sending_date     = Carbon::parse($request->sending_date);
+        $invoice               = new Invoice();
+        $invoice->created_by   = Auth::id();
+        $invoice->client_id    = $request->client_id;
+        $invoice->company_id   = Auth::user()->company_id;
+        $invoice->sending_type = $request->sending_type;
+        $invoice->sending_date = Carbon::parse($request->sending_date);
         if($request->sending_type == 'one_time'){
             $invoice->recurring_period = 0;
         }else{
@@ -83,6 +85,8 @@ class InvoiceController extends Controller {
             $invoice_hostory->client_id         = $request->client_id;
             $invoice_hostory->invoice_id        = $invoice->id;
             $invoice_hostory->is_paid           = false;
+            $invoice_hostory->item_name         = $request->item_name;
+            $invoice_hostory->quantity          = $request->quantity;
             $invoice_hostory->amount            = $request->amount;
             $invoice_hostory->last_mailing_time = $request->sending_date.' '.Carbon::now()->format("H:i:s");
             $invoice_hostory->mailing_count     = 0;
@@ -132,7 +136,9 @@ class InvoiceController extends Controller {
             $invoice_hostory             = InvoiceHistory::where('invoice_id', $invoice->id)->first();
             // $invoice_hostory->client_id  = $request->client_id;
             // $invoice_hostory->invoice_id = $invoice->id;
-            $invoice_hostory->amount     = $request->amount;
+            $invoice_hostory->item_name = $request->item_name;
+            $invoice_hostory->quantity  = $request->quantity;
+            $invoice_hostory->amount    = $request->amount;
             $invoice_hostory->save();
         }else{
             $invoice->delete();
