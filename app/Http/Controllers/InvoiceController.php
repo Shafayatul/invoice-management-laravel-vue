@@ -270,17 +270,18 @@ class InvoiceController extends Controller {
             return response()->json(['error' => $validate->errors()], 422);
 
         $from = Carbon::parse($request->start_date)->format("Y-m-d");
-        $to = Carbon::parse($request->end_date)->format("Y-m-d");
+        $to = Carbon::parse($request->end_date)->addDays(1)->format("Y-m-d");
+        // return response()->json([$from, $to]);
 
         $query = Invoice::query();
         if(Auth::user()->role == 'super admin'){
             $query->whereHas('invoiceHistory', function($history){
-                $history->where('is_paid', 1);
+                $history->where('is_paid', "1");
             });
             $query->whereBetween('created_at', [$from, $to]);
         }else{
             $query->whereHas('invoiceHistory', function($history){
-                $history->where('is_paid', 1);
+                $history->where('is_paid', "1");
             });
             $query->whereBetween('created_at', [$from, $to]);
             $query->where('company_id', Auth::user()->company_id);
