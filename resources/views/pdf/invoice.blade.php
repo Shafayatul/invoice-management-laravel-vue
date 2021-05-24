@@ -228,7 +228,6 @@
                     17 => "SEVENTEEN",
                     18 => "EIGHTEEN",
                     19 => "NINETEEN",
-                    "014" => "FOURTEEN"
                     );
                 $tens = array( 
                     0 => "ZERO",
@@ -250,32 +249,73 @@
                     "TRILLION", 
                     "QUARDRILLION" 
                 ); /*limit t quadrillion */
-                $num = number_format($num,2,".",","); 
+                //$num_key = number_format($num,2,".",",");
+                $num = number_format($num,2,".","");
                 $num_arr = explode(".",$num); 
                 $wholenum = $num_arr[0]; 
                 $decnum = $num_arr[1]; 
                 $whole_arr = array_reverse(explode(",",$wholenum)); 
-                krsort($whole_arr,1); 
+                
+                krsort($whole_arr,1);
                 $rettxt = ""; 
                 foreach($whole_arr as $key => $i){
                     
-                    while(substr($i,0,1)=="0")
-                            $i=substr($i,1,5);
-                    if($i < 20){ 
-                        /* echo "getting:".$i; */
-                        $rettxt .= $ones[$i]; 
-                    }elseif($i < 100){ 
-                        if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
-                        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
-                    }else{ 
-                        if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
-                        if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
-                        if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
-                    } 
+                    
+                    while(substr($i,0,1)== "0"){
+                        $i=substr($i, 1, strlen($i));
+                    }
+                    //0100000
+                    if((int) $i < 20){
+                        $rettxt .= $ones[$i];
+                    } else if((int) $i < 100){
+                        if(substr($i,0,1)!="0") $rettxt .= $tens[substr($i,0,1)];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)];
+                    } else if((int) $i < 1000){
+                        if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$tens[substr($i,1,1)];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$ones[substr($i,2,1)];
+                    } else if((int) $i < 10000){
+                        if(substr($i,0,1)!="0") $rettxt .= " ".$ones[substr($i,0,1)]." ".$hundreds[1];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]." ".$hundreds[0];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$tens[substr($i,2,1)];
+                        if(substr($i,3,1)!="0") $rettxt .= " ".$ones[substr($i,3,1)];
+                    } else if((int) $i < 100000){
+                        if(substr($i,0,1)!="0") $rettxt .= " ".$tens[substr($i,0,1)];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]." ".$hundreds[1];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$ones[substr($i,2,1)]." ".$hundreds[0];
+                        if(substr($i,3,1)!="0") $rettxt .= " ".$tens[substr($i,3,1)];
+                        if(substr($i,4,1)!="0") $rettxt .= " ".$ones[substr($i,4,1)];
+                    } else if((int) $i < 1000000){
+                        if(substr($i,0,1)!="0") $rettxt .= " ".$ones[substr($i,0,1)]." ".$hundreds[0];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$tens[substr($i,1,1)];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$ones[substr($i,2,1)]." ".$hundreds[1];
+                        if(substr($i,3,1)!="0") $rettxt .= " ".$ones[substr($i,3,1)]." ".$hundreds[0];
+                        if(substr($i,4,1)!="0") $rettxt .= " ".$tens[substr($i,4,1)];
+                        if(substr($i,5,1)!="0") $rettxt .= " ".$ones[substr($i,5,1)];
+                    } else if((int) $i < 10000000){
+                        if(substr($i,0,1)!="0") $rettxt .= " ".$ones[substr($i,0,1)]." ".$hundreds[2];
+                        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]." ".$hundreds[0];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$tens[substr($i,2,1)];
+                        if(substr($i,3,1)!="0") $rettxt .= " ".$ones[substr($i,3,1)]." ".$hundreds[1];
+                        if(substr($i,4,1)!="0") $rettxt .= " ".$ones[substr($i,4,1)]." ".$hundreds[0];
+                        if(substr($i,5,1)!="0") $rettxt .= " ".$tens[substr($i,5,1)];
+                        if(substr($i,6,1)!="0") $rettxt .= " ".$ones[substr($i,6,1)];
+                    }
+                    /*else {
+                        if(substr($i,0,1)!="0") $rettxt .= " ".$ones[substr($i,0,1)]." ".$hundreds[2];
+                        //if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]." ".$hundreds[2];
+                        if(substr($i,2,1)!="0") $rettxt .= " ".$ones[substr($i,2,1)]." ".$hundreds[0];
+                        if(substr($i,3,1)!="0") $rettxt .= " ".$tens[substr($i,3,1)];
+                        if(substr($i,4,1)!="0") $rettxt .= " ".$ones[substr($i,4,1)]." ".$hundreds[1];
+                        if(substr($i,5,1)!="0") $rettxt .= " ".$ones[substr($i,5,1)]." ".$hundreds[0];
+                        if(substr($i,6,1)!="0") $rettxt .= " ".$tens[substr($i,6,1)];
+                        if(substr($i,7,1)!="0") $rettxt .= " ".$ones[substr($i,7,1)];
+                    }*/
                     if($key > 0){ 
                         $rettxt .= " ".$hundreds[$key]." "; 
                     }
-                } 
+                }
+                
                 if($decnum > 0){
                     $rettxt .= " and ";
                     if($decnum < 20){
