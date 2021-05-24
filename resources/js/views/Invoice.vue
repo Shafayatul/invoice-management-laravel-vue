@@ -133,6 +133,7 @@
     <v-dialog
       :width="this.$vuetify.breakpoint.mdAndUp ? '30vw' : '80vw'"
       v-model="paidDialog"
+      @click:outside='$refs.paidInvoiceForm.reset()'
     >
       <v-card>
         <v-card-title><span class="mx-auto">Pay invoice</span></v-card-title>
@@ -149,8 +150,8 @@
                   :items="$paymentList"
                   v-bind="fieldOptions"
                   v-model="payInvoice.category_id"
-                  :rules="[rules.required('Sending Type')]"
-                  label="Sending type"
+                  :rules="[rules.required('Category')]"
+                  label="Category"
                   item-value="id"
                   item-text="name"
                 ></v-select>
@@ -192,6 +193,20 @@
                   v-bind="fieldOptions"
                   v-model="viewClientInfo.client.name"
                   label="Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.invoiceHistory.itemName"
+                  label="Item Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-bind="fieldOptions"
+                  v-model="viewClientInfo.invoiceHistory.quantity"
+                  label="Quantity"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
@@ -270,246 +285,240 @@ import fabCreateButton from "@/components/button/fabCreateButton";
 import crudMixin from "@/mixins/crud-mixin";
 
 export default {
-    name: "invoice",
-    mixins: [
-        crudMixin,
-        formFieldMixin,
-        createFormMixin({
-            rules: ["min", "required"]
-        })
-    ],
-    components: {
-        InvoiceForm,
-        fabCreateButton,
-        confirm,
-        CircleLoader
+  name: "invoice",
+  mixins: [
+    crudMixin,
+    formFieldMixin,
+    createFormMixin({
+      rules: ["min", "required"],
+    }),
+  ],
+  components: {
+    InvoiceForm,
+    fabCreateButton,
+    confirm,
+    CircleLoader,
+  },
+  data() {
+    return {
+      cardloader: false,
+      loading: false,
+      tableLoader: false,
+      search: "",
+      paidDialog: false,
+      isValid: false,
+      errors: {},
+      payInvoice: {
+        invoice_id: null,
+        category_id: null,
+        receipt_file: null,
+      },
+      viewDetails: false,
+      viewClientInfo: {
+        client: {
+          name: "",
+          email: "",
+          phone: "",
+        },
+        companies: {
+          name: "",
+        },
+        invoiceHistory: {
+          amount: "",
+          isPaid: "",
+        },
+      },
+      snackbar: {
+        action: false,
+        text: "",
+        color: "success",
+        timeout: "3000",
+      },
+      headers: [
+        {
+          text: "Client",
+          align: "start",
+          sortable: false,
+          value: "client.name",
+        },
+        { text: "Compnay", value: "companies.name", sortable: false },
+        { text: "Type", value: "sendingType", sortable: false },
+        { text: "Sending Date", value: "sendingDate", sortable: false },
+        {
+          text: "Recurring period",
+          value: "recurringPeriod",
+          sortable: false,
+        },
+        {
+          text: "Created by",
+          value: "createdBy.name",
+          sortable: false,
+        },
+        {
+          text: "amount",
+          value: "invoiceHistory.amount",
+          sortable: false,
+        },
+        {
+          text: "Status",
+          value: "invoiceHistory.isPaid",
+          sortable: false,
+        },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+      desserts: [
+        {
+          name: "Lorem Ipsum",
+          address: "lorem ipsum dolor sit",
+        },
+      ],
+    };
+  },
+  computed: {
+    ...mapGetters("INVOICE", ["$invoice", "$pagination"]),
+    ...mapGetters("COMPANY", ["$companyList"]),
+    ...mapGetters("CLIENT", ["$clientList"]),
+    ...mapGetters("PAYMENT", ["$paymentList"]),
+    ...mapGetters("AUTH", ["$user"]),
+  },
+  methods: {
+    ...mapActions("INVOICE", [
+      "fetchInvoice",
+      "deleteInvoice",
+      "addInvoice",
+      "updateInvoice",
+      "paidInvoice",
+    ]),
+    ...mapActions("COMPANY", ["fetchCompanyList"]),
+    ...mapActions("CLIENT", ["fetchClientList"]),
+    ...mapActions("PAYMENT", ["fetchPaymentList"]),
+    click() {
+      this.dialog = true;
     },
-    data() {
-        return {
-            cardloader: false,
-            loading: false,
-            tableLoader: false,
-            search: "",
-            paidDialog: false,
-            isValid: false,
-            errors: {},
-            payInvoice: {
-                invoice_id: null,
-                category_id: null,
-                receipt_file:null,
-
-            },
-            viewDetails: false,
-            viewClientInfo: {
-                client: {
-                    name: "",
-                    email: "",
-                    phone: ""
-                },
-                companies: {
-                    name: ""
-                },
-                invoiceHistory: {
-                    amount: "",
-                    isPaid: ""
-                }
-            },
-            snackbar: {
-                action: false,
-                text: "",
-                color: "success",
-                timeout: "3000"
-            },
-            headers: [
-                {
-                    text: "Client",
-                    align: "start",
-                    sortable: false,
-                    value: "client.name"
-                },
-                { text: "Compnay", value: "companies.name", sortable: false },
-                { text: "Type", value: "sendingType", sortable: false },
-                { text: "Sending Date", value: "sendingDate", sortable: false },
-                {
-                    text: "Recurring period",
-                    value: "recurringPeriod",
-                    sortable: false
-                },
-                {
-                    text: "Created by",
-                    value: "createdBy.name",
-                    sortable: false
-                },
-                {
-                    text: "amount",
-                    value: "invoiceHistory.amount",
-                    sortable: false
-                },
-                {
-                    text: "Status",
-                    value: "invoiceHistory.isPaid",
-                    sortable: false
-                },
-                { text: "Actions", value: "actions", sortable: false }
-            ],
-            desserts: [
-                {
-                    name: "Lorem Ipsum",
-                    address: "lorem ipsum dolor sit"
-                }
-            ]
-        };
+    async onChangePage(page) {
+      this.tableLoader = true;
+      await this.fetchInvoice({ page, per_page: 10 });
+      this.tableLoader = false;
     },
-    computed: {
-        ...mapGetters("INVOICE", ["$invoice", "$pagination"]),
-        ...mapGetters("COMPANY", ["$companyList"]),
-        ...mapGetters("CLIENT", ["$clientList"]),
-        ...mapGetters("PAYMENT", ["$paymentList"]),
-        ...mapGetters("AUTH", ["$user"]),
+    onInputInvoiceDialog(dialog) {
+      if (!dialog) {
+        this.resetUpdate();
+        this.resetCreate();
+      }
+      this.errors = {};
     },
-    methods: {
-        ...mapActions("INVOICE", [
-            "fetchInvoice",
-            "deleteInvoice",
-            "addInvoice",
-            "updateInvoice",
-            "paidInvoice"
-        ]),
-        ...mapActions("COMPANY", ["fetchCompanyList"]),
-        ...mapActions("CLIENT", ["fetchClientList"]),
-        ...mapActions("PAYMENT", ["fetchPaymentList"]),
-        click() {
-            this.dialog = true;
-        },
-        async onChangePage(page) {
-            this.tableLoader = true;
-            await this.fetchInvoice({ page, per_page: 10 });
-            this.tableLoader = false;
-        },
-        onInputInvoiceDialog(dialog) {
-            if (!dialog) {
-                this.resetUpdate();
-                this.resetCreate();
-            }
-            this.errors = {};
-        },
-        async CompanyList() {
-            this.loader = true;
-            await this.fetchCompanyList();
-            this.loading = false;
-        },
-        async ClientList() {
-            this.loader = true;
-            await this.fetchClientList();
-            this.loading = false;
-        },
-        async onFetchInvoice() {
-            this.tableLoader = true;
-            await this.fetchInvoice({ per_page: 10, page: 1 });
-            this.tableLoader = false;
-        },
-        async handleAddInvoice(invoiceDetails) {
-            this.loading = true;
-
-            // this.create.loading = true;
-            let res = await this.addInvoice(invoiceDetails);
-            if (res.error) {
-                this.enableSnackbar(
-                    "failed",
-                    "An error ocured when creating Invoice"
-                );
-
-                this.errors = res.errors;
-            } else {
-                this.enableSnackbar("success", "Invoice created successfully");
-                this.resetCreate();
-            }
-            this.loading = false;
-        },
-        handleView(item) {
-            (this.viewDetails = true), (this.viewClientInfo = item);
-            this.viewClientInfo.sendingType=this.viewClientInfo.sendingType.charAt(0).toUpperCase() +
-                                this.viewClientInfo.sendingType.slice(1).replace("_", " ")
-            this.viewClientInfo.createdAt = moment(
-                this.viewClientInfo.createdAt
-            ).format("ll");
-            this.viewClientInfo.updatedAt = moment(
-                this.viewClientInfo.updatedAt
-            ).format("ll");
-            this.viewClientInfo.isPaid = this.viewClientInfo.invoiceHistory.isPaid === 1 ? "Paid" : "Pending";
-        },
-        async handleEditInvoice(invoiceDetails) {
-            this.loading = true;
-
-            // this.create.loading = true;
-            let res = await this.updateInvoice(invoiceDetails);
-            if (res.error) {
-                this.enableSnackbar(
-                    "failed",
-                    "An error ocured when editing Invoice"
-                );
-                this.errors = res.errors;
-            } else {
-                this.enableSnackbar("success", "Invoice updated successfully");
-                this.resetUpdate();
-            }
-            this.loading = false;
-        },
-        handlePaidDialog(item) {
-            this.paidDialog = true;
-            this.payInvoice.invoice_id = item.id;
-        },
-        async handlePaidInvoice() {
-            if (this.$refs.paidInvoiceForm.validate()) {
-                this.loading = true;
-                // this.create.loading = true;
-                if (!this.payInvoice.receipt_file) {
-                  delete this.payInvoice.receipt_file
-                }
-                let res = await this.paidInvoice(this.payInvoice);
-                if (res.error) {
-                    this.enableSnackbar(
-                        "failed",
-                        "An error ocured when paying a Invoice"
-                    );
-                    this.errors = res.errors;
-                } else {
-                    this.enableSnackbar("success", "Invoice paid successfully");
-                    this.paidDialog = false;
-                }
-                this.loading = false;
-            }
-        },
-        async handleDeleteInvoice() {
-            this.loading = true;
-            let res = await this.deleteInvoice(this.deletee.id);
-            if (res.error) {
-                this.enableSnackbar(
-                    "failed",
-                    "An error ocured when deleting Invoice"
-                );
-            } else {
-                this.enableSnackbar("success", "Invoice deleted successfully");
-            }
-            this.resetDelete();
-            this.loading = false;
-        },
-        async onCreated() {
-            this.loading = true;
-            await this.onFetchInvoice();
-            await this.CompanyList();
-            await this.ClientList();
-            await this.fetchPaymentList();
-            this.loading = false;
-        },
-          fileInput(event) {
-
-            this.payInvoice.receipt_file = event;
-        },
+    async CompanyList() {
+      this.loader = true;
+      await this.fetchCompanyList();
+      this.loading = false;
     },
-    created() {
-        this.onCreated();
-    }
+    async ClientList() {
+      this.loader = true;
+      await this.fetchClientList();
+      this.loading = false;
+    },
+    async onFetchInvoice() {
+      this.tableLoader = true;
+      await this.fetchInvoice({ per_page: 10, page: 1 });
+      this.tableLoader = false;
+    },
+    async handleAddInvoice(invoiceDetails) {
+      this.loading = true;
+
+      // this.create.loading = true;
+      let res = await this.addInvoice(invoiceDetails);
+      if (res.error) {
+        this.enableSnackbar("failed", "An error ocured when creating Invoice");
+
+        this.errors = res.errors;
+      } else {
+        this.enableSnackbar("success", "Invoice created successfully");
+        this.resetCreate();
+      }
+      this.loading = false;
+    },
+    handleView(item) {
+      console.log(item);
+      (this.viewDetails = true), (this.viewClientInfo = item);
+      this.viewClientInfo.sendingType =
+        this.viewClientInfo.sendingType.charAt(0).toUpperCase() +
+        this.viewClientInfo.sendingType.slice(1).replace("_", " ");
+      this.viewClientInfo.createdAt = moment(
+        this.viewClientInfo.createdAt
+      ).format("ll");
+      this.viewClientInfo.updatedAt = moment(
+        this.viewClientInfo.updatedAt
+      ).format("ll");
+      this.viewClientInfo.isPaid =
+        this.viewClientInfo.invoiceHistory.isPaid === 1 ? "Paid" : "Pending";
+      this.viewClientInfo.invoiceHistory = item.invoiceHistory;
+    },
+    async handleEditInvoice(invoiceDetails) {
+      this.loading = true;
+
+      // this.create.loading = true;
+      let res = await this.updateInvoice(invoiceDetails);
+      if (res.error) {
+        this.enableSnackbar("failed", "An error ocured when editing Invoice");
+        this.errors = res.errors;
+      } else {
+        this.enableSnackbar("success", "Invoice updated successfully");
+        this.resetUpdate();
+      }
+      this.loading = false;
+    },
+    handlePaidDialog(item) {
+      this.paidDialog = true;
+      this.payInvoice.invoice_id = item.id;
+    },
+    async handlePaidInvoice() {
+      if (this.$refs.paidInvoiceForm.validate()) {
+        this.loading = true;
+        // this.create.loading = true;
+        if (!this.payInvoice.receipt_file) {
+          delete this.payInvoice.receipt_file;
+        }
+        let res = await this.paidInvoice(this.payInvoice);
+        if (res.error) {
+          this.enableSnackbar(
+            "failed",
+            "An error ocured when paying a Invoice"
+          );
+          this.errors = res.errors;
+        } else {
+          this.enableSnackbar("success", "Invoice paid successfully");
+          this.paidDialog = false;
+          this.$refs.paidInvoiceForm.reset()
+        }
+        this.loading = false;
+      }
+    },
+    async handleDeleteInvoice() {
+      this.loading = true;
+      let res = await this.deleteInvoice(this.deletee.id);
+      if (res.error) {
+        this.enableSnackbar("failed", "An error ocured when deleting Invoice");
+      } else {
+        this.enableSnackbar("success", "Invoice deleted successfully");
+      }
+      this.resetDelete();
+      this.loading = false;
+    },
+    async onCreated() {
+      this.loading = true;
+      await this.onFetchInvoice();
+      await this.CompanyList();
+      await this.ClientList();
+      await this.fetchPaymentList();
+      this.loading = false;
+    },
+    fileInput(event) {
+      this.payInvoice.receipt_file = event;
+    },
+  },
+  created() {
+    this.onCreated();
+  },
 };
 </script>
 

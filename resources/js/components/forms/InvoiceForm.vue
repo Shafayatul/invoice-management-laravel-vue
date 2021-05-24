@@ -15,7 +15,7 @@
         <v-col v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-select
             v-model="invoiceDetails.client_id"
-            
+            :rules="[rules.required('Client')]"
             label="Client"
             :items="clientList"
             item-value="id"
@@ -25,11 +25,41 @@
           />
           <!-- :rules="[rules.required('client')]" -->
         </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            v-model="invoiceDetails.item_name"
+            :rules="[rules.required('Item Name')]"
+            :error-messages="errors.itemName && errors.itemName[0]"
+            v-bind="fieldOptions"
+            label="Item Name"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            type="number"
+            v-model="invoiceDetails.quantity"
+            :rules="[rules.required('Amount'), rules.min(1)]"
+            :error-messages="errors.amount && errors.amount[0]"
+            v-bind="fieldOptions"
+            label="Quantity"
+          ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="12" lg="12">
+          <v-text-field
+            type="number"
+            :min="0"
+            v-model="invoiceDetails.amount"
+            :rules="[rules.required('Amount'), rules.min(0)]"
+            :error-messages="errors.expenseAmount && errors.expenseAmount[0]"
+            v-bind="fieldOptions"
+            label="Amount"
+          ></v-text-field>
+        </v-col>
 
         <v-col v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-select
             v-model="invoiceDetails.sending_type"
-            
             v-bind="fieldOptions"
             :rules="[rules.required('Sending Type')]"
             :error-messages="errors.sendingType && errors.sendingType[0]"
@@ -39,7 +69,7 @@
             item-text="name"
           ></v-select>
         </v-col>
-        <v-col  v-if="!isUpdate" cols="12" md="12" lg="12">
+        <v-col v-if="!isUpdate" cols="12" md="12" lg="12">
           <v-menu
             ref="menu"
             v-model="menu"
@@ -51,7 +81,6 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-             
                 v-model="invoiceDetails.sending_date"
                 outlined
                 hide-details="auto"
@@ -100,15 +129,6 @@
             "
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="12" lg="12">
-          <v-text-field
-            v-model="invoiceDetails.amount"
-            :min="0"
-            :rules="[rules.required('Amount'), rules.min(0)]"
-            v-bind="fieldOptions"
-            label="Amount"
-          ></v-text-field>
-        </v-col>
       </v-row>
     </v-form>
 
@@ -125,49 +145,53 @@
 </template>
 
 <script>
-
 import formFieldMixin from "@/mixins/formFieldMixin";
 import { createFormMixin } from "@/mixins/form-mixin";
-import moment from "moment"
+import moment from "moment";
 export default {
-    name: "invoiceForm",
-    mixins: [formFieldMixin,createFormMixin({
-      rules: ['min',"required"],
-    })],
-    props:{
-        isUpdate:Boolean,
-        data:Object,
-        companyList: Array,
-        clientList:Array,
-        errors: Object,
-        loading:Boolean
-    },
+  name: "invoiceForm",
+  mixins: [
+    formFieldMixin,
+    createFormMixin({
+      rules: ["min", "required"],
+    }),
+  ],
+  props: {
+    isUpdate: Boolean,
+    data: Object,
+    companyList: Array,
+    clientList: Array,
+    errors: Object,
+    loading: Boolean,
+  },
 
-    data() {
-        return {
-            isValid: false,
-            menu:false,
-              paymentList: [
-                {
-                    name: "One time",
-                    id: "one_time"
-                },
-                {
-                    name: "Recurring",
-                    id: "recurring"
-                }
-            ],
-            invoiceDetails:{
-               client_id: null,
-               sending_date:new Date().toISOString().substr(0, 10),
-               sending_type:'',
-               recurring_period:0,
-               amount:'',
-            }
-        };
-    },
-    watch: {
-        data:{
+  data() {
+    return {
+      isValid: false,
+      menu: false,
+      paymentList: [
+        {
+          name: "One time",
+          id: "one_time",
+        },
+        {
+          name: "Recurring",
+          id: "recurring",
+        },
+      ],
+      invoiceDetails: {
+        client_id: null,
+        item_name: "",
+        quantity: null,
+        sending_date: new Date().toISOString().substr(0, 10),
+        sending_type: "",
+        recurring_period: 0,
+        amount: "",
+      },
+    };
+  },
+  watch: {
+    data: {
       deep: true,
       immediate: true,
       handler(v) {
@@ -175,25 +199,26 @@ export default {
         this.invoiceDetails = {
           client_id: v.clientId,
           company_id: v.companyId,
-          sending_type:v.sendingType,
-          sending_date:new Date(v.sendingDate).toISOString().substr(0, 10),
-          recurring_period:v.recurringPeriod,
-          amount:v.invoiceHistory.amount,
-          invoice_id:v.id
-
-   
+          sending_type: v.sendingType,
+          sending_date: new Date(v.sendingDate).toISOString().substr(0, 10),
+          recurring_period: v.recurringPeriod,
+          amount: v.invoiceHistory.amount,
+          item_name: v.invoiceHistory.itemName,
+          quantity: v.invoiceHistory.quantity,
+          invoice_id: v.id,
         };
       },
-    }
     },
-    methods:{
-      handleInvoice(){
-        if (this.$refs.InvoiceForm.validate()){
-           this.isUpdate? this.$emit("editInvoice", this.invoiceDetails) : this.$emit("addInvoice", this.invoiceDetails)
-        }
+  },
+  methods: {
+    handleInvoice() {
+      if (this.$refs.InvoiceForm.validate()) {
+        this.isUpdate
+          ? this.$emit("editInvoice", this.invoiceDetails)
+          : this.$emit("addInvoice", this.invoiceDetails);
       }
-    }
-    
+    },
+  },
 };
 </script>
 

@@ -174,7 +174,7 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewUserInfo.isActive"
+                  v-model="viewUserInfo.Active"
                   label="Status"
                 ></v-text-field>
               </v-col>
@@ -276,7 +276,7 @@ export default {
         handleView(item){
          this.viewDetails=true,
          this.viewUserInfo=item
-         this.viewUserInfo.isActive=this.viewUserInfo.isActive == "1" ? "Active" : "Blocked" 
+         this.viewUserInfo.Active=this.viewUserInfo.isActive == "1" ? "Active" : "Blocked" 
          this.viewUserInfo.createdAt= moment(this.viewUserInfo.createdAt).format('ll')
           this.viewUserInfo.updatedAt= moment(this.viewUserInfo.updatedAt).format('ll')
         },
