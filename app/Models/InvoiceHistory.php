@@ -15,7 +15,7 @@ class InvoiceHistory extends Model
 
     protected $table = 'invoice_histories';
 
-    protected $fillable = ['client_id', 'invoice_id', 'is_paid', 'amount', 'last_mailing_time', 'mailing_count', 'deleted_at'];
+    protected $fillable = ['client_id', 'invoice_id', 'is_paid', 'item_name', 'quantity', 'amount', 'last_mailing_time', 'mailing_count', 'deleted_at'];
 
     public function invoice()
     {
