@@ -20,7 +20,7 @@
         >
           <v-btn
             class="fab-btn-right ma-1"
-            v-if="expenses.length > 1"
+            v-if="expenses.length > 1 && index  !== 0"
             @click="expenses.splice(index, 1)"
             icon
           >
@@ -202,27 +202,36 @@ export default {
         handleExpense() {
             if (this.$refs.ExpenseForm.validate()) {
             
-                let data = {}
-              //  let addExpense=  this.expenses.map((y,index)=> Object.entries(y).reduce((acc,[key, value]) => ({...acc,[`${key}[${index}]`]:value}),{}))
-              this.expenses.forEach((expense, index) => {
-                Object.entries(expense).forEach(([key, value])=>{
-                  if(key === 'menu' || (key=== 'bills_file' && !value)) return
-                     data[`${key}[${index}]`] = value
-                })
-              })
-              let editData={}
-              this.expenses.forEach((expense,index) => {
-                Object.entries(expense).forEach(([key, value])=>{
-                  if(key === 'menu' || (key=== 'bills_file' && !value)) return
-                  if(index) editData[`${key}[]`] = value
+              if(this.isUpdate){
+                let editData={}
+                Object.entries(this.expenses[0]).forEach(([key, value])=>{
+                  if(key === 'menu') return
                   else editData[`${key}[${this.data.id}]`] = value
                 })
-              })
+                this.$emit("editExpense", editData)
 
-              
-                this.isUpdate
-                    ? this.$emit("editExpense", editData)
-                    : this.$emit("addExpense", data);
+                if(this.expenses.length === 1) return
+                let data = {}
+                this.expenses.slice(1).forEach((expense, index) => {
+                  Object.entries(expense).forEach(([key, value])=>{
+                    if(key === 'menu' || (key === 'bills_file' && !value && !this.isUpdate)) return
+                      data[`${key}[${index}]`] = value
+                  })
+                })
+                this.$emit("addExpense", data)
+
+              }
+              else {
+                let data = {}
+                this.expenses.forEach((expense, index) => {
+                  Object.entries(expense).forEach(([key, value])=>{
+                    if(key === 'menu' || (key === 'bills_file' && !value && !this.isUpdate)) return
+                      data[`${key}[${index}]`] = value
+                  })
+                })
+                this.$emit("addExpense", data)
+              }
+
             }
         }
     }
