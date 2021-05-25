@@ -186,6 +186,7 @@ export default {
             else {
                 this.enableSnackbar('success','Company created successfully')
                 this.resetCreate();
+                this.errors={}
             }
             this.loading = false;
         },
@@ -202,6 +203,7 @@ export default {
             else {
                 this.enableSnackbar('success','Company updated successfully')
                 this.resetUpdate();
+                this.errors={}
             }
             this.loading = false;
         },
