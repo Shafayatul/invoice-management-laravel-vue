@@ -323,7 +323,7 @@ class InvoiceController extends Controller {
             return response()->json(['error' => $validate->errors()], 422);
 
         $from = Carbon::parse($request->start_date)->format("Y-m-d");
-        $to = Carbon::parse($request->end_date)->format("Y-m-d");
+        $to = Carbon::parse($request->end_date)->addDays(1)->format("Y-m-d");
         $user = User::find($request->user_id);
         $query = Invoice::query();
         if($user->role == 'super admin'){

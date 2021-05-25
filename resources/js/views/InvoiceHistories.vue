@@ -174,6 +174,16 @@ export default {
                 { text: "Email", value: "client.email", sortable: false },
                 { text: "Phone", value: "client.phone", sortable: false },
                 { text: "Created at", value: "createdAt", sortable: false },
+                {
+                  text: "Item",
+                  value: "itemName",
+                  sortable: false,
+                },
+                {
+                  text: "Quantity",
+                  value: "quantity",
+                  sortable: false,
+                },
                 { text: "Amount", value: "amount", sortable: false },
 
                 {

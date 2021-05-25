@@ -234,9 +234,19 @@ export default {
                     sortable: false
                 },
                 {
-                    text: "amount",
-                    value: "invoiceHistory.amount",
-                    sortable: false
+                  text: "Item",
+                  value: "invoiceHistory.itemName",
+                  sortable: false,
+                },
+                {
+                  text: "Amount",
+                  value: "invoiceHistory.amount",
+                  sortable: false,
+                },
+                {
+                  text: "Quantity",
+                  value: "invoiceHistory.quantity",
+                  sortable: false,
                 },
                 {
                     text: "Status",

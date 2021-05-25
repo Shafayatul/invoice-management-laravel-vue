@@ -106,6 +106,12 @@
                 Created By
             </th>
             <th align="center" >
+                Item Name
+              </th>
+              <th align="center" >
+                Qty
+              </th>
+            <th align="center" >
               Amount
             </th>
             <th align="center" >
@@ -122,6 +128,8 @@
               <td align="center">{{ Carbon\Carbon::parse($invoice->sending_date)->format("Y-m-d") }}</td>
               <td align="center">{{ $invoice->recurring_period }}</td>
               <td align="center">{{ $invoice->createdBy->name }}</td>           
+              <td align="center">{{ $invoice->invoiceHistory->item_name }}</td>          
+              <td align="center">{{ $invoice->invoiceHistory->quantity }}</td>          
               <td align="center">{{ $invoice->invoiceHistory->amount }}</td>          
               <td align="center">{{ ($invoice->invoiceHistory->is_paid == 1) ? 'Paid' : 'Pending' }}</td>       
             </tr>
