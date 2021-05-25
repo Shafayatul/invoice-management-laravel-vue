@@ -118,7 +118,7 @@
               <v-col cols="12">
                 <v-text-field
                   v-bind="fieldOptions"
-                  v-model="viewClientInfo.isPaid"
+                  v-model="viewClientInfo.paid"
                   label="Status"
                 ></v-text-field>
               </v-col>
@@ -222,7 +222,7 @@ export default {
             this.viewClientInfo.updatedAt = moment(
                 this.viewClientInfo.updatedAt
             ).format("ll");
-            this.viewClientInfo.isPaid =
+            this.viewClientInfo.paid =
                 this.viewClientInfo.isPaid == "1"
                     ? "Paid"
                     : "Pending";
