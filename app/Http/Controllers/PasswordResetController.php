@@ -33,6 +33,12 @@ class PasswordResetController extends Controller
             ], 404);
         }
 
+        if($user->role == 'client'){
+            return response()->json([
+                'message' => 'We can not find a user with that e-mail address.'
+            ], 404);
+        }
+
         $passwordReset = new PasswordReset();
         $passwordReset->email = $user->email;
         $passwordReset->token = Str::random(60);

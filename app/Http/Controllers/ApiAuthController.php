@@ -46,6 +46,11 @@ class ApiAuthController extends Controller
             'password' => $request->password
         ];
         $user = User::where('email', $request->email)->first();
+        if($user->role == 'client'){
+            return response()->json([
+                'message' => 'Unauthorised'
+            ], 401);
+        }
         if($user && $user->is_active == 1){
             if (auth()->attempt($data)) {
                 $token = auth()->user()->createToken('Login Auth Token')->accessToken;
