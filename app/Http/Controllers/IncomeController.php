@@ -66,21 +66,28 @@ class IncomeController extends Controller
             'income_amount.*' => 'required|numeric'
         ]);
 
-        if($validate->fails())
+        if($validate->fails()){
             return response()->json(['error' => $validate->errors()], 422);
+        }
 
         foreach($request->category_id as $key => $category_id){
-            if($request->hasFile('receipt_file')){
-                $file = $request->file('receipt_file')[$key];
-                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-                $path = $request->file('receipt_file')[$key]->storeAs(
-                    'income-file',
-                    $name,
-                    'public'
-                );
+
+            if(isset($request->receipt_file[$key])){
+                if($request->hasFile('receipt_file')){
+                    $file = $request->file('receipt_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('receipt_file')[$key]->storeAs(
+                        'income-file',
+                        $name,
+                        'public'
+                    );
+                }else{
+                    $path = null;
+                }
             }else{
                 $path = null;
             }
+            
     
             $income                = new Income();
             $income->category_id   = $category_id;

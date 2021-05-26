@@ -65,24 +65,29 @@ class ExpenseController extends Controller
             return response()->json(['error' => $validate->errors()], 422);
 
         foreach($request->category_id as $key => $category_id){
-            if($request->hasFile('bills_file')){
-                $file = $request->file('bills_file')[$key];
-                $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
-                $path = $request->file('bills_file')[$key]->storeAs(
-                    'expense-file',
-                    $name,
-                    'public'
-                );
+            if(isset($request->bills_file[$key])){
+                if($request->hasFile('bills_file')){
+                    $file = $request->file('bills_file')[$key];
+                    $name = uniqid().'.'.strtolower($file->getClientOriginalExtension());
+                    $path = $request->file('bills_file')[$key]->storeAs(
+                        'expense-file',
+                        $name,
+                        'public'
+                    );
+                }else{
+                    $path = null;
+                }
             }else{
                 $path = null;
             }
+            
     
-            $expense = new Expense();
-            $expense->category_id = $category_id;
-            $expense->user_id = Auth::id();
-            $expense->company_id = Auth::user()->company_id;
-            $expense->bills_file = $path;
-            $expense->expense_date = Carbon::parse($request->expense_date[$key])->format("Y-m-d h:i:s");
+            $expense                 = new Expense();
+            $expense->category_id    = $category_id;
+            $expense->user_id        = Auth::id();
+            $expense->company_id     = Auth::user()->company_id;
+            $expense->bills_file     = $path;
+            $expense->expense_date   = Carbon::parse($request->expense_date[$key])->format("Y-m-d h:i:s");
             $expense->expense_amount = $request->expense_amount[$key];
             $expense->save();
         }

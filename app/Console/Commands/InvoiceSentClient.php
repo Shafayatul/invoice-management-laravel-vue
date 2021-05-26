@@ -46,29 +46,43 @@ class InvoiceSentClient extends Command
         $invoices = Invoice::select('id')->get()->toArray();
         $invoice_histories = InvoiceHistory::withTrashed('invoice')->whereIn('invoice_id', $invoices)->where('is_paid', 0)->get();
         foreach($invoice_histories as $history){
-            $last_mailing_time = Carbon::parse($history->last_mailing_time)->addDays($history->invoice->recurring_period);
-            if($history->invoice->sending_type == 'one_time' && $history->mailing_count == 0){
-                $last_mailing_time = Carbon::parse($history->last_mailing_time);
-            }
             
-            if($history->invoice->sending_type == 'recurring' && $history->mailing_count == 0){
-                $last_mailing_time = Carbon::parse($history->last_mailing_time);
-            }
+            if($history->invoice->sending_type == 'one_time'){
+                if($history->mailing_count == 0){
+                    $last_mailing_time = Carbon::parse($history->last_mailing_time)->addDays($history->invoice->recurring_period);
+                    if(Carbon::now() >= $last_mailing_time){
+                        $client = User::find($history->client_id);
+                        if($client){
+                            $invoice = Invoice::find($history->invoice_id);
+                            
+                            Mail::to($client->email)->send(new InvoiceSent($invoice));
             
-            if(Carbon::now() >= $last_mailing_time){
-                $client = User::find($history->client_id);
-                if($client){
-                    $invoice = Invoice::find($history->invoice_id);
-                    
-                    Mail::to($client->email)->send(new InvoiceSent($invoice));
-    
-                    $invoice_history = InvoiceHistory::find($history->id);
-                    $invoice_history->last_mailing_time = Carbon::now();
-                    $invoice_history->mailing_count = $invoice_history->mailing_count+1;
-                    $invoice_history->save();
-                    sleep(1);
+                            $invoice_history = InvoiceHistory::find($history->id);
+                            $invoice_history->last_mailing_time = Carbon::now();
+                            $invoice_history->mailing_count = $invoice_history->mailing_count+1;
+                            $invoice_history->save();
+                            sleep(1);
+                        }
+                    }
+                } 
+            }else{
+                $last_mailing_time = Carbon::parse($history->last_mailing_time)->addDays($history->invoice->recurring_period);
+                if(Carbon::now() >= $last_mailing_time){
+                    $client = User::find($history->client_id);
+                    if($client){
+                        $invoice = Invoice::find($history->invoice_id);
+                        
+                        Mail::to($client->email)->send(new InvoiceSent($invoice));
+        
+                        $invoice_history = InvoiceHistory::find($history->id);
+                        $invoice_history->last_mailing_time = Carbon::now();
+                        $invoice_history->mailing_count = $invoice_history->mailing_count+1;
+                        $invoice_history->save();
+                        sleep(1);
+                    }
                 }
             }
+            
         }
     }
 }
