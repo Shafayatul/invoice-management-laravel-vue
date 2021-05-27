@@ -78,7 +78,7 @@
                 View
               </v-list-item>
               <v-divider></v-divider>
-              <v-list-item @click="initUpdate(item)" dense link>
+              <v-list-item v-if="item.invoiceHistory.isPaid == 0" @click="initUpdate(item)" dense link>
                 <v-icon class="mr-2">mdi-pencil</v-icon>
                 Edit
               </v-list-item>
