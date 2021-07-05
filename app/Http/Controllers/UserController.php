@@ -128,7 +128,9 @@ class UserController extends Controller {
         $user->phone      = $request->phone;
         $user->email      = $request->email;
         if($user->role != 'client'){
-            $user->password   = Hash::make($request->password);
+            if(!empty($request->password)){
+                $user->password   = Hash::make($request->password);
+            }
         }
         $user->role       = $request->role;
         $user->company_id = $request->company_id;
